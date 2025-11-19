@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { Menu, X, Search, ShoppingCart, User, MapPin, ChevronDown, ChevronRight, Globe } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -74,7 +75,7 @@ export default function Navbar() {
                 <Menu size={20} />
               </button>
               <div className="text-lg sm:text-xl font-bold tracking-tight">
-                Universal
+               <Link href="/">Universal</Link>
               </div>
             </div>
 
@@ -89,7 +90,7 @@ export default function Navbar() {
 
             {/* Desktop: Search Bar */}
             <div className="hidden sm:flex flex-1 max-w-2xl mx-2 md:mx-3">
-              <div className="flex w-full rounded-sm overflow-hidden">
+              <div className="flex w-full rounded-l-lg overflow-hidden">
                 <select className="px-2 sm:px-3 py-2 bg-gray-100 text-gray-700 text-xs sm:text-sm border-r border-gray-300 hover:bg-gray-200 transition cursor-pointer font-medium">
                   <option>All Categories</option>
                   <option>Electronics</option>
@@ -103,7 +104,7 @@ export default function Navbar() {
                   className="flex-1 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-700 outline-none bg-white placeholder-gray-500"
                 />
               </div>
-              <button className="bg-amber-400 hover:bg-amber-500 text-gray-800 px-3 sm:px-4 py-2 transition-colors flex items-center justify-center shrink-0">
+              <button className="bg-amber-400 rounded-r-lg hover:bg-amber-500 text-gray-800 px-3 sm:px-4 py-2 transition-colors flex items-center justify-center shrink-0">
                 <Search size={18} />
               </button>
             </div>
@@ -139,16 +140,20 @@ export default function Navbar() {
               </div>
 
               {/* Sign in - Mobile on left of cart, Desktop hidden sm, shown md+ */}
+             <Link href='/login'>
               <div className="flex sm:hidden flex-col cursor-pointer hover:opacity-80 transition text-xs">
                 <span className="opacity-80">Sign in</span>
                 <span className="font-semibold">Account</span>
               </div>
+             </Link>
 
               {/* Sign in - Desktop */}
+              <Link href='/login'>
               <div className="hidden sm:flex flex-col cursor-pointer hover:opacity-80 transition text-xs sm:text-sm">
                 <span className="opacity-80">Sign in</span>
                 <span className="font-semibold">Account</span>
               </div>
+              </Link>
 
               {/* Orders Button - Desktop only */}
               <button className="hidden lg:block bg-transparent hover:bg-rose-600 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium transition whitespace-nowrap">
