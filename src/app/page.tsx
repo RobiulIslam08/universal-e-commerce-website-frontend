@@ -38,7 +38,7 @@ export default function Home() {
         <div className="bg-white rounded-2xl shadow-xl p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Our Products
+              Best Selling Product
             </h2>
             <Badge className="bg-rose-600 text-white text-sm px-4 py-2">
               {products.length} Products

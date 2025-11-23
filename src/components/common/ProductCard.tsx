@@ -60,17 +60,15 @@ export default function ProductCard({
             Add to Cart
           </Button>
         </div>
-         <div className="mt-auto pt-3">
+         <div className="mt-2"> {/* mt-auto বাদ দিয়ে mt-2 দিলাম সুন্দর গ্যাপের জন্য */}
           <Button
             variant="outline"
             size="sm"
-            className="w-full hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors duration-300 font-semibold"
-            onClick={(e) => {
-              if (slug) e.preventDefault();
-              // Add to cart logic here
-            }}
+            className="w-full hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-colors duration-300 font-semibold"
+            // onClick টি সরিয়ে দেওয়া হয়েছে। 
+            // যেহেতু প্যারেন্ট Link আছে, তাই এই বাটনে ক্লিক করলেই লিংকে কাজ করবে।
           >
-           View Details
+            View Details
           </Button>
         </div>
       </CardContent>
