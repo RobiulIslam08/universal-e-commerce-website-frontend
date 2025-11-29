@@ -15,6 +15,7 @@ export interface Warranty {
 }
 
 export interface Product {
+  [x: string]: any;
   // --- Basic Fields (As per your original code) ---
   id: string;
   slug: string;

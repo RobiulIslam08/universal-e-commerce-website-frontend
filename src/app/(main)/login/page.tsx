@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import {signIn} from "next-auth/react"
 interface LoginFormValues {
   email: string;
   password: string;
@@ -53,6 +54,16 @@ export default function LoginPage() {
       y: [0, -10, 0],
       transition: { duration: 3, repeat: Infinity },
     },
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signIn("google", {
+        callbackUrl: "/", // সফল login এর পর কোথায় redirect করবে
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+    }
   };
 
   return (
@@ -246,6 +257,7 @@ export default function LoginPage() {
             variants={itemVariants}
           >
             <Button
+         onClick={handleGoogleLogin}
               type="button"
               variant="outline"
               className="border-gray-200 hover:bg-gray-50"
