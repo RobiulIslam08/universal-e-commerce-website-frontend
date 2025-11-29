@@ -16,8 +16,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { registerUser } from "@/utils/actions/registerUser";
 
-interface RegisterFormValues {
+
+export interface RegisterFormValues {
   name: string;
   email: string;
   password: string;
@@ -39,11 +41,15 @@ export default function RegisterPage() {
   const password = watch("password");
 
   const onSubmit = async (data: RegisterFormValues) => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Registration attempt:", data);
-    setIsLoading(false);
+  console.log(data)
+    try {
+      const res = await registerUser(data)
+      console.log(res)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      console.error(error.message)
+      throw new Error(error.message)
+    }
   };
 
   const containerVariants = {
