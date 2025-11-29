@@ -8,6 +8,7 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 // Types
 interface CartSummaryProps {
@@ -117,10 +118,12 @@ export default function CartSummary({
         )}
 
         {/* Checkout Button */}
+       <Link href="/checkout">
         <Button  onClick={handleCheckout}
             disabled={isCheckoutDisabled} size="lg" className="w-full bg-rose-600 hover:bg-rose-700 font-extrabold text-lg">
           Proceed to Checkout <ArrowRight className="w-5 h-5 ml-3" />
         </Button>
+        </Link>
 
         {/* Security Badge */}
         <div className="flex items-center justify-center gap-2 mt-4 text-xs text-slate-500 dark:text-slate-400">
