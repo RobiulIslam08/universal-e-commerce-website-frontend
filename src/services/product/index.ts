@@ -46,3 +46,81 @@ export const addProduct = async (productData: FormData) => {
     throw new Error("Something went wrong");
   }
 };
+
+export const getAllProducts = async (query?: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products${
+        query ? `?${query}` : ""
+      }`,
+      {
+        next: {
+          tags: ["PRODUCT"],
+        },
+      }
+    );
+    const data = await res.json();
+    return data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return Error(error.message);
+    }
+    return Error("Something went wrong");
+  }
+};
+
+export const getSingleProduct = async (productId: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${productId}`,
+      {
+        next: {
+          tags: ["PRODUCT"],
+        },
+      }
+    );
+    const data = await res.json();
+    return data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return Error(error.message);
+    }
+    return Error("Something went wrong");
+  }
+};
+
+export const updateProduct = async (
+  productId: string,
+  productData: FormData
+) => {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${productId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: accessToken ? `${accessToken}` : "",
+        },
+        body: productData,
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to update product");
+    }
+
+    revalidateTag("PRODUCT", "default");
+
+    return result;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return Error(error.message);
+    }
+    return Error("Something went wrong");
+  }
+};

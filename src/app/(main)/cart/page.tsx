@@ -132,10 +132,13 @@ export default function PremiumCartPage() {
       // Implement actual checkout logic here
       toast.success("Proceeding to Checkout!", { description: `Checking out ${selectedCartItems.length} items for $${total.toFixed(2)}`, duration: 3000 });
   };
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-8">
       <div className="container mx-auto max-w-7xl">
+
+        {/* user */}
+
+
         {/* Header */}
         <div className="mb-8 border-b pb-4">
           <div className="flex items-center gap-3">

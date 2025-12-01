@@ -5,11 +5,14 @@ import HeroCarousel from "@/components/home/HeroCarousel";
 import ProductCard from "@/components/common/ProductCard";
 import { products, categories } from "@/constants/products";
 import { Badge } from "@/components/ui/badge";
+import MyProduct from "./components/MyProduct";
+
 
 export default function Home() {
   return (
     <div className="w-full bg-linear-to-b from-gray-50 to-gray-100 min-h-screen">
       <HeroCarousel />
+
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-8 sm:-mt-20 md:-mt-16 relative z-10 space-y-12 pb-16">
         {/* Categories Quick Links */}
@@ -33,7 +36,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-
+  <MyProduct/>
         {/* All Products Grid */}
         <div className="bg-white rounded-2xl shadow-xl p-6">
           <div className="flex items-center justify-between mb-6">
@@ -61,6 +64,7 @@ export default function Home() {
             ))}
           </div>
         </div>
+      
 
         {/* Featured Categories with Products */}
         {categories.slice(0, 4).map((category) => {

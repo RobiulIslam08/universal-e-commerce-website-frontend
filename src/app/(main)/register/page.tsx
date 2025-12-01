@@ -17,10 +17,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { registerUser } from "@/utils/actions/registerUser";
+import { registerUser } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
+import { signIn } from "next-auth/react";
 
 export interface RegisterFormValues {
   name: string;
@@ -34,7 +34,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -46,9 +46,9 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormValues) => {
     console.log(data);
     setIsLoading(true);
-  try {
+    try {
       const res = await registerUser(data);
-      
+
       if (res.success) {
         // ২. সফল হলে টোস্ট দেখানো এবং রিডাইরেক্ট করা
         toast.success(res.message || "Registration Successful!");
@@ -97,6 +97,16 @@ export default function RegisterPage() {
       : "weak"
     : "none";
 
+    const handleGoogleLogin = async () => {
+        try {
+          await signIn("google", {
+            callbackUrl: "/", // সফল login এর পর কোথায় redirect করবে
+          });
+        } catch (error) {
+          console.error("Google login error:", error);
+          toast.error("Google login failed");
+        }
+      };
   return (
     <div className="min-h-screen bg-linear-to-br from-rose-50 via-pink-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -407,11 +417,12 @@ export default function RegisterPage() {
           </motion.div>
 
           {/* Social signup */}
-          <motion.div
+       <motion.div
             className="grid grid-cols-2 gap-3"
             variants={itemVariants}
           >
             <Button
+              onClick={handleGoogleLogin}
               type="button"
               variant="outline"
               className="border-gray-200 hover:bg-gray-50"
@@ -441,10 +452,10 @@ export default function RegisterPage() {
               variant="outline"
               className="border-gray-200 hover:bg-gray-50"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+              <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
               </svg>
-              <span className="text-xs font-medium">GitHub</span>
+              <span className="text-xs font-medium">Facebook</span>
             </Button>
           </motion.div>
         </motion.div>

@@ -20,6 +20,7 @@ export default function AdminSidebar({ open, setOpen }: AdminSidebarProps) {
   const secondaryItems = [
     { label: "Analytics", href: "/admin/analytics", icon: "📈" },
     { label: "Store Settings", href: "/admin/settings", icon: "⚙️" },
+    { label: "Go To Home", href: "/", icon: "🏠" },
   ]
 
   return (

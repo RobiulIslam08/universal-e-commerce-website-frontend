@@ -24,7 +24,7 @@ export default function ProductCard({
   const cardContent = (
     <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-0 shadow-sm group h-full flex flex-col">
       <CardContent className="p-4 flex flex-col flex-1">
-        <div className="aspect-square bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-5xl mb-3 group-hover:scale-105 transition-transform duration-300 shadow-inner">
+        <div className="aspect-square bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-5xl mb-3 group-hover:scale-105 transition-transform duration-300 shadow-inner relative overflow-hidden">
           {image}
         </div>
 
@@ -60,12 +60,14 @@ export default function ProductCard({
             Add to Cart
           </Button>
         </div>
-         <div className="mt-2"> {/* mt-auto বাদ দিয়ে mt-2 দিলাম সুন্দর গ্যাপের জন্য */}
+        <div className="mt-2">
+          {" "}
+          {/* mt-auto বাদ দিয়ে mt-2 দিলাম সুন্দর গ্যাপের জন্য */}
           <Button
             variant="outline"
             size="sm"
             className="w-full hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-colors duration-300 font-semibold"
-            // onClick টি সরিয়ে দেওয়া হয়েছে। 
+            // onClick টি সরিয়ে দেওয়া হয়েছে।
             // যেহেতু প্যারেন্ট Link আছে, তাই এই বাটনে ক্লিক করলেই লিংকে কাজ করবে।
           >
             View Details
