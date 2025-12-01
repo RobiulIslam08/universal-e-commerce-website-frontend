@@ -5,19 +5,21 @@ import { revalidateTag } from "next/cache";
 
 export const addProduct = async (productData: FormData) => {
   try {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backendUrl) {
+      throw new Error("NEXT_PUBLIC_BACKEND_URL is not set");
+    }
+
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/create-product`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: accessToken ? `${accessToken}` : "",
-        },
-        body: productData,
-      }
-    );
+    const response = await fetch(`${backendUrl}/products/create-product`, {
+      method: "POST",
+      headers: {
+        Authorization: accessToken ? `${accessToken}` : "",
+      },
+      body: productData,
+    });
 
     // Check if response is JSON
     const contentType = response.headers.get("content-type");
@@ -103,19 +105,21 @@ export const updateProduct = async (
   productData: FormData
 ) => {
   try {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backendUrl) {
+      throw new Error("NEXT_PUBLIC_BACKEND_URL is not set");
+    }
+
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${productId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: accessToken ? `${accessToken}` : "",
-        },
-        body: productData,
-      }
-    );
+    const response = await fetch(`${backendUrl}/products/${productId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: accessToken ? `${accessToken}` : "",
+      },
+      body: productData,
+    });
 
     const result = await response.json();
 

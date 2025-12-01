@@ -69,6 +69,12 @@ export default function AddProductForm() {
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
+      title: "",
+      category: "",
+      subCategory: "",
+      sku: "",
+      shortDescription: "",
+      longDescription: "",
       price: 0,
       strikePrice: 0,
       stockQuantity: 0,
