@@ -193,6 +193,7 @@ export default function LoginPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
+                  autoComplete="current-password"
                   className="pl-10 pr-10 h-11 border-gray-200 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
                   {...register("password", {
                     required: "Password is required",
