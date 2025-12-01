@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -40,12 +39,11 @@ export default function LoginPage() {
       if (res.success) {
         // সফল হলে টোস্ট দেখানো এবং রিডাইরেক্ট করা
         toast.success(res.message || "Login Successful!");
-        
+
         // টোস্ট দেখার জন্য সামান্য সময় নিয়ে রিডাইরেক্ট করা ভালো
         setTimeout(() => {
-           router.push("/");
+          router.push("/");
         }, 1000);
-        
       } else {
         // যদি API থেকে success: false আসে
         toast.error(res.message || "Login failed");
@@ -95,7 +93,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-rose-50 via-pink-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
-      
       {/* ১. Toaster কম্পোনেন্টটি এখানে যোগ করা হয়েছে */}
       <Toaster position="top-center" richColors />
 
