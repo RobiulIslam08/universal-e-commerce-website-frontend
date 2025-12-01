@@ -1,5 +1,3 @@
-
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -18,21 +16,30 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { DESKTOP_CATEGORIES, LANGUAGE_CODES, LANGUAGES, MENU_SECTIONS, MOBILE_CATEGORIES, QUICK_CATEGORIES } from "@/constants/navbar";
+import {
+  DESKTOP_CATEGORIES,
+  LANGUAGE_CODES,
+  LANGUAGES,
+  MENU_SECTIONS,
+  MOBILE_CATEGORIES,
+  QUICK_CATEGORIES,
+} from "@/constants/navbar";
 import { signOut } from "next-auth/react";
-
 
 type UserProps = {
   user?: {
-    name?:string | null | undefined,
-    email?:string | null | undefined,
-    image?:string | null | undefined,
-  }
-}
+    name?: string | null | undefined;
+    email?: string | null | undefined;
+    image?: string | null | undefined;
+  };
+};
 
-
-const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
-  console.log(session)
+const Navbar = memo(function Navbar({
+  session,
+}: {
+  session: UserProps | null;
+}) {
+  console.log(session);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [languageDropdown, setLanguageDropdown] = useState(false);
@@ -63,8 +70,6 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
   const handleUserDropdownToggle = useCallback(() => {
     setUserDropdown((prev) => !prev);
   }, []);
-
- 
 
   return (
     <div className="w-full bg-white">
@@ -161,7 +166,7 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
                       <button
                         key={LANGUAGE_CODES[idx]}
                         onClick={() =>
-                          handleLanguageSelect(LANGUAGE_CODES[idx] )
+                          handleLanguageSelect(LANGUAGE_CODES[idx])
                         }
                         className="block w-full text-left px-3 py-2 hover:bg-rose-100 transition text-xs sm:text-sm"
                         role="menuitem"
@@ -198,12 +203,16 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
                     )}
                     <ChevronDown size={12} />
                   </button>
-                  
+
                   {userDropdown && (
                     <div className="absolute right-0 top-full mt-2 w-48 bg-white text-gray-800 rounded shadow-lg z-50 overflow-hidden">
                       <div className="px-3 py-2 border-b border-gray-200">
-                        <p className="text-sm font-semibold truncate">{session.user.name}</p>
-                        <p className="text-xs text-gray-600 truncate">{session.user.email}</p>
+                        <p className="text-sm font-semibold truncate">
+                          {session.user.name}
+                        </p>
+                        <p className="text-xs text-gray-600 truncate">
+                          {session.user.email}
+                        </p>
                       </div>
                       <Link
                         href="/account"
@@ -212,13 +221,13 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
                         Your Account
                       </Link>
                       <Link
-                        href="/orders"
+                        href="/order"
                         className="block px-3 py-2 hover:bg-rose-100 transition text-sm"
                       >
                         Orders
                       </Link>
                       <button
-                        onClick={()=> signOut()}
+                        onClick={() => signOut()}
                         className="w-full text-left px-3 py-2 hover:bg-rose-100 transition text-sm flex items-center gap-2 text-red-600"
                       >
                         <LogOut size={14} />
@@ -263,17 +272,21 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
                     <div className="flex flex-col text-left">
                       <span className="opacity-80 text-xs">Hello,</span>
                       <span className="font-semibold text-sm truncate max-w-[100px]">
-                        {session.user.name?.split(' ')[0] || 'User'}
+                        {session.user.name?.split(" ")[0] || "User"}
                       </span>
                     </div>
                     <ChevronDown size={12} />
                   </button>
-                  
+
                   {userDropdown && (
                     <div className="absolute right-0 top-full mt-2 w-56 bg-white text-gray-800 rounded shadow-lg z-50 overflow-hidden">
                       <div className="px-4 py-3 border-b border-gray-200">
-                        <p className="text-sm font-semibold truncate">{session.user.name}</p>
-                        <p className="text-xs text-gray-600 truncate">{session.user.email}</p>
+                        <p className="text-sm font-semibold truncate">
+                          {session.user.name}
+                        </p>
+                        <p className="text-xs text-gray-600 truncate">
+                          {session.user.email}
+                        </p>
                       </div>
                       <Link
                         href="/account"
@@ -282,13 +295,13 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
                         Your Account
                       </Link>
                       <Link
-                        href="/orders"
+                        href="/order"
                         className="block px-4 py-2 hover:bg-rose-100 transition text-sm"
                       >
                         Orders
                       </Link>
                       <button
-                        onClick={()=>signOut()}
+                        onClick={() => signOut()}
                         className="w-full text-left px-4 py-2 hover:bg-rose-100 transition text-sm flex items-center gap-2 text-red-600 border-t border-gray-200"
                       >
                         <LogOut size={14} />
@@ -311,7 +324,7 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
               {/* Orders Button - Desktop only (hide when user dropdown is shown) */}
               {!session?.user && (
                 <Link
-                  href="/orders"
+                  href="/order"
                   className="hidden lg:block bg-transparent hover:bg-rose-600 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium transition whitespace-nowrap"
                 >
                   Orders
@@ -418,7 +431,7 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
                 <div>
                   <p className="font-medium text-sm">Hello,</p>
                   <p className="font-semibold text-sm truncate max-w-[180px]">
-                    {session.user.name?.split(' ')[0] || 'User'}
+                    {session.user.name?.split(" ")[0] || "User"}
                   </p>
                 </div>
               </div>
@@ -502,8 +515,8 @@ const Navbar = memo(function Navbar({session}: {session:UserProps | null}) {
               Help Center
             </Link>
             {session?.user && (
-              <button 
-                onClick={()=>signOut()}
+              <button
+                onClick={() => signOut()}
                 className="flex items-center gap-2 text-xs text-red-600 hover:text-red-700 transition w-full text-left"
               >
                 <LogOut size={14} />
