@@ -27,12 +27,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
-        <Toaster position="top-center" richColors/>
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
