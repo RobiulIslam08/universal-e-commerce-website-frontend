@@ -49,10 +49,15 @@ export const addProduct = async (productData: FormData) => {
 
 export const getAllProducts = async (query?: string) => {
   try {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backendUrl) {
+      console.error(
+        "❌ NEXT_PUBLIC_BACKEND_URL is not set in environment variables!"
+      );
+    }
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products${
-        query ? `?${query}` : ""
-      }`,
+      `${backendUrl}/products${query ? `?${query}` : ""}`,
       {
         next: {
           tags: ["PRODUCT"],
@@ -71,14 +76,18 @@ export const getAllProducts = async (query?: string) => {
 
 export const getSingleProduct = async (productId: string) => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${productId}`,
-      {
-        next: {
-          tags: ["PRODUCT"],
-        },
-      }
-    );
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backendUrl) {
+      console.error(
+        "❌ NEXT_PUBLIC_BACKEND_URL is not set in environment variables!"
+      );
+    }
+
+    const res = await fetch(`${backendUrl}/products/${productId}`, {
+      next: {
+        tags: ["PRODUCT"],
+      },
+    });
     const data = await res.json();
     return data;
   } catch (error: unknown) {
