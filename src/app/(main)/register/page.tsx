@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion } from "framer-motion";
@@ -17,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerUser } from "@/utils/actions/registerUser";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 
 export interface RegisterFormValues {
@@ -31,24 +34,35 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<RegisterFormValues>();
-  // eslint-disable-next-line react-hooks/incompatible-library
   const password = watch("password");
 
   const onSubmit = async (data: RegisterFormValues) => {
-  console.log(data)
-    try {
-      const res = await registerUser(data)
-      console.log(res)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
-      console.error(error.message)
-      throw new Error(error.message)
+    console.log(data);
+    setIsLoading(true);
+  try {
+      const res = await registerUser(data);
+      
+      if (res.success) {
+        // ২. সফল হলে টোস্ট দেখানো এবং রিডাইরেক্ট করা
+        toast.success(res.message || "Registration Successful!");
+        router.push("/");
+      } else {
+        // যদি API থেকে success: false আসে
+        toast.error(res.message || "Registration failed");
+      }
+    } catch (error: any) {
+      // ৩. এরর হলে টোস্ট দেখানো
+      console.error(error.message);
+      toast.error(error.message || "Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
   };
 

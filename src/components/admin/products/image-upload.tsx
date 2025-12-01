@@ -1,86 +1,104 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useCallback } from "react"
-import Image from "next/image"
+import { useState, useCallback } from "react";
+import Image from "next/image";
 
 interface ImageUploadProps {
-  images: string[]
-  onImagesChange: (images: string[]) => void
-  maxImages?: number
+  images: string[];
+  onImagesChange: (images: string[]) => void;
+  onFilesChange?: (files: File[]) => void;
+  maxImages?: number;
 }
 
-export default function ImageUpload({ images, onImagesChange, maxImages = 5 }: ImageUploadProps) {
-  const [isDragging, setIsDragging] = useState(false)
-  const [error, setError] = useState<string>("")
+export default function ImageUpload({
+  images,
+  onImagesChange,
+  onFilesChange,
+  maxImages = 5,
+}: ImageUploadProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [files, setFiles] = useState<File[]>([]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(true)
-  }, [])
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-  }, [])
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
 
   const processFiles = useCallback(
-    (files: FileList) => {
-      setError("")
-      const fileArray = Array.from(files)
+    (inputFiles: FileList) => {
+      setError("");
+      const fileArray = Array.from(inputFiles);
 
       const validFiles = fileArray.filter((file) => {
         if (!file.type.startsWith("image/")) {
-          setError("Only image files are allowed")
-          return false
+          setError("Only image files are allowed");
+          return false;
         }
         if (file.size > 5 * 1024 * 1024) {
-          setError("File size must be less than 5MB")
-          return false
+          setError("File size must be less than 5MB");
+          return false;
         }
-        return true
-      })
+        return true;
+      });
 
       if (images.length + validFiles.length > maxImages) {
-        setError(`Maximum ${maxImages} images allowed`)
-        return
+        setError(`Maximum ${maxImages} images allowed`);
+        return;
+      }
+
+      const newFiles = [...files, ...validFiles];
+      setFiles(newFiles);
+      if (onFilesChange) {
+        onFilesChange(newFiles);
       }
 
       validFiles.forEach((file) => {
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onload = (e) => {
           if (e.target?.result) {
-            onImagesChange([...images, e.target.result as string])
+            onImagesChange([...images, e.target.result as string]);
           }
-        }
-        reader.readAsDataURL(file)
-      })
+        };
+        reader.readAsDataURL(file);
+      });
     },
-    [images, maxImages, onImagesChange],
-  )
+    [images, maxImages, onImagesChange, files, onFilesChange]
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
-      setIsDragging(false)
-      processFiles(e.dataTransfer.files)
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+      processFiles(e.dataTransfer.files);
     },
-    [processFiles],
-  )
+    [processFiles]
+  );
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      processFiles(e.target.files)
+      processFiles(e.target.files);
     }
-  }
+  };
 
   const removeImage = (index: number) => {
-    onImagesChange(images.filter((_, i) => i !== index))
-  }
+    onImagesChange(images.filter((_, i) => i !== index));
+    const newFiles = files.filter((_, i) => i !== index);
+    setFiles(newFiles);
+    if (onFilesChange) {
+      onFilesChange(newFiles);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -95,15 +113,30 @@ export default function ImageUpload({ images, onImagesChange, maxImages = 5 }: I
             : "border-muted-foreground/30 hover:border-rose-300 hover:bg-rose-50/50 dark:hover:bg-rose-950/10"
         }`}
       >
-        <input type="file" multiple accept="image/*" onChange={handleFileInput} className="hidden" id="image-input" />
-        <label htmlFor="image-input" className="flex flex-col items-center justify-center cursor-pointer gap-3">
-          <div className="p-3 rounded-lg bg-rose-100 dark:bg-rose-900/30 text-2xl">⬆️</div>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleFileInput}
+          className="hidden"
+          id="image-input"
+        />
+        <label
+          htmlFor="image-input"
+          className="flex flex-col items-center justify-center cursor-pointer gap-3"
+        >
+          <div className="p-3 rounded-lg bg-rose-100 dark:bg-rose-900/30 text-2xl">
+            ⬆️
+          </div>
           <div className="text-center">
-            <p className="font-semibold text-foreground">Drag and drop images here</p>
+            <p className="font-semibold text-foreground">
+              Drag and drop images here
+            </p>
             <p className="text-sm text-muted-foreground">or click to browse</p>
           </div>
           <p className="text-xs text-muted-foreground">
-            {images.length} / {maxImages} images ({maxImages - images.length} remaining)
+            {images.length} / {maxImages} images ({maxImages - images.length}{" "}
+            remaining)
           </p>
         </label>
       </div>
@@ -119,7 +152,9 @@ export default function ImageUpload({ images, onImagesChange, maxImages = 5 }: I
       {/* Image Gallery */}
       {images.length > 0 && (
         <div>
-          <p className="text-sm font-medium text-foreground mb-3">Uploaded Images</p>
+          <p className="text-sm font-medium text-foreground mb-3">
+            Uploaded Images
+          </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {images.map((image, index) => (
               <div key={index} className="relative group">
@@ -149,5 +184,5 @@ export default function ImageUpload({ images, onImagesChange, maxImages = 5 }: I
         </div>
       )}
     </div>
-  )
+  );
 }
