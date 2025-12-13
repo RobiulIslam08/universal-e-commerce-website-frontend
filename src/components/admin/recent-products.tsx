@@ -3,12 +3,12 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Product } from "@/types/product";
+import type { IProduct } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
 
 interface RecentProductsProps {
-  products: Product[];
+  products: IProduct[];
 }
 
 export default function RecentProducts({ products }: RecentProductsProps) {
@@ -36,9 +36,9 @@ export default function RecentProducts({ products }: RecentProductsProps) {
 
       <CardContent className="p-0">
         <div className="divide-y divide-border/50">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <div
-              key={product.id}
+              key={product.id || product._id || index}
               className="flex items-center justify-between p-5 hover:bg-linear-to-r hover:from-rose-50/30 hover:to-orange-50/20 dark:hover:from-rose-950/10 dark:hover:to-orange-950/10 transition-all duration-300 group cursor-pointer"
             >
               <div className="flex items-center gap-4 flex-1 min-w-0">

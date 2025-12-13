@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "@/components/common/ProductCard";
 import { getAllProducts } from "@/services/product";
-import { Product } from "@/types/product";
+import { IProduct } from "@/types/product";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 
 export default function MyProduct() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +36,9 @@ export default function MyProduct() {
   if (loading) {
     return <div className="text-center py-10">Loading products...</div>;
   }
+  console.log("Products from API:", products);
+  console.log("First product _id:", products[0]?._id);
+  console.log("First product id:", products[0]?.id);
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6">
@@ -49,32 +52,43 @@ export default function MyProduct() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
-        {products.map((product, index) => (
-          <ProductCard
-            key={product.id || product._id || index}
-            slug={product.slug}
-            image={
-              product.image || (product.images && product.images.length > 0) ? (
-                <Image
-                  src={product.image || product.images[0]}
-                  alt={product.title}
-                  fill
-                  className="object-contain p-2"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                  No Image
-                </div>
-              )
-            }
-            title={product.title}
-            price={`SAR ${product.price}`}
-            strike={
-              product.strikePrice ? `SAR ${product.strikePrice}` : undefined
-            }
-            badge={product.badge}
-          />
-        ))}
+        {products.map((product, index) => {
+          const imageUrl =
+            product.images && product.images.length > 0
+              ? product.images[0]
+              : product.image;
+
+          return (
+            <ProductCard
+              key={product.id || product._id || index}
+              _id={product._id}
+              image={
+                imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={product.title || "Product image"}
+                    fill
+                    className="object-contain p-2"
+                    unoptimized={
+                      imageUrl.startsWith("data:") ||
+                      imageUrl.startsWith("blob:")
+                    }
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                    No Image
+                  </div>
+                )
+              }
+              title={product.title}
+              price={`SAR ${product.price}`}
+              strike={
+                product.strikePrice ? `SAR ${product.strikePrice}` : undefined
+              }
+              badge={product.badge}
+            />
+          );
+        })}
       </div>
     </div>
   );

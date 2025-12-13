@@ -1,6 +1,6 @@
 import { getAllProducts } from "@/services/product";
 import ProductCard from "@/components/common/ProductCard";
-import { Product } from "@/types/product";
+import { IProduct } from "@/types/product";
 import Image from "next/image";
 
 type Props = {
@@ -26,7 +26,7 @@ export default async function CategoryPage({ params }: Props) {
   // Fetch products for this category
   // Assuming the backend accepts 'category' query param matching the slug or name
   const res = await getAllProducts(`category=${decodedSlug}`);
-  const products: Product[] = res?.data || [];
+  const products: IProduct[] = res?.data || [];
 
   const categoryName = decodedSlug.replace(/-/g, " ");
 

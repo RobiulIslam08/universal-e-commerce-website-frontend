@@ -14,7 +14,8 @@ export interface Warranty {
   coverage: string; // যেমন: "Parts and Labor"
 }
 
-export interface Product {
+export interface IProduct {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
   // --- Basic Fields (As per your original code) ---
   id: string;

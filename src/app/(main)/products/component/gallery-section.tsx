@@ -1,7 +1,7 @@
-
 "use client";
 import { useState } from "react";
 import { Heart, Share2, TrendingUp, Users, Flame } from "lucide-react";
+import Image from "next/image";
 
 interface GallerySectionProps {
   images: string[];
@@ -109,7 +109,7 @@ export default function GallerySection({
           {/* Main Product Image */}
           <div className="flex items-center justify-center h-full relative">
             <div
-              className="relative text-[14rem] sm:text-[18rem] lg:text-[20rem] select-none filter drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] transition-all duration-700"
+              className="relative w-full h-full flex items-center justify-center p-8 transition-all duration-700"
               style={{
                 transform: `scale(${isHovered ? 1.1 : 1}) rotateZ(${
                   isHovered ? 5 : 0
@@ -117,7 +117,16 @@ export default function GallerySection({
                 animation: "float 6s ease-in-out infinite",
               }}
             >
-              {images[activeImage]}
+              <Image
+                src={images[activeImage]}
+                alt="Product"
+                fill
+                className="object-contain filter drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]"
+                unoptimized={
+                  images[activeImage]?.startsWith("data:") ||
+                  images[activeImage]?.startsWith("blob:")
+                }
+              />
             </div>
           </div>
 
@@ -142,9 +151,17 @@ export default function GallerySection({
                   activeImage === index
                     ? "from-rose-100 to-pink-100 dark:from-rose-950 dark:to-pink-950"
                     : "from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800"
-                } backdrop-blur-xl`}
+                } backdrop-blur-xl relative`}
               >
-                <span className="text-4xl lg:text-5xl">{img}</span>
+                <Image
+                  src={img}
+                  alt={`Thumbnail ${index + 1}`}
+                  fill
+                  className="object-contain p-2"
+                  unoptimized={
+                    img?.startsWith("data:") || img?.startsWith("blob:")
+                  }
+                />
               </div>
 
               {activeImage === index && (

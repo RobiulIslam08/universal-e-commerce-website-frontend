@@ -1,4 +1,4 @@
-import { Category, Product } from "@/types/product";
+import { Category, IProduct } from "@/types/product";
 
 
 
@@ -13,7 +13,7 @@ export const categories: Category[] = [
   { id: "8", name: "Gaming", slug: "gaming", icon: "🎮" },
 ];
 
-export const products: Product[] = [
+export const products: IProduct[] = [
   // ----------------------------------------------------------------------
   // Electronics (with Subcategories)
   // ----------------------------------------------------------------------

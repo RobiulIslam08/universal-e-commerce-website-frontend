@@ -6,10 +6,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Product } from "@/types/product";
+import { IProduct } from "@/types/product";
 import { FileText, ListFilter, Truck } from "lucide-react";
 
-export default function SmartSpecs({ product }: { product: Product }) {
+export default function SmartSpecs({ product }: { product: IProduct }) {
   return (
     <Accordion type="single" collapsible defaultValue="details" className="w-full">
       

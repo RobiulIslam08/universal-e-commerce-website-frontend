@@ -25,7 +25,8 @@ import {
   AlertDialogDescription,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-import { Product } from "@/types/product";
+import { IProduct } from "@/types/product";
+import { updateProduct } from "@/services/product";
 
 // Schema - same as AddProductForm but maybe some fields are optional or handled differently?
 // For now, keeping it same.
@@ -54,7 +55,7 @@ const productSchema = z.object({
 type ProductFormData = z.infer<typeof productSchema>;
 
 interface EditProductModalProps {
-  product: Product | null;
+  product: IProduct | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
@@ -123,7 +124,7 @@ export default function EditProductModal({
     }
   }, [product, open, reset]);
 
-  // eslint-disable-next-line react-hooks/incompatible-library
+
   const selectedCategorySlug = watch("category");
 
   const subCategories = useMemo(() => {
@@ -161,6 +162,11 @@ export default function EditProductModal({
       return;
     }
 
+    if (!product?._id) {
+      toast.error("Product ID is missing");
+      return;
+    }
+
     try {
       const formData = new FormData();
 
@@ -168,42 +174,38 @@ export default function EditProductModal({
       const productData = {
         ...data,
         specifications,
-        id: product?.id, // Include ID for update
       };
       formData.append("data", JSON.stringify(productData));
 
-      // Append new images
+      // Append new images (File objects)
       files.forEach((file) => {
         formData.append("images", file);
       });
 
-      // We also need to handle existing images that shouldn't be deleted.
-      // The backend needs to know which existing images to keep.
-      // This logic depends on your backend implementation.
-      // For now, I'll assume the backend handles "images" as NEW images,
-      // and we might need another field for "existingImages" or similar if the backend replaces all.
-      // Or maybe we just send the URLs of existing images in the 'data' JSON.
-      // Let's add existing images to productData
-      // Actually ImageUpload returns dataURL for new files.
+      // Separate existing images (URLs that start with http/https or data:)
+      const existingImages = images.filter(
+        (img) => img.startsWith("http") || img.startsWith("data:")
+      );
 
-      // Ideally, we should separate new files and existing URLs.
-      // 'files' state contains new File objects.
-      // 'images' state contains preview URLs (both existing http URLs and new data URLs).
+      if (existingImages.length > 0) {
+        formData.append("existingImages", JSON.stringify(existingImages));
+      }
 
-      // Let's assume the backend is smart enough or we just send what we have.
-      // For this implementation, I'll just send the data.
+      // Call updateProduct service with product _id
+      const result = await updateProduct(product._id, formData);
 
-      // TODO: Call updateProduct service
-      // await updateProduct(formData);
-
-      console.log("Updating product...", productData);
-      toast.success("Product updated successfully! (Simulation)");
-
-      if (onSuccess) onSuccess();
-      onOpenChange(false);
+      if (result?.success || result?.data) {
+        toast.success("Product updated successfully!");
+        if (onSuccess) onSuccess();
+        onOpenChange(false);
+      } else {
+        throw new Error(result?.message || "Failed to update product");
+      }
     } catch (error: unknown) {
-      console.error(error);
-      toast.error("Failed to update product");
+      console.error("Error updating product:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update product";
+      toast.error(errorMessage);
     }
   };
 

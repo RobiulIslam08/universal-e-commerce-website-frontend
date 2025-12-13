@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Minus, Plus, ShoppingBag, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/types/product";
+import { IProduct } from "@/types/product";
 import {
   Tooltip,
   TooltipContent,
@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export default function DetailsSection({ product }: { product: Product }) {
+export default function DetailsSection({ product }: { product: IProduct }) {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -86,12 +86,12 @@ export default function DetailsSection({ product }: { product: Product }) {
           </TooltipProvider>
           <span
             className={`text-sm font-medium px-3 py-1 rounded-full ${
-              product.inStock
+              product.stockQuantity > 0
                 ? "text-green-600 bg-green-50 dark:bg-green-900/20"
                 : "text-red-500 bg-red-50"
             }`}
           >
-            {product.inStock ? "In Stock & Ready to Ship" : "Out of Stock"}
+            {product.stockQuantity > 0 ? `In Stock (${product.stockQuantity} available)` : "Out of Stock"}
           </span>
         </div>
       </motion.div>
@@ -152,7 +152,7 @@ export default function DetailsSection({ product }: { product: Product }) {
                 : "bg-primary hover:bg-primary/90 hover:scale-[1.02] hover:shadow-[0_15px_30px_-10px_rgba(225,29,72,0.5)]"
             } overflow-hidden relative`}
             onClick={handleAddToCart}
-            disabled={!product.inStock}
+            disabled={!product.stockQuantity || product.stockQuantity <= 0}
           >
             {/* Button Content Animation */}
             <motion.div

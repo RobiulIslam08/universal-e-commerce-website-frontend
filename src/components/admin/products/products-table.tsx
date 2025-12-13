@@ -11,21 +11,79 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Product } from "@/types/product";
+import type { IProduct } from "@/types/product";
 import { Card } from "@/components/ui/card";
 import EditProductModal from "./edit-product-modal";
+import { deleteProduct } from "@/services/product";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface ProductsTableProps {
-  products: Product[];
+  products: IProduct[];
+  onProductsChange?: () => void;
 }
 
-export default function ProductsTable({ products }: ProductsTableProps) {
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+export default function ProductsTable({
+  products,
+  onProductsChange,
+}: ProductsTableProps) {
+  const [editingProduct, setEditingProduct] = useState<IProduct | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [deletingProduct, setDeletingProduct] = useState<IProduct | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleEditClick = (product: Product) => {
+  const handleEditClick = (product: IProduct) => {
     setEditingProduct(product);
     setIsEditModalOpen(true);
+  };
+
+  const handleDeleteClick = (product: IProduct) => {
+    setDeletingProduct(product);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingProduct?._id) {
+      toast.error("Product ID is missing");
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await deleteProduct(deletingProduct._id);
+      toast.success("Product deleted successfully!");
+      setIsDeleteDialogOpen(false);
+      setDeletingProduct(null);
+
+      // Refresh the products list
+      if (onProductsChange) {
+        onProductsChange();
+      }
+    } catch (error: unknown) {
+      console.error("Error deleting product:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete product";
+      toast.error(errorMessage);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleEditSuccess = () => {
+    // Refresh the products list after successful edit
+    if (onProductsChange) {
+      onProductsChange();
+    }
   };
 
   if (products.length === 0) {
@@ -60,9 +118,9 @@ export default function ProductsTable({ products }: ProductsTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((product) => (
+              {products.map((product, index) => (
                 <TableRow
-                  key={product.id}
+                  key={product.id || product._id || index}
                   className="border-border hover:bg-muted/50"
                 >
                   <TableCell>
@@ -95,10 +153,10 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={product.inStock ? "outline" : "destructive"}
+                      variant={product.stockQuantity > 0 ? "outline" : "destructive"}
                       className="whitespace-nowrap"
                     >
-                      {product.inStock ? "In Stock" : "Out of Stock"}
+                      {product.stockQuantity > 0 ? "In Stock" : "Out of Stock"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -115,6 +173,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                        onClick={() => handleDeleteClick(product)}
                       >
                         🗑️
                       </Button>
@@ -131,7 +190,33 @@ export default function ProductsTable({ products }: ProductsTableProps) {
         product={editingProduct}
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
+        onSuccess={handleEditSuccess}
       />
+
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete &quot;{deletingProduct?.title}&quot;.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

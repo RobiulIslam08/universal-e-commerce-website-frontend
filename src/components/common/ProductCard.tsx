@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 type Props = {
   slug?: string;
+  _id?: string;
   image?: React.ReactNode;
   title: string;
   price?: string;
@@ -15,14 +16,16 @@ type Props = {
 
 export default function ProductCard({
   slug,
+  _id,
   image,
   title,
   price,
   strike,
   badge,
 }: Props) {
-  const cardContent = (
-    <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-0 shadow-sm group h-full flex flex-col">
+  const productId = _id || slug;
+  return (
+    <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-sm group h-full flex flex-col">
       <CardContent className="p-4 flex flex-col flex-1">
         <div className="aspect-square bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-5xl mb-3 group-hover:scale-105 transition-transform duration-300 shadow-inner relative overflow-hidden">
           {image}
@@ -52,38 +55,27 @@ export default function ProductCard({
             variant="outline"
             size="sm"
             className="w-full hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors duration-300 font-semibold"
-            onClick={(e) => {
-              if (slug) e.preventDefault();
+            onClick={() => {
               // Add to cart logic here
             }}
           >
             Add to Cart
           </Button>
         </div>
-        <div className="mt-2">
-          {" "}
-          {/* mt-auto বাদ দিয়ে mt-2 দিলাম সুন্দর গ্যাপের জন্য */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-colors duration-300 font-semibold"
-            // onClick টি সরিয়ে দেওয়া হয়েছে।
-            // যেহেতু প্যারেন্ট Link আছে, তাই এই বাটনে ক্লিক করলেই লিংকে কাজ করবে।
-          >
-            View Details
-          </Button>
-        </div>
+
+        {productId && (
+          <div className="mt-2">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="w-full hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-colors duration-300 font-semibold"
+            >
+              <Link href={`/products/${productId}`}>View Details</Link>
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
-
-  if (slug) {
-    return (
-      <Link href={`/products/${slug}`} className="block h-full">
-        {cardContent}
-      </Link>
-    );
-  }
-
-  return cardContent;
 }
