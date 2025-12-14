@@ -59,7 +59,7 @@ export const getAllProducts = async (query?: string) => {
     }
 
     const res = await fetch(
-      `${backendUrl}/products${query ? `?${query}` : ""}`,
+      `${backendUrl}/api/v1/products${query ? `?${query}` : ""}`,
       {
         next: {
           tags: ["PRODUCT"],
