@@ -8,7 +8,7 @@ import {
   Search,
   ShoppingCart,
   User,
- 
+  MapPin,
   ChevronDown,
   ChevronRight,
   Globe,
@@ -25,6 +25,8 @@ import {
   QUICK_CATEGORIES,
 } from "@/constants/navbar";
 import { signOut } from "next-auth/react";
+import { useAppSelector } from "@/redux/hooks";
+import { orderedProductsSelector } from "@/redux/features/cartSlice";
 
 type UserProps = {
   user?: {
@@ -40,6 +42,9 @@ const Navbar = memo(function Navbar({
   session: UserProps | null;
 }) {
   console.log(session);
+  const cartProducts = useAppSelector(orderedProductsSelector);
+  const cartCount = cartProducts.reduce((total, product) => total + product.orderQuantity, 0);
+  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [languageDropdown, setLanguageDropdown] = useState(false);
@@ -97,7 +102,17 @@ const Navbar = memo(function Navbar({
               </Link>
             </div>
 
-          
+            {/* Desktop: Location Badge */}
+            <Link
+              href="/location"
+              className="hidden md:flex items-center gap-2 hover:opacity-80 transition shrink-0 bg-rose-400 px-3 py-2 rounded"
+            >
+              <MapPin size={14} className="shrink-0" aria-hidden="true" />
+              <div className="text-xs leading-tight">
+                <div className="opacity-80">Delivering to</div>
+                <div className="font-semibold">Riyadh</div>
+              </div>
+            </Link>
 
             {/* Desktop: Search Bar */}
             <form
@@ -325,15 +340,17 @@ const Navbar = memo(function Navbar({
               <Link
                 href="/cart"
                 className="flex items-center gap-1 hover:opacity-80 transition relative"
-                aria-label="Shopping cart with 3 items"
+                aria-label={`Shopping cart with ${cartCount} items`}
               >
                 <ShoppingCart size={22} aria-hidden="true" />
-                <span
-                  className="absolute -top-2 -right-2 bg-rose-300 text-gray-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
-                  aria-hidden="true"
-                >
-                  3
-                </span>
+                {cartCount > 0 && (
+                  <span
+                    className="absolute -top-2 -right-2 bg-rose-300 text-gray-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                    aria-hidden="true"
+                  >
+                    {cartCount}
+                  </span>
+                )}
               </Link>
             </div>
           </div>
@@ -576,7 +593,15 @@ const Navbar = memo(function Navbar({
       {/* Mobile Location & Prime Bar */}
       <div className="lg:hidden bg-blue-50 border-b border-blue-200">
         <div className="px-3 sm:px-4 py-3 flex items-center justify-between gap-2">
-         
+          <div className="text-xs sm:text-sm text-gray-700 flex items-center gap-1">
+            <MapPin size={14} className="shrink-0 text-gray-600" />
+            <span>
+              Delivering to Riyadh -{" "}
+              <span className="font-semibold cursor-pointer text-blue-600">
+                Update location
+              </span>
+            </span>
+          </div>
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold transition-colors shrink-0 whitespace-nowrap">
             Join Prime
           </button>

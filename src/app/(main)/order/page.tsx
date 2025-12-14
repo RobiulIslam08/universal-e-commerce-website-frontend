@@ -173,7 +173,7 @@ export default function OrderPage() {
               Manage and track your recent purchases
             </p>
           </div>
-          <Link href="/products">
+          <Link href="/">
             <Button variant="outline" className="hidden md:flex">
               <ShoppingBag className="w-4 h-4 mr-2" />
               Continue Shopping
