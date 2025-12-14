@@ -5,7 +5,7 @@ export default function Footer() {
   const footerSections = [
     {
       title: 'Get to Know Us',
-      links: ['About Universal', 'Careers', 'Universal Science'],
+      links: ['About Universal', 'Career', 'Universal Science'],
     },
     {
       title: 'Shop with Us',
