@@ -3,6 +3,10 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAppDispatch } from "@/redux/hooks";
+import { toast } from "sonner";
+import { IProduct } from "@/types/product";
+import { addProduct } from "@/redux/features/cartSlice";
 
 type Props = {
   slug?: string;
@@ -12,6 +16,7 @@ type Props = {
   price?: string;
   strike?: string;
   badge?: string;
+  product?: IProduct;
 };
 
 export default function ProductCard({
@@ -22,8 +27,18 @@ export default function ProductCard({
   price,
   strike,
   badge,
+  product
 }: Props) {
   const productId = _id || slug;
+  const dispatch = useAppDispatch()
+  const handleAddToCart = () => {
+    if(!product){
+      toast.error('Product information is missing')
+      return
+    }
+    dispatch(addProduct(product))
+     toast.success(`${product.title} added to cart!`);
+  }
   return (
     <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-sm group h-full flex flex-col">
       <CardContent className="p-4 flex flex-col flex-1">
@@ -55,9 +70,7 @@ export default function ProductCard({
             variant="outline"
             size="sm"
             className="w-full hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors duration-300 font-semibold"
-            onClick={() => {
-              // Add to cart logic here
-            }}
+             onClick={handleAddToCart}
           >
             Add to Cart
           </Button>

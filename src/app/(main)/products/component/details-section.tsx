@@ -11,14 +11,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAppDispatch } from "@/redux/hooks";
+import { addProduct } from "@/redux/features/cartSlice";
+import { toast } from "sonner";
 
 export default function DetailsSection({ product }: { product: IProduct }) {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleAddToCart = () => {
     setIsAdding(true);
-    // Simulate API call
+    // Add product to cart with quantity
+    for (let i = 0; i < quantity; i++) {
+      dispatch(addProduct(product));
+    }
+    toast.success(`${quantity} ${product.title} added to cart!`);
     setTimeout(() => setIsAdding(false), 2000);
   };
 

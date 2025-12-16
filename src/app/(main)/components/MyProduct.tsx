@@ -62,6 +62,7 @@ export default function MyProduct() {
             <ProductCard
               key={product.id || product._id || index}
               _id={product._id}
+              product={product}
               image={
                 imageUrl ? (
                   <Image

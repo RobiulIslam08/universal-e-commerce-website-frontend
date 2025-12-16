@@ -25,6 +25,8 @@ import {
   QUICK_CATEGORIES,
 } from "@/constants/navbar";
 import { signOut } from "next-auth/react";
+import { useAppSelector } from "@/redux/hooks";
+import { orderedProductsSelector } from "@/redux/features/cartSlice";
 
 type UserProps = {
   user?: {
@@ -40,6 +42,10 @@ const Navbar = memo(function Navbar({
   session: UserProps | null;
 }) {
   console.log(session);
+
+  const cartProducts = useAppSelector(orderedProductsSelector);
+    const cartCount = cartProducts.reduce((total, product) => total + product.orderQuantity, 0);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [languageDropdown, setLanguageDropdown] = useState(false);
@@ -325,15 +331,17 @@ const Navbar = memo(function Navbar({
               <Link
                 href="/cart"
                 className="flex items-center gap-1 hover:opacity-80 transition relative"
-                aria-label="Shopping cart with 3 items"
+               aria-label={`Shopping cart with ${cartCount} items`}
               >
                 <ShoppingCart size={22} aria-hidden="true" />
-                <span
-                  className="absolute -top-2 -right-2 bg-rose-300 text-gray-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
-                  aria-hidden="true"
-                >
-                  3
-                </span>
+                {cartCount > 0 && (
+                  <span
+                    className="absolute -top-2 -right-2 bg-rose-300 text-gray-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                    aria-hidden="true"
+                  >
+                    {cartCount}
+                  </span>
+                )}
               </Link>
             </div>
           </div>

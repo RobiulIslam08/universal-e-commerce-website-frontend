@@ -38,6 +38,7 @@ export default async function CategoryPage({ params }: Props) {
           Found {products.length} products in {categoryName}
         </p>
       </div>
+      
 
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
