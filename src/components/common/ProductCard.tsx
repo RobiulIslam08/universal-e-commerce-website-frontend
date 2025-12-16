@@ -1,5 +1,9 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,68 +31,97 @@ export default function ProductCard({
   price,
   strike,
   badge,
-  product
+  product,
 }: Props) {
   const productId = _id || slug;
-  const dispatch = useAppDispatch()
-  const handleAddToCart = () => {
-    if(!product){
-      toast.error('Product information is missing')
-      return
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!product) {
+      toast.error("Product information is missing");
+      return;
     }
-    dispatch(addProduct(product))
-     toast.success(`${product.title} added to cart!`);
-  }
+    dispatch(addProduct(product));
+    toast.success(`${product.title} added to cart!`);
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!product?._id) {
+      toast.error("Product information is missing");
+      return;
+    }
+    // Add to cart first (so it's available in checkout)
+    dispatch(addProduct(product));
+    // Navigate with buyNow query param
+    router.push(`/checkout?buyNow=${product._id}`);
+  };
+
   return (
-    <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-sm group h-full flex flex-col">
-      <CardContent className="p-4 flex flex-col flex-1">
-        <div className="aspect-square bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-5xl mb-3 group-hover:scale-105 transition-transform duration-300 shadow-inner relative overflow-hidden">
-          {image}
-        </div>
+    <Link
+      href={productId ? `/products/${productId}` : "#"}
+      className="block h-full"
+    >
+      <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 dark:border-gray-800 shadow-sm group h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden">
+        <CardContent className="p-0 flex flex-col flex-1">
+          {/* Image Section */}
+          <div className="relative aspect-square bg-linear-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-5xl overflow-hidden">
+            {image}
 
-        <div className="min-h-7 mb-2">
-          {badge && (
-            <Badge className="bg-rose-600 hover:bg-rose-700 text-white font-semibold">
-              {badge}
-            </Badge>
-          )}
-        </div>
-
-        <p className="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 min-h-10 leading-tight">
-          {title}
-        </p>
-
-        <div className="space-y-1 min-h-12">
-          <p className="text-xl font-bold text-gray-900">{price}</p>
-          {strike && (
-            <p className="text-xs text-gray-500 line-through">{strike}</p>
-          )}
-        </div>
-
-        <div className="mt-auto pt-3">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors duration-300 font-semibold"
-             onClick={handleAddToCart}
-          >
-            Add to Cart
-          </Button>
-        </div>
-
-        {productId && (
-          <div className="mt-2">
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="w-full hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-colors duration-300 font-semibold"
-            >
-              <Link href={`/products/${productId}`}>View Details</Link>
-            </Button>
+            {/* Badge */}
+            {badge && (
+              <Badge className="absolute top-3 left-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs px-2 py-1 shadow-lg z-10">
+                {badge}
+              </Badge>
+            )}
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {/* Content Section */}
+          <div className="p-4 flex flex-col flex-1">
+            {/* Title */}
+            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 mb-3 min-h-10 leading-tight group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
+              {title}
+            </h3>
+
+            {/* Price Section */}
+            <div className="flex items-center gap-2 mb-4">
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
+                {price}
+              </p>
+              {strike && (
+                <p className="text-sm text-gray-400 line-through">{strike}</p>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-auto flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all duration-300 font-medium text-xs"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
+                Add to Cart
+              </Button>
+
+              <Button
+                size="sm"
+                className="flex-1 bg-rose-600 hover:bg-rose-700 text-white transition-all duration-300 font-medium text-xs shadow-md hover:shadow-lg"
+                onClick={handleBuyNow}
+              >
+                Buy
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

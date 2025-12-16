@@ -1,57 +1,48 @@
+"use client";
 
-"use client"
+import type React from "react";
 
-import type React from "react"
-
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { User, MapPin, CreditCard } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { CheckoutHeader } from "./components/CheckoutHeader"
-import { StepIndicator } from "./components/StepIndicator"
-import { ContactInfoStep } from "./components/form/ContactInfoStep"
-import { DeliveryAddressStep } from "./components/form/DeliveryAddressStep"
-import { PaymentMethodStep } from "./components/form/PaymentMethodStep"
-import { OrderSummaryCard } from "./components/OrderSummaryCard"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { User, MapPin, CreditCard } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckoutHeader } from "./components/CheckoutHeader";
+import { StepIndicator } from "./components/StepIndicator";
+import { ContactInfoStep } from "./components/form/ContactInfoStep";
+import { DeliveryAddressStep } from "./components/form/DeliveryAddressStep";
+import { PaymentMethodStep } from "./components/form/PaymentMethodStep";
+import { OrderSummaryCard } from "./components/OrderSummaryCard";
 
 type CheckoutFormData = {
-  email: string
-  phone: string
-  firstName: string
-  lastName: string
-  address: string
-  city: string
-  state: string
-  zipCode: string
-  cardNumber?: string
-  cardExpiry?: string
-  cardCVV?: string
-  mobileNumber?: string
-  saveInfo: boolean
-  agreeTerms: boolean
-}
-
-type CartItem = {
-  id: number
-  name: string
-  price: number
-  originalPrice: number
-  quantity: number
-  image: string
-  discount: number
-}
+  email: string;
+  phone: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  cardNumber?: string;
+  cardExpiry?: string;
+  cardCVV?: string;
+  mobileNumber?: string;
+  saveInfo: boolean;
+  agreeTerms: boolean;
+};
 
 type Step = {
-  id: number
-  title: string
-  icon: React.ComponentType<{ className?: string }>
-  fields: string[]
-}
+  id: number;
+  title: string;
+  icon: React.ComponentType<{ className?: string }>;
+  fields: string[];
+};
 
 export default function PremiumCheckoutPage() {
-  const [currentStep, setCurrentStep] = useState(1)
-  const [paymentMethod, setPaymentMethod] = useState("card")
-  const [processing, setProcessing] = useState(false)
+  const [currentStep, setCurrentStep] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [processing, setProcessing] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -65,43 +56,7 @@ export default function PremiumCheckoutPage() {
       saveInfo: true,
       agreeTerms: false,
     },
-  })
-
-  const cartItems: CartItem[] = [
-    {
-      id: 1,
-      name: "Premium Wireless Headphones",
-      price: 299,
-      originalPrice: 399,
-      quantity: 1,
-      image: "🎧",
-      discount: 25,
-    },
-    {
-      id: 2,
-      name: "Smart Watch Pro",
-      price: 499,
-      originalPrice: 599,
-      quantity: 1,
-      image: "⌚",
-      discount: 17,
-    },
-    {
-      id: 3,
-      name: "USB-C Fast Charger",
-      price: 49,
-      originalPrice: 79,
-      quantity: 2,
-      image: "🔌",
-      discount: 38,
-    },
-  ]
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const totalSavings = cartItems.reduce((sum, item) => sum + (item.originalPrice - item.price) * item.quantity, 0)
-  const shipping = subtotal > 500 ? 0 : 25
-  const tax = Math.round(subtotal * 0.08)
-  const total = subtotal + shipping + tax
+  });
 
   const steps: Step[] = [
     { id: 1, title: "Contact", icon: User, fields: ["email", "phone"] },
@@ -112,42 +67,43 @@ export default function PremiumCheckoutPage() {
       fields: ["firstName", "lastName", "address", "city", "state", "zipCode"],
     },
     { id: 3, title: "Payment", icon: CreditCard, fields: ["agreeTerms"] },
-  ]
+  ];
 
   const validateStep = async (step: number) => {
-    const fieldsToValidate = steps[step - 1].fields
+    const fieldsToValidate = steps[step - 1].fields;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await trigger(fieldsToValidate as any)
-    return result
-  }
+    const result = await trigger(fieldsToValidate as any);
+    return result;
+  };
 
   const handleNextStep = async () => {
-    const isValid = await validateStep(currentStep)
+    const isValid = await validateStep(currentStep);
     if (isValid && currentStep < 3) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     }
-  }
+  };
 
   const handlePreviousStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep(currentStep - 1);
     }
-  }
+  };
 
   const onSubmit = async (data: CheckoutFormData) => {
-    setProcessing(true)
-    console.log("Order submitted:", data)
+    setProcessing(true);
+    console.log("Order submitted:", data);
 
     // TODO: Replace with actual API call
     setTimeout(() => {
-      setProcessing(false)
-      alert("Order placed successfully! 🎉")
-    }, 2000)
-  }
+      setProcessing(false);
+      alert("Order placed successfully! 🎉");
+      router.push("/"); // Redirect to home after order
+    }, 2000);
+  };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-rose-50 via-white to-pink-50 dark:from-slate-950 dark:via-slate-900 dark:to-rose-950/20">
-      <CheckoutHeader onBack={() => console.log("Back to cart")} />
+      <CheckoutHeader onBack={() => router.back()} />
 
       <div className="container mx-auto px-4 py-8">
         <StepIndicator steps={steps} currentStep={currentStep} />
@@ -156,9 +112,21 @@ export default function PremiumCheckoutPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Forms */}
             <div className="lg:col-span-2 space-y-6">
-              {currentStep === 1 && <ContactInfoStep register={register} errors={errors} watch={watch} />}
+              {currentStep === 1 && (
+                <ContactInfoStep
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                />
+              )}
 
-              {currentStep === 2 && <DeliveryAddressStep register={register} errors={errors} watch={watch} />}
+              {currentStep === 2 && (
+                <DeliveryAddressStep
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                />
+              )}
 
               {currentStep === 3 && (
                 <PaymentMethodStep
@@ -204,19 +172,11 @@ export default function PremiumCheckoutPage() {
 
             {/* Right Column - Order Summary */}
             <div>
-              <OrderSummaryCard
-                cartItems={cartItems}
-                subtotal={subtotal}
-                totalSavings={totalSavings}
-                shipping={shipping}
-                tax={tax}
-                total={total}
-              />
+              <OrderSummaryCard />
             </div>
           </div>
         </form>
       </div>
-      
     </div>
-  )
+  );
 }

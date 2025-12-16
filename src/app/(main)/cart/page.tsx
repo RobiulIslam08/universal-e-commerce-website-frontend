@@ -1,18 +1,13 @@
-
 "use client";
 import { useState, useMemo } from "react";
-import {
-  Trash2,
-  ShoppingBag,
-  ArrowRight,
-
-} from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 // Shadcn Components
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox"; // ⭐️ New import
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Custom Components
 import CartItemCard from "./components/CartItemCard";
@@ -20,125 +15,181 @@ import TrustBadges from "./components/TrustBadges";
 import CartSummary from "./components/CartSummary";
 import ClearCartModal from "./components/ClearCartModal";
 
-// Types (Same as before)
-type CartItem = {
-  id: number;
-  name: string;
-  price: number;
-  originalPrice: number;
-  quantity: number;
-  image: string;
-  color: string;
-  inStock: boolean;
-};
+// Redux
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  orderedProductsSelector,
+  removeProduct,
+  incrementOrderQuantity,
+  decrementOrderQuantity,
+  clearCart,
+} from "@/redux/features/cartSlice";
 
-// Initial Cart Data (Same as before)
-const initialCartItems: CartItem[] = [
-  { id: 1, name: "Luxury Wireless Headphones", price: 299, originalPrice: 399, quantity: 1, image: "🎧", color: "Midnight Black", inStock: true },
-  { id: 2, name: "Premium Smart Watch", price: 499, originalPrice: 599, quantity: 2, image: "⌚", color: "Space Gray", inStock: true },
-  { id: 3, name: "Wireless Keyboard", price: 149, originalPrice: 199, quantity: 1, image: "⌨️", color: "Silver", inStock: true },
-];
+// Constants
+import { CART_CONSTANTS } from "@/constants/cart";
+
+const {
+  CURRENCY,
+  FREE_SHIPPING_THRESHOLD,
+  SHIPPING_COST,
+  TAX_RATE,
+  COUPON_DISCOUNT_RATE,
+  VALID_COUPON,
+  REMOVE_ANIMATION_DELAY,
+  TOAST_DURATION,
+} = CART_CONSTANTS;
 
 export default function PremiumCartPage() {
-  const [cartItems, setCartItems] = useState(initialCartItems);
-  const [removingItem, setRemovingItem] = useState<number | null>(null);
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector(orderedProductsSelector);
+
+  const [removingItem, setRemovingItem] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
 
-  // ⭐️ New State for Selected Items (stores IDs of selected items)
-  const [selectedItems, setSelectedItems] = useState<number[]>(initialCartItems.map(item => item.id));
+  // State for deselected Items (stores IDs of deselected items)
+  const [deselectedItems, setDeselectedItems] = useState<string[]>([]);
+
+  // Derive selectedItems from cartItems and deselectedItems
+  const selectedItems = useMemo(() => {
+    return cartItems
+      .map((item) => item._id)
+      .filter((id) => !deselectedItems.includes(id));
+  }, [cartItems, deselectedItems]);
 
   // --- Selection Logic ---
-  const isAllSelected = cartItems.length > 0 && selectedItems.length === cartItems.length;
-  const isIndeterminate = selectedItems.length > 0 && selectedItems.length < cartItems.length;
+  const isAllSelected =
+    cartItems.length > 0 && selectedItems.length === cartItems.length;
+  const isIndeterminate =
+    selectedItems.length > 0 && selectedItems.length < cartItems.length;
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedItems(checked ? cartItems.map(item => item.id) : []);
+    if (checked) {
+      setDeselectedItems([]);
+    } else {
+      setDeselectedItems(cartItems.map((item) => item._id));
+    }
   };
 
-  const handleToggleItem = (id: number, checked: boolean) => {
-    setSelectedItems(prev => 
-      checked ? [...prev, id] : prev.filter(itemId => itemId !== id)
-    );
+  const handleToggleItem = (id: string, checked: boolean) => {
+    if (checked) {
+      setDeselectedItems((prev) => prev.filter((itemId) => itemId !== id));
+    } else {
+      setDeselectedItems((prev) => [...prev, id]);
+    }
   };
 
   // --- Calculation Logic (only for selected items) ---
   const selectedCartItems = useMemo(() => {
-    return cartItems.filter(item => selectedItems.includes(item.id));
+    return cartItems.filter((item) => selectedItems.includes(item._id));
   }, [cartItems, selectedItems]);
 
-  const subtotal = useMemo(() => selectedCartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity, 0
-  ), [selectedCartItems]);
+  const subtotal = useMemo(
+    () =>
+      selectedCartItems.reduce(
+        (sum, item) =>
+          sum + (item.offerPrice || item.price) * item.orderQuantity,
+        0
+      ),
+    [selectedCartItems]
+  );
 
-  const savings = useMemo(() => selectedCartItems.reduce(
-    (sum, item) => sum + (item.originalPrice - item.price) * item.quantity, 0
-  ), [selectedCartItems]);
-  
-  // Rerender totals when selection changes
-  const discount = appliedCoupon ? subtotal * 0.1 : 0;
-  const shipping = subtotal > 500 ? 0 : 25;
-  const tax = (subtotal - discount) * 0.08;
+  const savings = useMemo(
+    () =>
+      selectedCartItems.reduce((sum, item) => {
+        const originalPrice = item.strikePrice || item.price;
+        const currentPrice = item.offerPrice || item.price;
+        return sum + (originalPrice - currentPrice) * item.orderQuantity;
+      }, 0),
+    [selectedCartItems]
+  );
+
+  // Calculate totals
+  const discount = appliedCoupon ? subtotal * COUPON_DISCOUNT_RATE : 0;
+  const shipping = subtotal > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const tax = (subtotal - discount) * TAX_RATE;
   const total = subtotal - discount + shipping + tax;
 
   // --- Actions ---
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCartItems(cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
+  const updateQuantity = (id: string, action: "increment" | "decrement") => {
+    if (action === "increment") {
+      dispatch(incrementOrderQuantity(id));
+    } else {
+      dispatch(decrementOrderQuantity(id));
+    }
   };
 
-  const removeItem = (id: number) => {
-    const item = cartItems.find((i) => i.id === id);
+  const removeItem = (id: string) => {
+    const item = cartItems.find((i) => i._id === id);
     setRemovingItem(id);
-    setSelectedItems(prev => prev.filter(itemId => itemId !== id)); // Deselect item on removal
+    setDeselectedItems((prev) => prev.filter((itemId) => itemId !== id));
     setTimeout(() => {
-      setCartItems(cartItems.filter((item) => item.id !== id));
+      dispatch(removeProduct(id));
       setRemovingItem(null);
-      toast.info("Item Removed", { description: `${item?.name} removed from cart`, duration: 2000 });
-    }, 300);
+      toast.info("Item Removed", {
+        description: `${item?.title} removed from cart`,
+        duration: TOAST_DURATION.SHORT,
+      });
+    }, REMOVE_ANIMATION_DELAY);
   };
 
-  const moveToWishlist = (id: number) => {
-    const item = cartItems.find((i) => i.id === id);
-    removeItem(id); // removeItem handles item removal and info toast
-    toast.success("Moved to Wishlist!", { description: `${item?.name} has been added to your wishlist`, duration: 3000 });
+  const moveToWishlist = (id: string) => {
+    const item = cartItems.find((i) => i._id === id);
+    removeItem(id);
+    toast.success("Moved to Wishlist!", {
+      description: `${item?.title} has been added to your wishlist`,
+      duration: TOAST_DURATION.MEDIUM,
+    });
   };
 
-  const clearCart = () => {
+  const handleClearCart = () => {
     const itemCount = cartItems.length;
-    setCartItems([]);
-    setSelectedItems([]);
+    dispatch(clearCart());
+    setDeselectedItems([]);
     setShowClearConfirm(false);
-    toast.success("Cart Cleared!", { description: `${itemCount} ${itemCount === 1 ? "item" : "items"} removed from cart`, duration: 3000 });
+    toast.success("Cart Cleared!", {
+      description: `${itemCount} ${
+        itemCount === 1 ? "item" : "items"
+      } removed from cart`,
+      duration: TOAST_DURATION.MEDIUM,
+    });
   };
 
   const applyCoupon = () => {
-    if (couponCode.toUpperCase() === "SAVE10") {
-      setAppliedCoupon("SAVE10");
-      toast.success("Coupon Applied!", { description: "You saved 10% on your order", duration: 3000 });
+    if (couponCode.toUpperCase() === VALID_COUPON) {
+      setAppliedCoupon(VALID_COUPON);
+      toast.success("Coupon Applied!", {
+        description: "You saved 10% on your order",
+        duration: TOAST_DURATION.MEDIUM,
+      });
     } else if (couponCode.trim() !== "") {
-      toast.error("Invalid Coupon", { description: "Please check the coupon code and try again", duration: 3000 });
+      toast.error("Invalid Coupon", {
+        description: "Please check the coupon code and try again",
+        duration: TOAST_DURATION.MEDIUM,
+      });
     }
   };
-  
+
   const handleCheckout = () => {
-      if (selectedCartItems.length === 0) {
-           toast.warning("Nothing Selected", { description: "Please select at least one item to proceed to checkout.", duration: 3000 });
-           return;
-      }
-      // Implement actual checkout logic here
-      toast.success("Proceeding to Checkout!", { description: `Checking out ${selectedCartItems.length} items for $${total.toFixed(2)}`, duration: 3000 });
+    if (selectedCartItems.length === 0) {
+      toast.warning("Nothing Selected", {
+        description: "Please select at least one item to proceed to checkout.",
+        duration: 3000,
+      });
+      return;
+    }
+    toast.success("Proceeding to Checkout!", {
+      description: `Checking out ${
+        selectedCartItems.length
+      } items for ${CURRENCY}${total.toFixed(2)}`,
+      duration: 3000,
+    });
   };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-8">
       <div className="container mx-auto max-w-7xl">
-
-        {/* user */}
-
-
         {/* Header */}
         <div className="mb-8 border-b pb-4">
           <div className="flex items-center gap-3">
@@ -148,37 +199,45 @@ export default function PremiumCartPage() {
             </h1>
           </div>
           <p className="text-slate-600 dark:text-slate-400 font-medium">
-            {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in your cart
+            {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in
+            your cart
           </p>
         </div>
 
         {cartItems.length === 0 ? (
-          // Empty Cart State (Same as before)
+          // Empty Cart State
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <ShoppingBag className="w-24 h-24 text-slate-300 dark:text-slate-700 mb-6" />
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Your cart is empty</h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md">Looks like you haven&apos;t added anything yet.</p>
-            <Button size="lg" className="bg-rose-600 hover:bg-rose-700">
-              Continue Shopping <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+              Your cart is empty
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md">
+              Looks like you haven&apos;t added anything yet.
+            </p>
+            <Link href="/">
+              <Button size="lg" className="bg-rose-600 hover:bg-rose-700">
+                Continue Shopping <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items List (2/3 width on large screens) */}
             <div className="lg:col-span-2 space-y-4">
               <div className="flex justify-between items-center mb-4">
-                {/* ⭐️ Select All Checkbox */}
+                {/* Select All Checkbox */}
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
+                  <Checkbox
                     id="select-all"
                     checked={isAllSelected}
-                    onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
+                    onCheckedChange={(checked) =>
+                      handleSelectAll(checked as boolean)
+                    }
                     className="w-5 h-5 data-[state=indeterminate]:bg-rose-500 data-[state=indeterminate]:text-white data-[state=checked]:bg-rose-600"
-                    // Handle indeterminate state for partial selection
                     {...(isIndeterminate && { checked: "indeterminate" })}
                   />
-                  <label 
-                    htmlFor="select-all" 
+                  <label
+                    htmlFor="select-all"
                     className="text-lg font-bold text-slate-900 dark:text-white cursor-pointer"
                   >
                     Select All ({selectedItems.length} / {cartItems.length})
@@ -199,14 +258,13 @@ export default function PremiumCartPage() {
 
               {cartItems.map((item) => (
                 <CartItemCard
-                  key={item.id}
+                  key={item._id}
                   item={item}
                   updateQuantity={updateQuantity}
                   removeItem={removeItem}
                   moveToWishlist={moveToWishlist}
-                  isRemoving={removingItem === item.id}
-                  // ⭐️ New Selection Props
-                  isSelected={selectedItems.includes(item.id)}
+                  isRemoving={removingItem === item._id}
+                  isSelected={selectedItems.includes(item._id)}
                   onToggleSelection={handleToggleItem}
                 />
               ))}
@@ -233,8 +291,8 @@ export default function PremiumCartPage() {
                   appliedCoupon={appliedCoupon}
                   setCouponCode={setCouponCode}
                   applyCoupon={applyCoupon}
-                  handleCheckout={handleCheckout} // ⭐️ Pass checkout handler
-                  isCheckoutDisabled={selectedCartItems.length === 0} // ⭐️ Disable checkout if nothing selected
+                  handleCheckout={handleCheckout}
+                  isCheckoutDisabled={selectedCartItems.length === 0}
                 />
 
                 {/* Trust Badges for Desktop */}
@@ -250,7 +308,7 @@ export default function PremiumCartPage() {
       <ClearCartModal
         isOpen={showClearConfirm}
         onClose={() => setShowClearConfirm(false)}
-        onConfirm={clearCart}
+        onConfirm={handleClearCart}
       />
     </div>
   );

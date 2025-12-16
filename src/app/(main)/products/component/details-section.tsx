@@ -13,20 +13,31 @@ import {
 } from "@/components/ui/tooltip";
 import { useAppDispatch } from "@/redux/hooks";
 import { addProduct } from "@/redux/features/cartSlice";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function DetailsSection({ product }: { product: IProduct }) {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const handleBuy = () => {
+    // Add to cart first, then navigate with buyNow param
+    dispatch(addProduct(product));
+    router.push(`/checkout?buyNow=${product._id}`);
+  };
 
   const handleAddToCart = () => {
     setIsAdding(true);
+
     // Add product to cart with quantity
     for (let i = 0; i < quantity; i++) {
       dispatch(addProduct(product));
     }
+
     toast.success(`${quantity} ${product.title} added to cart!`);
+
     setTimeout(() => setIsAdding(false), 2000);
   };
 
@@ -99,7 +110,9 @@ export default function DetailsSection({ product }: { product: IProduct }) {
                 : "text-red-500 bg-red-50"
             }`}
           >
-            {product.stockQuantity > 0 ? `In Stock (${product.stockQuantity} available)` : "Out of Stock"}
+            {product.stockQuantity > 0
+              ? `In Stock (${product.stockQuantity} available)`
+              : "Out of Stock"}
           </span>
         </div>
       </motion.div>
@@ -181,6 +194,17 @@ export default function DetailsSection({ product }: { product: IProduct }) {
             </motion.div>
           </Button>
         </div>
+
+        {/* Buy Button */}
+        <Button
+          size="lg"
+          variant="outline"
+          className="h-[54px] px-8 text-lg font-bold rounded-2xl border-2 border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white transition-all duration-300"
+          onClick={handleBuy}
+          disabled={!product.stockQuantity || product.stockQuantity <= 0}
+        >
+          Buy
+        </Button>
       </motion.div>
     </motion.div>
   );

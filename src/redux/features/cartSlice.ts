@@ -1,4 +1,3 @@
-
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { IProduct } from "@/types/product";
@@ -65,8 +64,8 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.city = "";
       state.products = [];
-      state.shippingAddress= "";
-    }
+      state.shippingAddress = "";
+    },
   },
 });
 //payment
@@ -108,6 +107,13 @@ export const grandTotalSelector = (state: RootState) => {
 export const orderedProductsSelector = (state: RootState) => {
   return state.cart.products;
 };
+
+// Get product by ID selector (for Buy Now)
+export const getProductByIdSelector =
+  (productId: string) => (state: RootState) => {
+    return state.cart.products.find((product) => product._id === productId);
+  };
+
 export const orderSelector = (state: RootState) => {
   return {
     products: state.cart.products.map((product) => ({
