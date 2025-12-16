@@ -1129,6 +1129,4 @@ const handleAddToCart = (e: React.MouseEvent) => {
 
 ---
 
-> 📝 **তৈরি করেছে:** GitHub Copilot  
-> 📅 **তারিখ:** December 16, 2025  
-> 🔄 **শেষ আপডেট:** December 16, 2025
+
