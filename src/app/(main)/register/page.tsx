@@ -97,16 +97,16 @@ export default function RegisterPage() {
       : "weak"
     : "none";
 
-    const handleGoogleLogin = async () => {
-        try {
-          await signIn("google", {
-            callbackUrl: "/", // সফল login এর পর কোথায় redirect করবে
-          });
-        } catch (error) {
-          console.error("Google login error:", error);
-          toast.error("Google login failed");
-        }
-      };
+  const handleGoogleLogin = async () => {
+    try {
+      await signIn("google", {
+        callbackUrl: "/", // সফল login এর পর কোথায় redirect করবে
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Google login failed");
+    }
+  };
   return (
     <div className="min-h-screen bg-linear-to-br from-rose-50 via-pink-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -139,7 +139,7 @@ export default function RegisterPage() {
           >
             <Sparkles className="w-8 h-8 text-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl cursor-pointer font-bold text-gray-900 mb-2">
             Create account
           </h1>
           <p className="text-gray-600 text-sm">
@@ -395,7 +395,7 @@ export default function RegisterPage() {
                     Creating account...
                   </motion.span>
                 ) : (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="cursor-pointer flex items-center justify-center gap-2">
                     Create Account
                     <ArrowRight className="w-4 h-4" />
                   </span>
@@ -417,7 +417,7 @@ export default function RegisterPage() {
           </motion.div>
 
           {/* Social signup */}
-       <motion.div
+          <motion.div
             className="grid grid-cols-1 gap-3"
             variants={itemVariants}
           >
@@ -425,7 +425,7 @@ export default function RegisterPage() {
               onClick={handleGoogleLogin}
               type="button"
               variant="outline"
-              className="border-gray-200 hover:bg-gray-50"
+              className="border-gray-200 hover:bg-gray-50 cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

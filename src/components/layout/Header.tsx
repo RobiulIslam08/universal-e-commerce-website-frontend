@@ -95,13 +95,16 @@ const Navbar = memo(function Navbar({
               >
                 <Menu size={20} aria-hidden="true" />
               </button>
-              <Image
+             
+              <Link href="/">
+               <Image
                 src="/logo.jpeg"
                 alt="Universel website logo"
                 width={58}
                 height={48}
                 className="object-contain p-2"
               />
+              </Link>
               <Link
                 href="/"
                 className="text-lg sm:text-xl font-bold tracking-tight hover:opacity-90 transition hidden md:flex"

@@ -259,7 +259,7 @@ export default function LoginPage() {
                     Signing in...
                   </motion.span>
                 ) : (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center cursor-pointer  justify-center gap-2">
                     Sign In
                     <ArrowRight className="w-4 h-4" />
                   </span>
@@ -282,14 +282,14 @@ export default function LoginPage() {
 
           {/* Social login */}
           <motion.div
-            className="grid grid-cols-1 gap-3"
+            className="grid grid-cols-1 gap-3 cursor-pointer"
             variants={itemVariants}
           >
             <Button
               onClick={handleGoogleLogin}
               type="button"
               variant="outline"
-              className="border-gray-200 hover:bg-gray-50"
+              className="border-gray-200 hover:bg-gray-50 cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
