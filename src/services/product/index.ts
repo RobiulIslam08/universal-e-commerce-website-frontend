@@ -56,6 +56,7 @@ export const getAllProducts = async (query?: string) => {
       console.error(
         "❌ NEXT_PUBLIC_BACKEND_URL is not set in environment variables!"
       );
+      return { success: false, data: [] };
     }
 
     const res = await fetch(
@@ -67,6 +68,16 @@ export const getAllProducts = async (query?: string) => {
         },
       }
     );
+
+    if (!res.ok) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(
+          `Failed to fetch products: ${res.status} ${res.statusText}`
+        );
+      }
+      return { success: false, data: [] };
+    }
+
     const data = await res.json();
     console.log(
       "getAllProducts - Raw API response:",

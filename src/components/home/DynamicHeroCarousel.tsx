@@ -12,7 +12,9 @@ export default async function DynamicHeroCarousel() {
     // Sort by order
     slides = slides.sort((a, b) => a.order - b.order);
   } catch (error) {
-    console.error("Failed to fetch carousel slides:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to fetch carousel slides:", error);
+    }
   }
 
   // If no slides from API, HeroCarousel will use its default slides

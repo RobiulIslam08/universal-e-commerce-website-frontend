@@ -29,10 +29,25 @@ export const getAllCarouselSlides = async () => {
       },
     });
 
+    if (!res.ok) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(
+          `Failed to fetch carousel slides: ${res.status} ${res.statusText}`
+        );
+      }
+      return {
+        success: false,
+        message: "Failed to fetch carousel slides",
+        data: [],
+      };
+    }
+
     const data = await res.json();
     return data;
   } catch (error: unknown) {
-    console.error("Error fetching carousel slides:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error fetching carousel slides:", error);
+    }
     if (error instanceof Error) {
       return { success: false, message: error.message, data: [] };
     }
@@ -52,10 +67,25 @@ export const getActiveCarouselSlides = async () => {
       },
     });
 
+    if (!res.ok) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(
+          `Failed to fetch active carousel slides: ${res.status} ${res.statusText}`
+        );
+      }
+      return {
+        success: false,
+        message: "Failed to fetch active carousel slides",
+        data: [],
+      };
+    }
+
     const data = await res.json();
     return data;
   } catch (error: unknown) {
-    console.error("Error fetching active carousel slides:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error fetching active carousel slides:", error);
+    }
     if (error instanceof Error) {
       return { success: false, message: error.message, data: [] };
     }
@@ -74,10 +104,25 @@ export const getSingleCarouselSlide = async (slideId: string) => {
       },
     });
 
+    if (!res.ok) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(
+          `Failed to fetch carousel slide: ${res.status} ${res.statusText}`
+        );
+      }
+      return {
+        success: false,
+        message: "Failed to fetch carousel slide",
+        data: null,
+      };
+    }
+
     const data = await res.json();
     return data;
   } catch (error: unknown) {
-    console.error("Error fetching carousel slide:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error fetching carousel slide:", error);
+    }
     if (error instanceof Error) {
       return { success: false, message: error.message };
     }
@@ -117,7 +162,9 @@ export const addCarouselSlide = async (slideData: FormData) => {
     revalidateTag("CAROUSEL", "default");
     return result;
   } catch (error: unknown) {
-    console.error("Error adding carousel slide:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error adding carousel slide:", error);
+    }
     if (error instanceof Error) {
       throw new Error(error.message);
     }
@@ -160,7 +207,9 @@ export const updateCarouselSlide = async (
     revalidateTag("CAROUSEL", "default");
     return result;
   } catch (error: unknown) {
-    console.error("Error updating carousel slide:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error updating carousel slide:", error);
+    }
     if (error instanceof Error) {
       throw new Error(error.message);
     }
@@ -191,7 +240,9 @@ export const deleteCarouselSlide = async (slideId: string) => {
     revalidateTag("CAROUSEL", "default");
     return result;
   } catch (error: unknown) {
-    console.error("Error deleting carousel slide:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error deleting carousel slide:", error);
+    }
     if (error instanceof Error) {
       throw new Error(error.message);
     }
@@ -225,7 +276,9 @@ export const reorderCarouselSlides = async (
     revalidateTag("CAROUSEL", "default");
     return result;
   } catch (error: unknown) {
-    console.error("Error reordering carousel slides:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error reordering carousel slides:", error);
+    }
     if (error instanceof Error) {
       throw new Error(error.message);
     }
@@ -260,7 +313,9 @@ export const toggleCarouselSlideStatus = async (
     revalidateTag("CAROUSEL", "default");
     return result;
   } catch (error: unknown) {
-    console.error("Error toggling slide status:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error toggling slide status:", error);
+    }
     if (error instanceof Error) {
       throw new Error(error.message);
     }

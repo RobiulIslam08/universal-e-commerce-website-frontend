@@ -18,6 +18,12 @@ export const registerUser = async (userData: RegisterFormValues) => {
         body: JSON.stringify(userData),
       }
     );
+
+    if (!res.ok) {
+      console.error(`Registration failed: ${res.status} ${res.statusText}`);
+      return { success: false, message: "Registration failed" };
+    }
+
     const result = await res.json();
     const storeCookies = await cookies();
     console.log(result);
@@ -43,6 +49,12 @@ export const loginUser = async (userData: LoginFormValues) => {
       },
       body: JSON.stringify(userData),
     });
+
+    if (!res.ok) {
+      console.error(`Login failed: ${res.status} ${res.statusText}`);
+      return { success: false, message: "Login failed" };
+    }
+
     const result = await res.json();
     const storeCookies = await cookies();
     console.log(result);
