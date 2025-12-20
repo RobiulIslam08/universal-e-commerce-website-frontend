@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useCallback, memo } from "react";
@@ -8,18 +7,16 @@ import {
   Search,
   ShoppingCart,
   User,
- 
   ChevronDown,
   ChevronRight,
-  Globe,
+  
   LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   DESKTOP_CATEGORIES,
-  LANGUAGE_CODES,
-  LANGUAGES,
+
   MENU_SECTIONS,
   MOBILE_CATEGORIES,
   QUICK_CATEGORIES,
@@ -44,12 +41,15 @@ const Navbar = memo(function Navbar({
   console.log(session);
 
   const cartProducts = useAppSelector(orderedProductsSelector);
-    const cartCount = cartProducts.reduce((total, product) => total + product.orderQuantity, 0);
+  const cartCount = cartProducts.reduce(
+    (total, product) => total + product.orderQuantity,
+    0
+  );
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  const [languageDropdown, setLanguageDropdown] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("EN");
+  // const [languageDropdown, setLanguageDropdown] = useState(false);
+  // const [selectedLanguage, setSelectedLanguage] = useState<string>("EN");
   const [userDropdown, setUserDropdown] = useState(false);
 
   const toggleSection = useCallback((section: string) => {
@@ -64,14 +64,14 @@ const Navbar = memo(function Navbar({
     setIsDrawerOpen(false);
   }, []);
 
-  const handleLanguageSelect = useCallback((langCode: any) => {
-    setSelectedLanguage(langCode);
-    setLanguageDropdown(false);
-  }, []);
+  // const handleLanguageSelect = useCallback((langCode: string) => {
+  //   setSelectedLanguage(langCode);
+  //   setLanguageDropdown(false);
+  // }, []);
 
-  const handleLanguageDropdownToggle = useCallback(() => {
-    setLanguageDropdown((prev) => !prev);
-  }, []);
+  // const handleLanguageDropdownToggle = useCallback(() => {
+  //   setLanguageDropdown((prev) => !prev);
+  // }, []);
 
   const handleUserDropdownToggle = useCallback(() => {
     setUserDropdown((prev) => !prev);
@@ -102,8 +102,6 @@ const Navbar = memo(function Navbar({
                 Universal
               </Link>
             </div>
-
-          
 
             {/* Desktop: Search Bar */}
             <form
@@ -141,7 +139,7 @@ const Navbar = memo(function Navbar({
             {/* Right: Account, Orders & Cart */}
             <div className="flex items-center gap-1 sm:gap-3 shrink-0">
               {/* Language Dropdown - Desktop only */}
-              <div className="relative hidden md:block">
+              {/* <div className="relative hidden md:block">
                 <button
                   onClick={handleLanguageDropdownToggle}
                   className="flex items-center gap-1 px-2 py-2 hover:bg-rose-600 transition rounded text-sm"
@@ -172,7 +170,7 @@ const Navbar = memo(function Navbar({
                     ))}
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {/* User Section - Show different content based on session */}
               {session?.user ? (
@@ -216,12 +214,12 @@ const Navbar = memo(function Navbar({
                       >
                         Your Account
                       </Link>
-                      <Link
+                      {/* <Link
                         href="/order"
                         className="block px-3 py-2 hover:bg-rose-100 transition text-sm"
                       >
                         Orders
-                      </Link>
+                      </Link> */}
                       <button
                         onClick={() => signOut()}
                         className="w-full text-left px-3 py-2 hover:bg-rose-100 transition text-sm flex items-center gap-2 text-red-600"
@@ -290,12 +288,12 @@ const Navbar = memo(function Navbar({
                       >
                         Your Account
                       </Link>
-                      <Link
+                      {/* <Link
                         href="/order"
                         className="block px-4 py-2 hover:bg-rose-100 transition text-sm"
                       >
                         Orders
-                      </Link>
+                      </Link> */}
                       <button
                         onClick={() => signOut()}
                         className="w-full text-left px-4 py-2 hover:bg-rose-100 transition text-sm flex items-center gap-2 text-red-600 border-t border-gray-200"
@@ -318,20 +316,20 @@ const Navbar = memo(function Navbar({
               )}
 
               {/* Orders Button - Desktop only (hide when user dropdown is shown) */}
-              {!session?.user && (
+              {/* {!session?.user && (
                 <Link
                   href="/order"
                   className="hidden lg:block bg-transparent hover:bg-rose-600 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium transition whitespace-nowrap"
                 >
                   Orders
                 </Link>
-              )}
+              )} */}
 
               {/* Cart */}
               <Link
                 href="/cart"
                 className="flex items-center gap-1 hover:opacity-80 transition relative"
-               aria-label={`Shopping cart with ${cartCount} items`}
+                aria-label={`Shopping cart with ${cartCount} items`}
               >
                 <ShoppingCart size={22} aria-hidden="true" />
                 {cartCount > 0 && (
@@ -498,14 +496,14 @@ const Navbar = memo(function Navbar({
             >
               Your Account
             </Link>
-            <button
+            {/* <button
               onClick={handleLanguageDropdownToggle}
               className="flex items-center gap-2 text-xs text-gray-700 hover:text-rose-500 transition w-full"
               aria-label="Select language"
             >
               <Globe size={14} aria-hidden="true" />
               <span>{selectedLanguage}</span>
-            </button>
+            </button> */}
             <Link
               href="/help"
               className="block text-xs text-gray-700 hover:text-rose-500 transition"
@@ -584,7 +582,6 @@ const Navbar = memo(function Navbar({
       {/* Mobile Location & Prime Bar */}
       <div className="lg:hidden bg-blue-50 border-b border-blue-200">
         <div className="px-3 sm:px-4 py-3 flex items-center justify-between gap-2">
-         
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold transition-colors shrink-0 whitespace-nowrap">
             Join Prime
           </button>

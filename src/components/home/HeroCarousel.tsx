@@ -5,6 +5,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { ICarouselSlide } from "@/types/carousel";
 
 interface Slide {
   bg: string;
@@ -13,6 +15,8 @@ interface Slide {
   subtitle: string;
   badge: string;
   badgeSubtext: string;
+  buttonText?: string;
+  buttonLink?: string;
 }
 
 const defaultSlides: Slide[] = [
@@ -39,11 +43,33 @@ const defaultSlides: Slide[] = [
   },
 ];
 
-export default function HeroCarousel({
-  slides = defaultSlides,
-}: {
+// Convert API carousel slides to component format
+const convertToSlides = (apiSlides: ICarouselSlide[]): Slide[] => {
+  return apiSlides.map((slide) => ({
+    bg: slide.bgColor,
+    image: slide.image,
+    title: slide.title,
+    subtitle: slide.subtitle,
+    badge: slide.badge,
+    badgeSubtext: slide.badgeSubtext,
+    buttonText: slide.buttonText,
+    buttonLink: slide.buttonLink,
+  }));
+};
+
+interface HeroCarouselProps {
   slides?: Slide[];
-}) {
+  apiSlides?: ICarouselSlide[];
+}
+
+export default function HeroCarousel({
+  slides: propSlides,
+  apiSlides,
+}: HeroCarouselProps) {
+  // Use API slides if provided, otherwise use prop slides or defaults
+  const slides = apiSlides
+    ? convertToSlides(apiSlides)
+    : propSlides || defaultSlides;
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -119,6 +145,25 @@ export default function HeroCarousel({
                   {slides[current].badgeSubtext}
                 </div>
               </motion.div>
+
+              {/* CTA Button */}
+              {slides[current].buttonText && slides[current].buttonLink && (
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-6"
+                >
+                  <Link href={slides[current].buttonLink || "#"}>
+                    <Button
+                      size="lg"
+                      className="bg-white text-rose-600 hover:bg-white/90 font-bold text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      {slides[current].buttonText}
+                    </Button>
+                  </Link>
+                </motion.div>
+              )}
             </div>
           </div>
         </motion.div>

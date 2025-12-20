@@ -7,7 +7,6 @@ import {
   Package,
   ShieldCheck,
   CheckCircle2,
-  AlertCircle,
 } from "lucide-react";
 import {
   Card,
@@ -17,10 +16,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { FormField } from "./FormField";
 
 interface PaymentMethodStepProps {
   register: any;
@@ -31,9 +27,6 @@ interface PaymentMethodStepProps {
 }
 
 export const PaymentMethodStep = ({
-  register,
-  errors,
-  watch,
   paymentMethod,
   setPaymentMethod,
 }: PaymentMethodStepProps) => (
@@ -140,55 +133,42 @@ export const PaymentMethodStep = ({
 
       {paymentMethod === "card" && (
         <div className="space-y-4 animate-in slide-in-from-top-4 duration-300">
-          <FormField
-            label="Card Number"
-            name="cardNumber"
-            placeholder="1234 5678 9012 3456"
-            icon={CreditCard}
-            validation={{
-              required: "Card number is required",
-              pattern: {
-                value: /^[0-9\s]{13,19}$/,
-                message: "Invalid card number",
-              },
-            }}
-            register={register}
-            errors={errors}
-            watch={watch}
-          />
-
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              label="Expiry Date"
-              name="cardExpiry"
-              placeholder="MM/YY"
-              validation={{
-                required: "Expiry date is required",
-                pattern: {
-                  value: /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
-                  message: "Invalid format (MM/YY)",
-                },
-              }}
-              register={register}
-              errors={errors}
-              watch={watch}
-            />
-            <FormField
-              label="CVV"
-              name="cardCVV"
-              type="password"
-              placeholder="123"
-              validation={{
-                required: "CVV is required",
-                pattern: {
-                  value: /^[0-9]{3,4}$/,
-                  message: "Invalid CVV",
-                },
-              }}
-              register={register}
-              errors={errors}
-              watch={watch}
-            />
+          <div className="p-4 bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+            <div className="flex items-start gap-3 mb-3">
+              <ShieldCheck className="w-6 h-6 text-blue-600 dark:text-blue-400 shrink-0 mt-1" />
+              <div>
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                  Secure Card Payment via Stripe
+                </h4>
+                <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
+                  Click <strong>&quot;Proceed to Payment&quot;</strong> button
+                  below to see the secure payment form where you can enter your
+                  card details.
+                </p>
+                <div className="space-y-2 text-sm text-blue-600 dark:text-blue-400">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-blue-600 dark:bg-blue-400 text-white dark:text-blue-900 flex items-center justify-center text-xs font-bold">
+                      1
+                    </div>
+                    <span>
+                      Click &quot;Proceed to Payment&quot; button below
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-blue-600 dark:bg-blue-400 text-white dark:text-blue-900 flex items-center justify-center text-xs font-bold">
+                      2
+                    </div>
+                    <span>Payment form will appear below</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-blue-600 dark:bg-blue-400 text-white dark:text-blue-900 flex items-center justify-center text-xs font-bold">
+                      3
+                    </div>
+                    <span>Enter your card details and complete payment</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -220,54 +200,6 @@ export const PaymentMethodStep = ({
           </div>
         </div>
       )}
-
-      <Separator />
-
-      <div className="space-y-3">
-        <div className="flex items-start gap-3">
-          <Checkbox
-            id="saveInfo"
-            {...register("saveInfo")}
-            className="mt-1 data-[state=checked]:bg-rose-600"
-          />
-          <Label
-            htmlFor="saveInfo"
-            className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer"
-          >
-            Save payment information for faster checkout next time
-          </Label>
-        </div>
-
-        <div className="flex items-start gap-3">
-          <Checkbox
-            id="agreeTerms"
-            {...register("agreeTerms", { required: true })}
-            className={`mt-1 data-[state=checked]:bg-rose-600 ${
-              errors.agreeTerms ? "border-red-500" : ""
-            }`}
-          />
-          <Label
-            htmlFor="agreeTerms"
-            className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer"
-          >
-            I agree to the{" "}
-            <span className="text-rose-600 underline font-semibold">
-              Terms & Conditions
-            </span>{" "}
-            and{" "}
-            <span className="text-rose-600 underline font-semibold">
-              Privacy Policy
-            </span>
-            <span className="text-rose-500 ml-1">*</span>
-          </Label>
-        </div>
-        {errors.agreeTerms && (
-          <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
-            <AlertCircle className="w-3 h-3" />
-            You must agree to the terms and conditions
-          </p>
-        )}
-      </div>
 
       <div className="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
         <ShieldCheck className="w-5 h-5 text-amber-600 shrink-0" />

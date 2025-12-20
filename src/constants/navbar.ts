@@ -7,7 +7,7 @@ interface MenuItem {
   hasArrow: boolean;
 }
 
-type Language = "EN" | "AR" | "FR" | "ES" | "DE";
+type Language = "EN" | "AR" | "FR" | "ES" | "DE" | "BN";
 
 interface QuickCategory {
   icon: string;
@@ -19,8 +19,9 @@ export const LANGUAGES = [
   "Français",
   "Español",
   "Deutsch",
+  "Bangla"
 ] as const;
-export const LANGUAGE_CODES: Language[] = ["EN", "AR", "FR", "ES", "DE"];
+export const LANGUAGE_CODES: Language[] = ["EN", "AR", "FR", "ES", "DE","BN"];
 
 export const MENU_SECTIONS: MenuSection[] = [
   {
