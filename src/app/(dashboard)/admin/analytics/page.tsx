@@ -6,7 +6,7 @@ export default function AnalyticsPage() {
       <div className="text-6xl mb-4">📈</div>
       <h1 className="text-3xl font-bold mb-2">Analytics Dashboard</h1>
       <p className="text-muted-foreground">
-        Detailed analytics and reports are coming soon.
+        Detailed analytics and reports are coming soon🔜.
       </p>
     </div>
   );
