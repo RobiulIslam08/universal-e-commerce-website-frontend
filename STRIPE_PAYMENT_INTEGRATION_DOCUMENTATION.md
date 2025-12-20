@@ -2,7 +2,7 @@
 
 # ই-কমার্স ওয়েবসাইটে Stripe Payment Integration
 
-**প্রজেক্ট:** Universal E-Commerce Website  
+**প্রজেক্ট:** Universel E-Commerce Website  
 **তারিখ:** December 20, 2025  
 **স্ট্যাটাস:** ✅ Implemented (Testing Phase)
 

@@ -95,11 +95,18 @@ const Navbar = memo(function Navbar({
               >
                 <Menu size={20} aria-hidden="true" />
               </button>
+              <Image
+                src="/logo.jpeg"
+                alt="Universel website logo"
+                width={58}
+                height={48}
+                className="object-contain p-2"
+              />
               <Link
                 href="/"
-                className="text-lg sm:text-xl font-bold tracking-tight hover:opacity-90 transition"
+                className="text-lg sm:text-xl font-bold tracking-tight hover:opacity-90 transition hidden md:flex"
               >
-                Universal
+                Universel
               </Link>
             </div>
 
@@ -122,7 +129,7 @@ const Navbar = memo(function Navbar({
                 </select>
                 <input
                   type="search"
-                  placeholder="Search Universal"
+                  placeholder="Search Universel"
                   className="flex-1 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-700 outline-none bg-white placeholder-gray-500"
                   aria-label="Search products"
                 />
@@ -360,7 +367,7 @@ const Navbar = memo(function Navbar({
                 </select>
                 <input
                   type="search"
-                  placeholder="Search Universal"
+                  placeholder="Search Universel"
                   className="flex-1 px-2 py-2 text-xs text-gray-900 outline-none bg-white placeholder-gray-400 font-medium"
                   aria-label="Search products"
                 />

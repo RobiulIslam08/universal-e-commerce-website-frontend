@@ -1,4 +1,4 @@
-# 🛒 Universal E-Commerce Website Frontend - সম্পূর্ণ ডকুমেন্টেশন
+# 🛒 Universel E-Commerce Website Frontend - সম্পূর্ণ ডকুমেন্টেশন
 
 ## 📋 সূচিপত্র (Table of Contents)
 

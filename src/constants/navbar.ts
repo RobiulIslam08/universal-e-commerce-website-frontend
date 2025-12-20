@@ -36,8 +36,8 @@ export const MENU_SECTIONS: MenuSection[] = [
     title: "Digital Content & Devices",
     items: [
       { label: "Echo, Alexa & Smart Home", hasArrow: true },
-      { label: "Universal Kindle E-readers", hasArrow: true },
-      { label: "Universal Home Security", hasArrow: true },
+      { label: "Universel Kindle E-readers", hasArrow: true },
+      { label: "Universel Home Security", hasArrow: true },
     ],
   },
   {
@@ -71,7 +71,7 @@ export const DESKTOP_CATEGORIES = [
   "Supermarket",
   "Toys & Games",
   "Electronics",
-  "Your Universal",
+  "Your Universel",
 ] as const;
 export const MOBILE_CATEGORIES = [
   "Bazaar",
@@ -82,5 +82,5 @@ export const MOBILE_CATEGORIES = [
   "Supermarket",
   "Toys & Games",
   "Electronics",
-  "Your Universal",
+  "Your Universel",
 ] as const;

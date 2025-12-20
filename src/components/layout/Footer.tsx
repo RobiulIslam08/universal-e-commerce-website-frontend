@@ -5,7 +5,7 @@ export default function Footer() {
   const footerSections = [
     {
       title: 'Get to Know Us',
-      links: ['About Universal', 'Career', 'Universal Science'],
+      links: ['About Universel', 'Career', 'Universel Science'],
     },
     {
       title: 'Shop with Us',
@@ -15,9 +15,9 @@ export default function Footer() {
       title: 'Make Money with Us',
       links: [
         'Protect and build your brand',
-        'Sell on Universal',
-        'Supply to Universal',
-        'Fulfillment by Universal',
+        'Sell on Universel',
+        'Supply to Universel',
+        'Fulfillment by Universel',
         'Advertise Your Products',
       ],
     },
@@ -28,18 +28,18 @@ export default function Footer() {
         'Shipping & Delivery',
         'Returns & Replacements',
         'Recalls and Product Safety Alerts',
-        'Universal App Download',
+        'Universel App Download',
       ],
     },
   ];
 
   const bottomLinks = [
     {
-      title: 'Universal Advertising',
+      title: 'Universel Advertising',
       subtitle: 'Find, attract, and engage customers',
     },
     {
-      title: 'Universal Web Services',
+      title: 'Universel Web Services',
       subtitle: 'Scalable Cloud Computing Services',
     },
     {
@@ -111,10 +111,10 @@ export default function Footer() {
       <div className="border-t border-gray-700 bg-slate-800">
         <div className="container mx-auto px-4 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-            {/* Universal Logo */}
+            {/* Universel Logo */}
             <div className="flex items-center">
               <div className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                universal
+                Universel
               
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="text-center text-xs text-gray-500 mt-4">
-            © 1996-2025, Universal.com, Inc. or its affiliates
+            © 1996-2025, Universel.com, Inc. or its affiliates
           </div>
         </div>
       </div>

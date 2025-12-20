@@ -22,7 +22,7 @@ interface Slide {
 const defaultSlides: Slide[] = [
   {
     bg: "bg-linear-to-r from-blue-400 to-blue-600",
-    title: "Welcome to Universal.sa",
+    title: "Welcome to Universel",
     subtitle: "Shop now and get",
     badge: "20% OFF + SAR 30",
     badgeSubtext: "on First order*",

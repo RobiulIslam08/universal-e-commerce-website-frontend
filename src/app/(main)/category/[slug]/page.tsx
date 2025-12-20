@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: `${
       categoryName.charAt(0).toUpperCase() + categoryName.slice(1)
-    } | Universal E-Commerce`,
+    } | Universel E-Commerce`,
     description: `Browse our collection of ${categoryName}`,
   };
 }
