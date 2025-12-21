@@ -83,7 +83,7 @@ const Navbar = memo(function Navbar({
       <div className="bg-rose-500 text-white shadow-md">
         <div className="w-full">
           {/* Mobile & Desktop Header */}
-          <div className="px-3 sm:px-4 lg:px-6 py-3 flex items-center justify-between gap-3">
+          <div className="px-3 sm:px-4 lg:px-6 py-1 flex items-center justify-between gap-3">
             {/* Left: Menu Icon & Logo */}
             <div className="flex items-center gap-2 shrink-0">
               {/* Menu button - শুধু mobile এ দেখাবে */}
@@ -100,7 +100,7 @@ const Navbar = memo(function Navbar({
                <Image
                 src="/logo.jpeg"
                 alt="Universel website logo"
-                width={58}
+                width={68}
                 height={48}
                 className="object-contain p-2"
               />
