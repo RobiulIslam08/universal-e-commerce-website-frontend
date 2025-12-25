@@ -7,7 +7,6 @@ import { orderedProductsSelector } from "@/redux/features/cartSlice";
 import { CartProduct } from "@/redux/features/cartSlice";
 import { CART_CONSTANTS } from "@/constants/cart";
 
-const { TAX_RATE } = CART_CONSTANTS;
 
 interface CheckoutData {
   products: CartProduct[];
@@ -56,10 +55,10 @@ export function useCheckout(): CheckoutData {
     return { subtotal: sub, totalSavings: savings };
   }, [products]);
 
-  const tax = Math.round(subtotal * TAX_RATE);
+  const tax = CART_CONSTANTS.TAX_RATE;
 
   // Simple shipping logic - can be enhanced later
-  const shipping = subtotal > 500 ? 0 : subtotal > 0 ? 50 : 0;
+  const shipping = CART_CONSTANTS.SHIPPING_COST;
 
   const total = subtotal + shipping + tax;
 

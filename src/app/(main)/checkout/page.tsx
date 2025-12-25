@@ -18,6 +18,7 @@ import { useAppSelector } from "@/redux/hooks";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { grandTotalSelector } from "@/redux/features/cartSlice";
 import { toast } from "sonner";
+import { CART_CONSTANTS } from "@/constants/cart";
 
 type CheckoutFormData = {
   email: string;
@@ -60,23 +61,8 @@ export default function PremiumCheckoutPage() {
       return acc + price * product.orderQuantity;
     }, 0);
   });
-  const shipping = useAppSelector((state) => {
-    if (
-      state.cart.city &&
-      state.cart.city === "Dhaka" &&
-      state.cart.products.length > 0
-    ) {
-      return 50;
-    } else if (
-      state.cart.city &&
-      state.cart.city !== "Dhaka" &&
-      state.cart.products.length > 0
-    ) {
-      return 150;
-    }
-    return 0;
-  });
-  const tax = 0; // Tax calculation can be added here
+  const shipping = CART_CONSTANTS.SHIPPING_COST
+  const tax = CART_CONSTANTS.TAX_RATE; // Tax calculation can be added here
   const grandTotal = subtotal + shipping + tax;
 
   const {
