@@ -27,11 +27,11 @@ export async function GET(request: NextRequest) {
 
     console.log(
       "🔍 Fetching stats from:",
-      `${backendUrl}/payments/admin/stats`
+      `${backendUrl}/payment/admin/stats`
     );
 
     // Fetch payment statistics from backend
-    const response = await fetch(`${backendUrl}/payments/admin/stats`, {
+    const response = await fetch(`${backendUrl}/payment/admin/stats`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

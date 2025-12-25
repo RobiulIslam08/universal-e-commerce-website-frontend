@@ -219,10 +219,10 @@ const Navbar = memo(function Navbar({
                         </p>
                       </div>
                       <Link
-                        href="/account"
+                        href="/payment/history"
                         className="block px-3 py-2 hover:bg-rose-100 transition text-sm"
                       >
-                        Your Account
+                        Payment History
                       </Link>
                       {/* <Link
                         href="/order"
@@ -293,10 +293,10 @@ const Navbar = memo(function Navbar({
                         </p>
                       </div>
                       <Link
-                        href="/account"
+                        href="/payment/history"
                         className="block px-4 py-2 hover:bg-rose-100 transition text-sm"
                       >
-                        Your Account
+                     Payment History
                       </Link>
                       {/* <Link
                         href="/order"
@@ -501,10 +501,10 @@ const Navbar = memo(function Navbar({
               Help & Settings
             </p>
             <Link
-              href="/account"
+              href="/payment/history"
               className="block text-xs text-gray-700 hover:text-rose-500 transition"
             >
-              Your Account
+             Payment History
             </Link>
             {/* <button
               onClick={handleLanguageDropdownToggle}

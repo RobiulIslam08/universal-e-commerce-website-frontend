@@ -1,110 +1,39 @@
-/**
- * Stripe Payment Intent API Route
- *
- * Creates a payment intent for processing card payments
- * Endpoint: POST /api/payment/create-intent
- */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { CreatePaymentIntentRequest } from "@/types/payment";
 
-// Initialize Stripe with secret key
+// আপনার .env.local ফাইলে STRIPE_SECRET_KEY থাকতে হবে
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-12-15.clover",
+  apiVersion: "2025-12-15.clover", // অথবা আপনার ভার্সন
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const body: CreatePaymentIntentRequest = await request.json();
+    const { amount, currency, customerName, customerEmail, shippingAddress } =
+      await req.json();
 
-    const {
-      amount,
-      currency = "usd",
-      customerEmail,
-      customerName,
-      shippingAddress,
-      items,
-    } = body;
-
-    // Validate required fields
-    if (!amount || amount <= 0) {
-      return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
-    }
-
-    if (!customerEmail) {
-      return NextResponse.json(
-        { error: "Customer email is required" },
-        { status: 400 }
-      );
-    }
-
-    // Create or retrieve Stripe customer
-    let customer: Stripe.Customer;
-    const existingCustomers = await stripe.customers.list({
-      email: customerEmail,
-      limit: 1,
-    });
-
-    if (existingCustomers.data.length > 0) {
-      customer = existingCustomers.data[0];
-    } else {
-      customer = await stripe.customers.create({
-        email: customerEmail,
-        name: customerName,
-        address: {
-          line1: shippingAddress.line1,
-          city: shippingAddress.city,
-          state: shippingAddress.state,
-          postal_code: shippingAddress.postal_code,
-          country: shippingAddress.country,
-        },
-      });
-    }
-
-    // Create payment intent
+    // ১. পেমেন্ট ইনটেন্ট তৈরি করা
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Convert to cents
-      currency: currency.toLowerCase(),
-      customer: customer.id,
-      automatic_payment_methods: {
-        enabled: true,
+      amount: Math.round(amount * 100), // USD to Cents
+      currency: currency || "usd",
+      automatic_payment_methods: { enabled: true },
+      description: `Payment by ${customerName} (${customerEmail})`,
+      shipping: {
+        name: customerName,
+        address: shippingAddress,
       },
       metadata: {
-        customerEmail,
-        customerName,
-        itemsCount: items.length.toString(),
-        orderId: `ORD-${Date.now()}`, // Generate order ID
-        shippingAddress: JSON.stringify(shippingAddress),
-        items: JSON.stringify(items),
+        customer_email: customerEmail,
       },
-      description: `Order payment for ${customerName}`,
-      receipt_email: customerEmail,
     });
 
-    console.log("✅ Payment Intent created:", paymentIntent.id);
-    console.log("📧 Customer:", customerEmail);
-    console.log("💰 Amount:", amount);
-
-    // Return client secret
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
-      customerId: customer.id,
     });
-  } catch (error) {
-    console.error("Error creating payment intent:", error);
-
-    if (error instanceof Stripe.errors.StripeError) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.statusCode || 500 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error: any) {
+    console.error("Stripe Intent Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

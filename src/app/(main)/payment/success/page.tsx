@@ -31,10 +31,11 @@ function PaymentSuccessContent() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paymentIntentId]);
-
-  const fetchPaymentDetails = async () => {
+const fetchPaymentDetails = async () => {
     try {
-      const response = await fetch(`/api/payment/confirm`, {
+      // ⚠️ ভুল ছিল: fetch(`/api/payment/confirm`, ...)
+      // ✅ সঠিক: নতুন তৈরি করা details রাউট
+      const response = await fetch(`/api/payment/details`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,6 +47,8 @@ function PaymentSuccessContent() {
 
       if (result.success) {
         setPaymentDetails(result.payment);
+      } else {
+        console.error("Failed to load payment details:", result.error);
       }
     } catch (error) {
       console.error("Error fetching payment details:", error);

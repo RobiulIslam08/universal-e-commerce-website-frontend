@@ -37,12 +37,13 @@ export default function AdminAllPaymentsPage() {
         { cache: "no-store" }
       );
 
-      const data = await response.json();
+     const result = await response.json();
 
-      if (data.payments) {
-        setPayments(data.payments);
-        setTotalPages(data.totalPages || 1);
-        setTotalPayments(data.total || 0);
+      // ✅ সংশোধন: result.data এর ভিতর থেকে payments বের করতে হবে
+      if (result.success && result.data && result.data.payments) {
+        setPayments(result.data.payments);
+        setTotalPages(result.data.totalPages || 1);
+        setTotalPayments(result.data.total || 0);
       }
     } catch (error) {
       console.error("Error fetching payments:", error);

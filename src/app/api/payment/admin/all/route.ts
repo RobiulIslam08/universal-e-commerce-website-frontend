@@ -36,12 +36,12 @@ export async function GET(request: NextRequest) {
 
     console.log(
       "🔍 Fetching payments from:",
-      `${backendUrl}/payments/admin/all?${queryParams.toString()}`
+      `${backendUrl}/payment/admin/all?${queryParams.toString()}`
     );
 
     // Fetch all payments from backend
     const response = await fetch(
-      `${backendUrl}/payments/admin/all?${queryParams.toString()}`,
+      `${backendUrl}/payment/admin/all?${queryParams.toString()}`,
       {
         method: "GET",
         headers: {

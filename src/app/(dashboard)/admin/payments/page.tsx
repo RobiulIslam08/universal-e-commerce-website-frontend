@@ -45,9 +45,11 @@ export default function AdminPaymentsPage() {
       const statsResponse = await fetch("/api/payment/admin/stats", {
         cache: "no-store",
       });
-      const statsData = await statsResponse.json();
-      if (statsData && !statsData.error) {
-        setStats(statsData);
+      const statsJson = await statsResponse.json();
+      console.log(statsJson);
+      console.log("hello");
+      if (statsJson.success && statsJson.data) {
+        setStats(statsJson.data);
       }
 
       // Fetch recent payments
@@ -57,9 +59,16 @@ export default function AdminPaymentsPage() {
           cache: "no-store",
         }
       );
-      const paymentsData = await paymentsResponse.json();
-      if (paymentsData.payments) {
-        setRecentPayments(paymentsData.payments);
+      const paymentsJson = await paymentsResponse.json(); // নামটা paymentsJson দিলাম বোঝার সুবিধার্থে
+
+      console.log("Payments Response:", paymentsJson); // ডিবাগিংয়ের জন্য চেক করুন
+
+      if (
+        paymentsJson.success &&
+        paymentsJson.data &&
+        paymentsJson.data.payments
+      ) {
+        setRecentPayments(paymentsJson.data.payments);
       }
     } catch (error) {
       console.error("Error fetching payment data:", error);

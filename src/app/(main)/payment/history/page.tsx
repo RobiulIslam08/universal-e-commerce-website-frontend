@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PaymentRecord, PaymentStatus } from "@/types/payment";
+import { getCurrentUser } from "@/services/auth";
 
 export default function PaymentHistoryPage() {
   const router = useRouter();
@@ -31,35 +32,86 @@ export default function PaymentHistoryPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock user ID - Replace with actual user ID from auth context
-  const userId = "USER_ID_HERE"; // TODO: Get from auth context
+  // ✅ নতুন কোড: ইউজারের আইডি ডাইনামিকালি সেট করুন
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchPaymentHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, filterStatus]);
+    const loadUser = async () => {
+      const user = await getCurrentUser();
+      if (user?.userId) {
+        setUserId(user.userId);
+      }
+    };
+    loadUser();
+  }, []);
+  
+useEffect(() => {
+    if (userId) { // ইউজার আইডি পাওয়ার পরেই কেবল ফেচ করবে
+      fetchPaymentHistory();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, currentPage, filterStatus]);
 
-  const fetchPaymentHistory = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `/api/payment/history?userId=${userId}&page=${currentPage}&limit=10`,
-        {
-          cache: "no-store",
-        }
-      );
+const fetchPaymentHistory = async () => {
+  try {
+    setLoading(true);
+    
+    if (!userId) {
+      console.log("⚠️ No userId available yet");
+      setPayments([]);
+      return;
+    }
+    
+    console.log("=== Frontend Fetch Started ===");
+    console.log("🔍 userId:", userId);
+    console.log("📄 currentPage:", currentPage);
+    
+    const url = `/api/payment/history?userId=${userId}&page=${currentPage}&limit=10`;
+    console.log("🔗 Fetching from:", url);
+    
+    const response = await fetch(url, { cache: "no-store" });
+    
+    console.log("📊 Response status:", response.status);
+    console.log("📋 Response headers:", Object.fromEntries(response.headers.entries()));
 
-      const data = await response.json();
+    const contentType = response.headers.get("content-type");
+    if (!contentType?.includes("application/json")) {
+      const text = await response.text();
+      console.error("❌ Not JSON. Received:", text.substring(0, 500));
+      setPayments([]);
+      return;
+    }
 
-      if (data.payments) {
+    const data = await response.json();
+    console.log("📦 Full response received:");
+    console.log(JSON.stringify(data, null, 2));
+
+    if (data.success) {
+      if (data.payments && Array.isArray(data.payments)) {
+        console.log("✅ Found payments array, length:", data.payments.length);
         setPayments(data.payments);
         setTotalPages(data.totalPages || 1);
+      } else {
+        console.error("❌ No payments array in response");
+        console.error("Available keys:", Object.keys(data));
+        console.error("Full data:", data);
+        setPayments([]);
       }
-    } catch (error) {
-      console.error("Error fetching payment history:", error);
-    } finally {
-      setLoading(false);
+    } else {
+      console.error("❌ Response success is false");
+      console.error("Error:", data.error);
+      console.error("Debug info:", data.debug);
+      setPayments([]);
     }
-  };
+    
+  } catch (error) {
+    console.error("💥 Fetch error:");
+    console.error(error);
+    setPayments([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const getStatusColor = (status: PaymentStatus) => {
     switch (status) {
