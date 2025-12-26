@@ -3,7 +3,7 @@
 
 import {
   CreditCard,
-  Wallet,
+  // Wallet,
   Package,
   ShieldCheck,
   CheckCircle2,
@@ -70,7 +70,7 @@ export const PaymentMethodStep = ({
           )}
         </div>
 
-        <div
+        {/* <div
           className={`
           flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all
           ${
@@ -100,7 +100,7 @@ export const PaymentMethodStep = ({
           {paymentMethod === "paypal" && (
             <CheckCircle2 className="w-5 h-5 text-rose-600" />
           )}
-        </div>
+        </div> */}
 
         <div
           className={`
