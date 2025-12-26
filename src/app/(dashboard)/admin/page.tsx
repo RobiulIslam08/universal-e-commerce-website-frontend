@@ -11,8 +11,9 @@ export default async function AdminDashboard() {
 
   const stats = {
     totalProducts: products.length,
-    inStock: products.filter((p) => p.inStock).length,
-    outOfStock: products.filter((p) => !p.inStock).length,
+    inStock: products.filter((p) => p.stockQuantity > 0).length,
+    outOfStock: products.filter((p) => !p.stockQuantity || p.stockQuantity <= 0)
+      .length,
     totalValue: products.reduce(
       (sum, p) => sum + (p.price || 0) * (p.stockQuantity || 0),
       0

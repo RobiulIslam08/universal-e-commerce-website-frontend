@@ -259,7 +259,7 @@ const router = useRouter();
                   </button>
 
                   {userDropdown && (
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-white text-gray-800 rounded shadow-lg z-50 overflow-hidden">
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-white text-gray-800 rounded shadow-lg z-60 overflow-hidden">
                       <div className="px-4 py-3 border-b border-gray-200">
                         <p className="text-sm font-semibold truncate">
                           {user.name}

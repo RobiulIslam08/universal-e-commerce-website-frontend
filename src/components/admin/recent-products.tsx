@@ -77,10 +77,12 @@ export default function RecentProducts({ products }: RecentProductsProps) {
                 </div>
 
                 <Badge
-                  variant={product.inStock ? "outline" : "destructive"}
+                  variant={
+                    product.stockQuantity > 0 ? "outline" : "destructive"
+                  }
                   className="whitespace-nowrap border-border/50 transition-all duration-300"
                 >
-                  {product.inStock ? "In Stock" : "Out"}
+                  {product.stockQuantity > 0 ? "In Stock" : "Out of Stock"}
                 </Badge>
 
                 <Button
