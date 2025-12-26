@@ -1,3 +1,5 @@
+ 
+
 "use client";
 
 import { useState, useCallback, memo } from "react";
@@ -9,14 +11,12 @@ import {
   User,
   ChevronDown,
   ChevronRight,
-  
   LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   DESKTOP_CATEGORIES,
-
   MENU_SECTIONS,
   MOBILE_CATEGORIES,
   QUICK_CATEGORIES,
@@ -24,22 +24,25 @@ import {
 import { signOut } from "next-auth/react";
 import { useAppSelector } from "@/redux/hooks";
 import { orderedProductsSelector } from "@/redux/features/cartSlice";
+import { useRouter } from "next/navigation";
+import { logoutUser } from "@/services/auth";
 
-type UserProps = {
-  user?: {
-    name?: string | null | undefined;
-    email?: string | null | undefined;
-    image?: string | null | undefined;
-  };
+// ✅ ১. ইউজারের টাইপ ডেফিনিশন (Flat Structure)
+type UserData = {
+  userId?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role?: string;
 };
 
 const Navbar = memo(function Navbar({
-  session,
+  user, // ✅ session এর বদলে সরাসরি user প্রপস গ্রহণ করছি
 }: {
-  session: UserProps | null;
+  user: UserData | null;
 }) {
-  console.log(session);
-
+  console.log("User Data in Navbar:", user);
+const router = useRouter();
   const cartProducts = useAppSelector(orderedProductsSelector);
   const cartCount = cartProducts.reduce(
     (total, product) => total + product.orderQuantity,
@@ -48,9 +51,11 @@ const Navbar = memo(function Navbar({
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  // const [languageDropdown, setLanguageDropdown] = useState(false);
-  // const [selectedLanguage, setSelectedLanguage] = useState<string>("EN");
   const [userDropdown, setUserDropdown] = useState(false);
+
+  const handleUserDropdownToggle = useCallback(() => {
+    setUserDropdown((prev) => !prev);
+  }, []);
 
   const toggleSection = useCallback((section: string) => {
     setExpandedSection((prev) => (prev === section ? null : section));
@@ -64,18 +69,28 @@ const Navbar = memo(function Navbar({
     setIsDrawerOpen(false);
   }, []);
 
-  // const handleLanguageSelect = useCallback((langCode: string) => {
-  //   setSelectedLanguage(langCode);
-  //   setLanguageDropdown(false);
-  // }, []);
+ // ✅ ২. handleSignOut ফাংশন আপডেট করুন
+  const handleSignOut = async () => {
+    try {
+      // (ক) ম্যানুয়াল কুকি রিমুভ করুন (Server Action)
+      await logoutUser();
 
-  // const handleLanguageDropdownToggle = useCallback(() => {
-  //   setLanguageDropdown((prev) => !prev);
-  // }, []);
+      // (খ) NextAuth সেশন ক্লিয়ার করুন
+      // callbackUrl দিলে সাইনআউট এর পর লগইন পেজে নিয়ে যাবে
+      await signOut({ callbackUrl: "/login", redirect: false });
+      
+      // (গ) পেজ রিফ্রেশ বা রিডাইরেক্ট করে নিশ্চিত করুন যেন UI আপডেট হয়
+      router.push("/login");
+      router.refresh(); 
+      
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
-  const handleUserDropdownToggle = useCallback(() => {
-    setUserDropdown((prev) => !prev);
-  }, []);
+  // ✅ Logout হ্যান্ডলার: যেহেতু আপনার ম্যানুয়াল কুকি আছে, তাই signOut এর সাথে কুকি ক্লিয়ার করার লজিক লাগতে পারে।
+  // আপাতত next-auth এর signOut ব্যবহার করা হচ্ছে।
+  // (ডুপ্লিকেট ফাংশনটি সরানো হয়েছে)
 
   return (
     <div className="w-full bg-white">
@@ -86,7 +101,6 @@ const Navbar = memo(function Navbar({
           <div className="px-3 sm:px-4 lg:px-6 py-2 flex items-center justify-between gap-3">
             {/* Left: Menu Icon & Logo */}
             <div className="flex items-center gap-2 shrink-0">
-              {/* Menu button - শুধু mobile এ দেখাবে */}
               <button
                 onClick={handleDrawerToggle}
                 className="lg:hidden p-2 hover:bg-rose-600 rounded transition"
@@ -95,7 +109,7 @@ const Navbar = memo(function Navbar({
               >
                 <Menu size={20} aria-hidden="true" />
               </button>
-             
+              
               <Link href="/">
                <Image
                 src="/main-logo.png"
@@ -103,7 +117,7 @@ const Navbar = memo(function Navbar({
                 width={48}
                 height={48}
                 className="object-contain"
-              />
+               />
               </Link>
               <Link
                 href="/"
@@ -148,43 +162,10 @@ const Navbar = memo(function Navbar({
 
             {/* Right: Account, Orders & Cart */}
             <div className="flex items-center gap-1 sm:gap-3 shrink-0">
-              {/* Language Dropdown - Desktop only */}
-              {/* <div className="relative hidden md:block">
-                <button
-                  onClick={handleLanguageDropdownToggle}
-                  className="flex items-center gap-1 px-2 py-2 hover:bg-rose-600 transition rounded text-sm"
-                  aria-label="Select language"
-                  aria-expanded={languageDropdown}
-                  aria-haspopup="true"
-                >
-                  <Globe size={14} aria-hidden="true" />
-                  <span className="font-medium">{selectedLanguage}</span>
-                  <ChevronDown size={12} aria-hidden="true" />
-                </button>
-                {languageDropdown && (
-                  <div
-                    className="absolute right-0 mt-1 w-28 bg-white text-gray-800 rounded shadow-lg z-50 overflow-hidden"
-                    role="menu"
-                  >
-                    {LANGUAGES.map((lang, idx) => (
-                      <button
-                        key={LANGUAGE_CODES[idx]}
-                        onClick={() =>
-                          handleLanguageSelect(LANGUAGE_CODES[idx])
-                        }
-                        className="block w-full text-left px-3 py-2 hover:bg-rose-100 transition text-xs sm:text-sm"
-                        role="menuitem"
-                      >
-                        {lang}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div> */}
 
-              {/* User Section - Show different content based on session */}
-              {session?.user ? (
-                // Logged in user - Mobile
+              {/* User Section - Logic Updated based on 'user' prop */}
+              {user ? (
+                // ✅ Logged IN User - Mobile
                 <div className="flex sm:hidden relative">
                   <button
                     onClick={handleUserDropdownToggle}
@@ -192,10 +173,10 @@ const Navbar = memo(function Navbar({
                     aria-label="User menu"
                     aria-expanded={userDropdown}
                   >
-                    {session.user.image ? (
+                    {user.image ? (
                       <Image
-                        src={session.user.image}
-                        alt={session.user.name || "User"}
+                        src={user.image}
+                        alt={user.name || "User"}
                         width={28}
                         height={28}
                         className="rounded-full"
@@ -212,10 +193,10 @@ const Navbar = memo(function Navbar({
                     <div className="absolute right-0 top-full mt-2 w-48 bg-white text-gray-800 rounded shadow-lg z-50 overflow-hidden">
                       <div className="px-3 py-2 border-b border-gray-200">
                         <p className="text-sm font-semibold truncate">
-                          {session.user.name}
+                          {user.name}
                         </p>
                         <p className="text-xs text-gray-600 truncate">
-                          {session.user.email}
+                          {user.email}
                         </p>
                       </div>
                       <Link
@@ -224,14 +205,8 @@ const Navbar = memo(function Navbar({
                       >
                         Payment History
                       </Link>
-                      {/* <Link
-                        href="/order"
-                        className="block px-3 py-2 hover:bg-rose-100 transition text-sm"
-                      >
-                        Orders
-                      </Link> */}
                       <button
-                        onClick={() => signOut()}
+                        onClick={handleSignOut}
                         className="w-full text-left px-3 py-2 hover:bg-rose-100 transition text-sm flex items-center gap-2 text-red-600"
                       >
                         <LogOut size={14} />
@@ -241,7 +216,7 @@ const Navbar = memo(function Navbar({
                   )}
                 </div>
               ) : (
-                // Not logged in - Mobile
+                // ✅ Logged OUT User - Mobile
                 <Link
                   href="/login"
                   className="flex sm:hidden flex-col hover:opacity-80 transition text-xs"
@@ -252,7 +227,8 @@ const Navbar = memo(function Navbar({
               )}
 
               {/* User Section - Desktop */}
-              {session?.user ? (
+              {user ? (
+                 // ✅ Logged IN User - Desktop
                 <div className="hidden sm:flex relative">
                   <button
                     onClick={handleUserDropdownToggle}
@@ -260,10 +236,10 @@ const Navbar = memo(function Navbar({
                     aria-label="User menu"
                     aria-expanded={userDropdown}
                   >
-                    {session.user.image ? (
+                    {user.image ? (
                       <Image
-                        src={session.user.image}
-                        alt={session.user.name || "User"}
+                        src={user.image}
+                        alt={user.name || "User"}
                         width={32}
                         height={32}
                         className="rounded-full"
@@ -276,7 +252,7 @@ const Navbar = memo(function Navbar({
                     <div className="flex flex-col text-left">
                       <span className="opacity-80 text-xs">Hello,</span>
                       <span className="font-semibold text-sm truncate max-w-[100px]">
-                        {session.user.name?.split(" ")[0] || "User"}
+                        {user.name?.split(" ")[0] || "User"}
                       </span>
                     </div>
                     <ChevronDown size={12} />
@@ -286,26 +262,20 @@ const Navbar = memo(function Navbar({
                     <div className="absolute right-0 top-full mt-2 w-56 bg-white text-gray-800 rounded shadow-lg z-50 overflow-hidden">
                       <div className="px-4 py-3 border-b border-gray-200">
                         <p className="text-sm font-semibold truncate">
-                          {session.user.name}
+                          {user.name}
                         </p>
                         <p className="text-xs text-gray-600 truncate">
-                          {session.user.email}
+                          {user.email}
                         </p>
                       </div>
                       <Link
                         href="/payment/history"
                         className="block px-4 py-2 hover:bg-rose-100 transition text-sm"
                       >
-                     Payment History
+                       Payment History
                       </Link>
-                      {/* <Link
-                        href="/order"
-                        className="block px-4 py-2 hover:bg-rose-100 transition text-sm"
-                      >
-                        Orders
-                      </Link> */}
                       <button
-                        onClick={() => signOut()}
+                        onClick={handleSignOut}
                         className="w-full text-left px-4 py-2 hover:bg-rose-100 transition text-sm flex items-center gap-2 text-red-600 border-t border-gray-200"
                       >
                         <LogOut size={14} />
@@ -315,7 +285,7 @@ const Navbar = memo(function Navbar({
                   )}
                 </div>
               ) : (
-                // Not logged in - Desktop
+                // ✅ Logged OUT User - Desktop
                 <Link
                   href="/login"
                   className="hidden sm:flex flex-col hover:opacity-80 transition text-xs sm:text-sm"
@@ -324,16 +294,6 @@ const Navbar = memo(function Navbar({
                   <span className="font-semibold">Account</span>
                 </Link>
               )}
-
-              {/* Orders Button - Desktop only (hide when user dropdown is shown) */}
-              {/* {!session?.user && (
-                <Link
-                  href="/order"
-                  className="hidden lg:block bg-transparent hover:bg-rose-600 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium transition whitespace-nowrap"
-                >
-                  Orders
-                </Link>
-              )} */}
 
               {/* Cart */}
               <Link
@@ -403,7 +363,7 @@ const Navbar = memo(function Navbar({
         </div>
       </div>
 
-      {/* Drawer Menu - No background overlay */}
+      {/* Drawer Menu */}
       {isDrawerOpen && (
         <div
           className="fixed inset-0 z-30"
@@ -419,12 +379,13 @@ const Navbar = memo(function Navbar({
         >
           {/* Header */}
           <div className="bg-gray-900 text-white p-4 flex items-center justify-between sticky top-0 z-50">
-            {session?.user ? (
+            {/* ✅ Drawer Menu তে User চেক */}
+            {user ? (
               <div className="flex items-center gap-2">
-                {session.user.image ? (
+                {user.image ? (
                   <Image
-                    src={session.user.image}
-                    alt={session.user.name || "User"}
+                    src={user.image}
+                    alt={user.name || "User"}
                     width={32}
                     height={32}
                     className="rounded-full"
@@ -437,7 +398,7 @@ const Navbar = memo(function Navbar({
                 <div>
                   <p className="font-medium text-sm">Hello,</p>
                   <p className="font-semibold text-sm truncate max-w-[180px]">
-                    {session.user.name?.split(" ")[0] || "User"}
+                    {user.name?.split(" ")[0] || "User"}
                   </p>
                 </div>
               </div>
@@ -506,23 +467,15 @@ const Navbar = memo(function Navbar({
             >
              Payment History
             </Link>
-            {/* <button
-              onClick={handleLanguageDropdownToggle}
-              className="flex items-center gap-2 text-xs text-gray-700 hover:text-rose-500 transition w-full"
-              aria-label="Select language"
-            >
-              <Globe size={14} aria-hidden="true" />
-              <span>{selectedLanguage}</span>
-            </button> */}
             <Link
               href="/help"
               className="block text-xs text-gray-700 hover:text-rose-500 transition"
             >
               Help Center
             </Link>
-            {session?.user && (
+            {user && (
               <button
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="flex items-center gap-2 text-xs text-red-600 hover:text-red-700 transition w-full text-left"
               >
                 <LogOut size={14} />
@@ -537,7 +490,7 @@ const Navbar = memo(function Navbar({
       <div className="hidden lg:block bg-rose-400">
         <div className="max-w-full px-6">
           <div className="flex items-stretch">
-            {/* Menu button - শুধু desktop এ categories bar এ দেখাবে */}
+            {/* Menu button */}
             <button
               onClick={handleDrawerToggle}
               className="p-2 hover:bg-rose-500 rounded transition text-white flex items-center justify-center"
@@ -598,7 +551,6 @@ const Navbar = memo(function Navbar({
         </div>
       </div>
 
-      {/* Add scrollbar hide CSS */}
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
