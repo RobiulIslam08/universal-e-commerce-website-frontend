@@ -23,7 +23,19 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const handleUser = async () => {
     const user = await getCurrentUser();
-    setUser(user);
+    if (user) {
+      // Map DecodedUser to IUser
+      setUser({
+        id: user.userId,
+        name: user.name,
+        email: user.email,
+        role: user.role as "user" | "admin",
+        avatar: user.image,
+        isActive: true,
+      });
+    } else {
+      setUser(null);
+    }
     setIsLoading(false);
   };
   useEffect(() => {
