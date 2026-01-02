@@ -24,7 +24,7 @@ interface DecodedToken {
   exp?: number;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Static files এবং API routes skip করা
