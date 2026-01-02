@@ -5,6 +5,8 @@ import DetailsSection from "../component/details-section";
 import SmartSpecs from "../component/smart-specs";
 import Link from "next/link";
 import { getSingleProduct } from "@/services/product";
+import ReviewSection from "../component/ReviewSection";
+import { getReviewsByProductId } from "@/services/review";
 
 // Type for params
 type Props = {
@@ -39,23 +41,27 @@ export async function generateMetadata({ params }: Props) {
 export default async function ProductPage({ params }: Props) {
   const { _id } = await params; // ✅ Await params
 
-  
-  
   const res = await getSingleProduct(_id);
-  console.log("API Response structure:", { 
-    hasData: !!res?.data, 
-    hasSuccess: 'success' in (res || {}),
-    keys: Object.keys(res || {})
+  console.log("API Response structure:", {
+    hasData: !!res?.data,
+    hasSuccess: "success" in (res || {}),
+    keys: Object.keys(res || {}),
   });
 
   const product = res?.data;
- 
 
   if (!product) {
     console.error("⚠️ Product not found for ID:", _id);
-    console.error("Backend URL being used:", process.env.NEXT_PUBLIC_BACKEND_URL);
+    console.error(
+      "Backend URL being used:",
+      process.env.NEXT_PUBLIC_BACKEND_URL
+    );
     notFound();
   }
+
+  // Fetch reviews for this product
+  const reviewsRes = await getReviewsByProductId(_id);
+  const reviewsData = reviewsRes?.data;
 
   // Ensure required fields exist
   const productImages =
@@ -114,6 +120,11 @@ export default async function ProductPage({ params }: Props) {
               <SmartSpecs product={productData} />
             </div>
           </div>
+        </div>
+
+        {/* Reviews Section - Full Width Below Product Details */}
+        <div className="mt-16 pt-12 border-t border-rose-100 dark:border-rose-900/50">
+          <ReviewSection productId={_id} initialReviewsData={reviewsData} />
         </div>
       </div>
     </main>

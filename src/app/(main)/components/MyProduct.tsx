@@ -82,9 +82,9 @@ export default function MyProduct() {
                 )
               }
               title={product.title}
-              price={`SAR ${product.price}`}
+              price={`$${product.price}`}
               strike={
-                product.strikePrice ? `SAR ${product.strikePrice}` : undefined
+                product.strikePrice ? `$${product.strikePrice}` : undefined
               }
               badge={product.badge}
             />

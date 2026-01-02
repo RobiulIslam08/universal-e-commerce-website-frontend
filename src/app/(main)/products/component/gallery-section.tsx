@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Heart, Share2, TrendingUp, Users, Flame } from "lucide-react";
+import {  TrendingUp, Users } from "lucide-react";
 import Image from "next/image";
 
 interface GallerySectionProps {
@@ -12,7 +12,7 @@ interface GallerySectionProps {
 
 export default function GallerySection({
   images,
-  badge,
+  
   soldCount = 0,
   isTrending = false,
 }: GallerySectionProps) {
@@ -76,35 +76,7 @@ export default function GallerySection({
       >
         {/* Premium Glass Card */}
         <div className="relative aspect-square bg-linear-to-br from-white/70 via-rose-50/60 to-purple-50/70 dark:from-slate-900/70 dark:via-rose-950/50 dark:to-purple-950/60 backdrop-blur-3xl rounded-[3rem] border border-white/40 dark:border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden group">
-          {/* Top Status Bar */}
-          <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-6 z-20">
-            {/* Badge */}
-            {badge && (
-              <div className="relative">
-                <div
-                  className="absolute inset-0 bg-linear-to-r from-rose-500 to-pink-600 rounded-full blur-md opacity-70"
-                  style={{ animation: "pulse 2s ease-in-out infinite" }}
-                />
-                <div className="relative px-5 py-2.5 bg-linear-to-r from-rose-500 to-pink-600 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl flex items-center gap-2">
-                  <Flame
-                    className="w-4 h-4"
-                    style={{ animation: "bounce 1s ease-in-out infinite" }}
-                  />
-                  {badge}
-                </div>
-              </div>
-            )}
-
-            {/* Action Icons */}
-            <div className="flex gap-2">
-              <button className="relative group/btn p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 border border-white/50 dark:border-slate-700/50">
-                <Heart className="w-5 h-5 text-slate-700 dark:text-slate-300 group-hover/btn:text-rose-500 transition-all" />
-              </button>
-              <button className="relative group/btn p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 border border-white/50 dark:border-slate-700/50">
-                <Share2 className="w-5 h-5 text-slate-700 dark:text-slate-300 group-hover/btn:text-blue-500 transition-all" />
-              </button>
-            </div>
-          </div>
+         
 
           {/* Main Product Image */}
           <div className="flex items-center justify-center h-full relative">

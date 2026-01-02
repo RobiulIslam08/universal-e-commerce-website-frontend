@@ -402,16 +402,7 @@ export default function PremiumCheckoutPage() {
       <div className="container mx-auto px-4 py-8">
         <StepIndicator steps={steps} currentStep={currentStep} />
 
-        {/* Debug Info */}
-        {process.env.NODE_ENV === "development" && (
-          <div className="max-w-2xl mx-auto mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-xs">
-            <p>
-              🐛 Debug: Step={currentStep}, Method={paymentMethod}, Secret=
-              {clientSecret ? "✓" : "✗"}, Processing={processing ? "YES" : "NO"}
-            </p>
-            <p>✅ User: {currentUser.name} ({currentUser.userId})</p>
-          </div>
-        )}
+     
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Forms */}

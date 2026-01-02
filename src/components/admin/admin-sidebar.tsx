@@ -15,13 +15,14 @@ export default function AdminSidebar({ open, setOpen }: AdminSidebarProps) {
   const navItems = [
     { label: "Dashboard", href: "/admin", icon: "📊" },
     { label: "Products", href: "/admin/products", icon: "📦" },
+    { label: "Reviews", href: "/admin/reviews", icon: "📝" },
     { label: "Carousel", href: "/admin/carousel", icon: "🎠" },
     { label: "Payments", href: "/admin/payments", icon: "💳" },
   ];
 
   const secondaryItems = [
-    { label: "Analytics", href: "/admin/analytics", icon: "📈" },
-    { label: "Store Settings", href: "/admin/settings", icon: "⚙️" },
+    // { label: "Analytics", href: "/admin/analytics", icon: "📈" },
+    // { label: "Store Settings", href: "/admin/settings", icon: "⚙️" },
     { label: "Go To Home", href: "/", icon: "🏠" },
   ];
 

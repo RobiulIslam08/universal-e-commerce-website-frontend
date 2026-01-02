@@ -24,8 +24,8 @@ export default function HorizontalProductCarousel() {
             <ProductCard
               image={"🎁"}
               title={`Limited Time Deal ${id}`}
-              price={prices[idx] ? `SAR ${prices[idx]}` : "SAR —"}
-              strike={strike[idx] ? `SAR ${strike[idx]}` : ""}
+              price={prices[idx] ? `$${prices[idx]}` : "$ —"}
+              strike={strike[idx] ? `$${strike[idx]}` : ""}
               badge={"Up to 50% off"}
             />
           </div>
