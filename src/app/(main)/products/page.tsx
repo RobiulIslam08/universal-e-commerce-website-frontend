@@ -4,6 +4,9 @@ import { IProduct } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
 
+// Force dynamic rendering for search functionality
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{
     searchTerm?: string;

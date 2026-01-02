@@ -63,8 +63,8 @@ export const getAllProducts = async (query?: string) => {
       `${backendUrl}/products${query ? `?${query}` : ""}`,
       {
         cache: "no-store",
-        next: {
-          tags: ["PRODUCT"],
+        headers: {
+          "Content-Type": "application/json",
         },
       }
     );

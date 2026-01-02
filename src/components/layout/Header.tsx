@@ -49,6 +49,7 @@ const Navbar = memo(function Navbar({
       );
       setSearchQuery("");
     }
+   
   };
 
   // ✅ ২. handleSignOut ফাংশন আপডেট করুন
@@ -118,18 +119,19 @@ const Navbar = memo(function Navbar({
               onSubmit={handleSearch}
             >
               <div className="flex w-full rounded-l-lg overflow-hidden">
-                <select
+                         {/* পরে implement করবো */}
+                {/* <select
                   className="px-2 sm:px-3 py-2 bg-gray-100 text-gray-700 text-xs sm:text-sm border-r border-gray-300 hover:bg-gray-200 transition cursor-pointer font-medium"
                   aria-label="Select category"
                 >
                   <option>All</option>
 
-                  {/* পরে implement করবো */}
-                  {/* <option>Electronics</option>
+         
+                  <option>Electronics</option>
                   <option>Fashion</option>
                   <option>Books</option>
-                  <option>Home & Kitchen</option> */}
-                </select>
+                  <option>Home & Kitchen</option>
+                </select> */}
                 <input
                   type="search"
                   placeholder="Search Universel"
@@ -309,12 +311,12 @@ const Navbar = memo(function Navbar({
           >
             <div className="flex gap-2 items-center">
               <div className="flex-1 flex bg-white rounded-sm overflow-hidden">
-                <select
+                {/* <select
                   className="px-2 py-2 text-gray-700 text-xs bg-gray-100 border-r border-gray-300 font-medium"
                   aria-label="Select category"
                 >
                   <option>All</option>
-                </select>
+                </select> */}
                 <input
                   type="search"
                   placeholder="Search Universel"
