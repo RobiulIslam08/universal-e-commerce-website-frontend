@@ -68,10 +68,10 @@ export default function ProductCard({
       href={productId ? `/products/${productId}` : "#"}
       className="block h-full"
     >
-      <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 dark:border-gray-800 shadow-sm group h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden">
+      <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1  dark:border-gray-800  group h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden">
         <CardContent className="p-0 flex flex-col flex-1">
           {/* Image Section */}
-          <div className="relative aspect-square bg-linear-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-5xl overflow-hidden">
+          <div className="relative aspect-square  flex items-center justify-center text-5xl overflow-hidden">
             {image}
 
             {/* Badge */}
@@ -83,7 +83,7 @@ export default function ProductCard({
           </div>
 
           {/* Content Section */}
-          <div className="p-4 flex flex-col flex-1">
+          <div className="px-4 flex flex-col flex-1">
             {/* Title */}
             <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 mb-3 min-h-10 leading-tight group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
               {title}
@@ -104,16 +104,16 @@ export default function ProductCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all duration-300 font-medium text-xs"
+                className="flex-1 cursor-pointer hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all duration-300 font-medium text-xs"
                 onClick={handleAddToCart}
               >
-                <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
-                Add to Cart
+                <ShoppingCart  />
+              Cart
               </Button>
 
               <Button
                 size="sm"
-                className="flex-1 bg-rose-600 hover:bg-rose-700 text-white transition-all duration-300 font-medium text-xs shadow-md hover:shadow-lg"
+                className="flex-1 cursor-pointer bg-rose-600 hover:bg-rose-700 text-white transition-all duration-300 font-medium text-xs shadow-md hover:shadow-lg"
                 onClick={handleBuyNow}
               >
                 Buy

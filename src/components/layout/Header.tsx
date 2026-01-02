@@ -1,26 +1,10 @@
- 
-
 "use client";
 
 import { useState, useCallback, memo } from "react";
-import {
-  Menu,
-  X,
-  Search,
-  ShoppingCart,
-  User,
-  ChevronDown,
-  ChevronRight,
-  LogOut,
-} from "lucide-react";
+import { Search, ShoppingCart, User, ChevronDown, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  DESKTOP_CATEGORIES,
-  MENU_SECTIONS,
-  MOBILE_CATEGORIES,
-  QUICK_CATEGORIES,
-} from "@/constants/navbar";
+
 import { signOut } from "next-auth/react";
 import { useAppSelector } from "@/redux/hooks";
 import { orderedProductsSelector } from "@/redux/features/cartSlice";
@@ -42,34 +26,32 @@ const Navbar = memo(function Navbar({
   user: UserData | null;
 }) {
   console.log("User Data in Navbar:", user);
-const router = useRouter();
+  const router = useRouter();
   const cartProducts = useAppSelector(orderedProductsSelector);
   const cartCount = cartProducts.reduce(
     (total, product) => total + product.orderQuantity,
     0
   );
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [userDropdown, setUserDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleUserDropdownToggle = useCallback(() => {
     setUserDropdown((prev) => !prev);
   }, []);
 
-  const toggleSection = useCallback((section: string) => {
-    setExpandedSection((prev) => (prev === section ? null : section));
-  }, []);
+  // Search handler
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(
+        `/products?searchTerm=${encodeURIComponent(searchQuery.trim())}`
+      );
+      setSearchQuery("");
+    }
+  };
 
-  const handleDrawerToggle = useCallback(() => {
-    setIsDrawerOpen((prev) => !prev);
-  }, []);
-
-  const handleDrawerClose = useCallback(() => {
-    setIsDrawerOpen(false);
-  }, []);
-
- // ✅ ২. handleSignOut ফাংশন আপডেট করুন
+  // ✅ ২. handleSignOut ফাংশন আপডেট করুন
   const handleSignOut = async () => {
     try {
       // (ক) ম্যানুয়াল কুকি রিমুভ করুন (Server Action)
@@ -78,11 +60,10 @@ const router = useRouter();
       // (খ) NextAuth সেশন ক্লিয়ার করুন
       // callbackUrl দিলে সাইনআউট এর পর লগইন পেজে নিয়ে যাবে
       await signOut({ callbackUrl: "/login", redirect: false });
-      
+
       // (গ) পেজ রিফ্রেশ বা রিডাইরেক্ট করে নিশ্চিত করুন যেন UI আপডেট হয়
       router.push("/login");
-      router.refresh(); 
-      
+      router.refresh();
     } catch (error) {
       console.error("Logout failed", error);
     }
@@ -101,6 +82,8 @@ const router = useRouter();
           <div className="px-3 sm:px-4 lg:px-6 py-2 flex items-center justify-between gap-3">
             {/* Left: Menu Icon & Logo */}
             <div className="flex items-center gap-2 shrink-0">
+              {/* TODO: পরে implement করবো - Mobile Menu Icon */}
+              {/*
               <button
                 onClick={handleDrawerToggle}
                 className="lg:hidden p-2 hover:bg-rose-600 rounded transition"
@@ -109,19 +92,20 @@ const router = useRouter();
               >
                 <Menu size={20} aria-hidden="true" />
               </button>
-              
+              */}
+
               <Link href="/">
-               <Image
-                src="/main-logo.png"
-                alt="Universel website logo"
-                width={48}
-                height={48}
-                className="object-contain"
-               />
+                <Image
+                  src="/main-logo.png"
+                  alt="Universel website logo"
+                  width={48}
+                  height={48}
+                  className="object-contain"
+                />
               </Link>
               <Link
                 href="/"
-                className="text-lg sm:text-xl font-bold tracking-tight hover:opacity-90 transition hidden md:flex"
+                className="text-lg sm:text-xl font-bold tracking-tight hover:opacity-90 transition "
               >
                 Universel
               </Link>
@@ -131,22 +115,26 @@ const router = useRouter();
             <form
               className="hidden sm:flex flex-1 max-w-2xl mx-2 md:mx-3"
               role="search"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSearch}
             >
               <div className="flex w-full rounded-l-lg overflow-hidden">
                 <select
                   className="px-2 sm:px-3 py-2 bg-gray-100 text-gray-700 text-xs sm:text-sm border-r border-gray-300 hover:bg-gray-200 transition cursor-pointer font-medium"
                   aria-label="Select category"
                 >
-                  <option>All Categories</option>
-                  <option>Electronics</option>
+                  <option>All</option>
+
+                  {/* পরে implement করবো */}
+                  {/* <option>Electronics</option>
                   <option>Fashion</option>
                   <option>Books</option>
-                  <option>Home & Kitchen</option>
+                  <option>Home & Kitchen</option> */}
                 </select>
                 <input
                   type="search"
                   placeholder="Search Universel"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-700 outline-none bg-white placeholder-gray-500"
                   aria-label="Search products"
                 />
@@ -162,7 +150,6 @@ const router = useRouter();
 
             {/* Right: Account, Orders & Cart */}
             <div className="flex items-center gap-1 sm:gap-3 shrink-0">
-
               {/* User Section - Logic Updated based on 'user' prop */}
               {user ? (
                 // ✅ Logged IN User - Mobile
@@ -228,7 +215,7 @@ const router = useRouter();
 
               {/* User Section - Desktop */}
               {user ? (
-                 // ✅ Logged IN User - Desktop
+                // ✅ Logged IN User - Desktop
                 <div className="hidden sm:flex relative">
                   <button
                     onClick={handleUserDropdownToggle}
@@ -272,7 +259,7 @@ const router = useRouter();
                         href="/payment/history"
                         className="block px-4 py-2 hover:bg-rose-100 transition text-sm"
                       >
-                       Payment History
+                        Payment History
                       </Link>
                       <button
                         onClick={handleSignOut}
@@ -318,7 +305,7 @@ const router = useRouter();
           <form
             className="sm:hidden px-3 pb-3"
             role="search"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSearch}
           >
             <div className="flex gap-2 items-center">
               <div className="flex-1 flex bg-white rounded-sm overflow-hidden">
@@ -331,6 +318,8 @@ const router = useRouter();
                 <input
                   type="search"
                   placeholder="Search Universel"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 px-2 py-2 text-xs text-gray-900 outline-none bg-white placeholder-gray-400 font-medium"
                   aria-label="Search products"
                 />
@@ -345,6 +334,8 @@ const router = useRouter();
             </div>
           </form>
 
+          {/* TODO: পরে implement করবো - Mobile Categories */}
+          {/*
           <div className="sm:hidden px-3 pb-3">
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
               {MOBILE_CATEGORIES.map((category) => (
@@ -360,11 +351,14 @@ const router = useRouter();
               ))}
             </div>
           </div>
+          */}
         </div>
       </div>
 
+      {/* TODO: পরে implement করবো - Drawer Menu, Categories Bar, Mobile Categories Grid, Mobile Prime Bar */}
+      {/*
       {/* Drawer Menu */}
-      {isDrawerOpen && (
+      {/* isDrawerOpen && (
         <div
           className="fixed inset-0 z-30"
           onClick={handleDrawerClose}
@@ -378,9 +372,9 @@ const router = useRouter();
           aria-label="Mobile menu"
         >
           {/* Header */}
-          <div className="bg-gray-900 text-white p-4 flex items-center justify-between sticky top-0 z-50">
+      {/*    <div className="bg-gray-900 text-white p-4 flex items-center justify-between sticky top-0 z-50">
             {/* ✅ Drawer Menu তে User চেক */}
-            {user ? (
+      {/*      {user ? (
               <div className="flex items-center gap-2">
                 {user.image ? (
                   <Image
@@ -421,7 +415,7 @@ const router = useRouter();
           </div>
 
           {/* Menu Sections */}
-          <div>
+      {/*    <div>
             {MENU_SECTIONS.map((section, idx) => (
               <div key={idx} className="border-b border-gray-200">
                 <button
@@ -457,7 +451,7 @@ const router = useRouter();
           </div>
 
           {/* Help & Settings */}
-          <div className="border-t-2 border-gray-200 p-4 space-y-3">
+      {/*    <div className="border-t-2 border-gray-200 p-4 space-y-3">
             <p className="font-bold text-gray-900 mb-4 text-sm">
               Help & Settings
             </p>
@@ -487,11 +481,11 @@ const router = useRouter();
       )}
 
       {/* Categories Bar - Desktop */}
-      <div className="hidden lg:block bg-rose-400">
+      {/*  <div className="hidden lg:block bg-rose-400">
         <div className="max-w-full px-6">
           <div className="flex items-stretch">
             {/* Menu button */}
-            <button
+      {/*      <button
               onClick={handleDrawerToggle}
               className="p-2 hover:bg-rose-500 rounded transition text-white flex items-center justify-center"
               aria-label="Open menu"
@@ -515,7 +509,7 @@ const router = useRouter();
       </div>
 
       {/* Mobile Categories Grid - Horizontally scrollable */}
-      <div className="lg:hidden bg-gray-50 border-b border-gray-200">
+      {/*  <div className="lg:hidden bg-gray-50 border-b border-gray-200">
         <div className="px-3 sm:px-4 py-3">
           <div
             className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
@@ -543,13 +537,14 @@ const router = useRouter();
       </div>
 
       {/* Mobile Location & Prime Bar */}
-      <div className="lg:hidden bg-blue-50 border-b border-blue-200">
+      {/*  <div className="lg:hidden bg-blue-50 border-b border-blue-200">
         <div className="px-3 sm:px-4 py-3 flex items-center justify-between gap-2">
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold transition-colors shrink-0 whitespace-nowrap">
             Join Prime
           </button>
         </div>
       </div>
+      */}
 
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {

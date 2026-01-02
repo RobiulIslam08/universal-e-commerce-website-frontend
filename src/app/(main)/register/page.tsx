@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerUser } from "@/services/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 
@@ -35,6 +35,8 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const {
     register,
     handleSubmit,
@@ -52,7 +54,7 @@ export default function RegisterPage() {
       if (res.success) {
         // ২. সফল হলে টোস্ট দেখানো এবং রিডাইরেক্ট করা
         toast.success(res.message || "Registration Successful!");
-        router.push("/");
+        router.push(callbackUrl);
       } else {
         // যদি API থেকে success: false আসে
         toast.error(res.message || "Registration failed");
@@ -100,7 +102,7 @@ export default function RegisterPage() {
   const handleGoogleLogin = async () => {
     try {
       await signIn("google", {
-        callbackUrl: "/", // সফল login এর পর কোথায় redirect করবে
+        callbackUrl: callbackUrl, // সফল login এর পর কোথায় redirect করবে
       });
     } catch (error) {
       console.error("Google login error:", error);

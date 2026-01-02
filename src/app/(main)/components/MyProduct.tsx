@@ -44,7 +44,7 @@ export default function MyProduct() {
     <div className="bg-white rounded-2xl shadow-xl p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-          My Added Products
+          Our Products
         </h2>
         <Badge className="bg-rose-600 text-white text-sm px-4 py-2">
           {products.length} Products

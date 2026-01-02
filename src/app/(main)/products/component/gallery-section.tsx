@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import {  TrendingUp, Users } from "lucide-react";
+import { useState, useRef } from "react";
+import { TrendingUp, Users } from "lucide-react";
 import Image from "next/image";
 
 interface GallerySectionProps {
@@ -12,13 +12,20 @@ interface GallerySectionProps {
 
 export default function GallerySection({
   images,
-  
+
   soldCount = 0,
   isTrending = false,
 }: GallerySectionProps) {
   const [activeImage, setActiveImage] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
   const [isHovered, setIsHovered] = useState(false);
+  const [lensPosition, setLensPosition] = useState({ x: 0, y: 0 });
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const imageContainerRef = useRef<HTMLDivElement>(null);
+
+  // Magnifier settings
+  const ZOOM_LEVEL = 2.5;
+  const LENS_SIZE = 150;
 
   // Safety check: return early if images array is empty or undefined
   if (!images || images.length === 0) {
@@ -34,6 +41,40 @@ export default function GallerySection({
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
     setMousePosition({ x, y });
+  };
+
+  // Handle magnifier mouse move
+  const handleImageMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imageContainerRef.current) return;
+
+    const rect = imageContainerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Calculate lens position (centered on cursor)
+    const lensX = Math.max(
+      0,
+      Math.min(x - LENS_SIZE / 2, rect.width - LENS_SIZE)
+    );
+    const lensY = Math.max(
+      0,
+      Math.min(y - LENS_SIZE / 2, rect.height - LENS_SIZE)
+    );
+
+    setLensPosition({ x: lensX, y: lensY });
+
+    // Calculate zoom position as percentage
+    const zoomX = (x / rect.width) * 100;
+    const zoomY = (y / rect.height) * 100;
+    setZoomPosition({ x: zoomX, y: zoomY });
+  };
+
+  const handleImageMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleImageMouseLeave = () => {
+    setIsHovered(false);
   };
 
   return (
@@ -64,31 +105,18 @@ export default function GallerySection({
       <div
         className="relative transition-transform duration-300"
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{
-          transform: isHovered
-            ? `perspective(1000px) rotateY(${
-                (mousePosition.x - 0.5) * 10
-              }deg) rotateX(${(mousePosition.y - 0.5) * -10}deg) scale(1.02)`
-            : "perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)",
-        }}
       >
         {/* Premium Glass Card */}
-        <div className="relative aspect-square bg-linear-to-br from-white/70 via-rose-50/60 to-purple-50/70 dark:from-slate-900/70 dark:via-rose-950/50 dark:to-purple-950/60 backdrop-blur-3xl rounded-[3rem] border border-white/40 dark:border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden group">
-         
-
-          {/* Main Product Image */}
-          <div className="flex items-center justify-center h-full relative">
-            <div
-              className="relative w-full h-full flex items-center justify-center p-8 transition-all duration-700"
-              style={{
-                transform: `scale(${isHovered ? 1.1 : 1}) rotateZ(${
-                  isHovered ? 5 : 0
-                }deg)`,
-                animation: "float 6s ease-in-out infinite",
-              }}
-            >
+        <div className="relative aspect-square bg-linear-to-br from-white/70 via-rose-50/60 to-purple-50/70 dark:from-slate-900/70 dark:via-rose-950/50 dark:to-purple-950/60 backdrop-blur-3xl rounded-sm border overflow-hidden group">
+          {/* Main Product Image with Magnifier */}
+          <div
+            ref={imageContainerRef}
+            className="flex items-center justify-center h-full relative cursor-crosshair"
+            onMouseMove={handleImageMouseMove}
+            onMouseEnter={handleImageMouseEnter}
+            onMouseLeave={handleImageMouseLeave}
+          >
+            <div className="relative w-full h-full flex items-center justify-center p-8 transition-all duration-700">
               <Image
                 src={images[activeImage]}
                 alt="Product"
@@ -100,11 +128,44 @@ export default function GallerySection({
                 }
               />
             </div>
+
+            {/* Magnifier Lens (shows on image hover) */}
+            {isHovered && (
+              <div
+                className="absolute pointer-events-none border-2 border-rose-500/50 bg-white/10 backdrop-blur-sm rounded-full shadow-lg z-10"
+                style={{
+                  width: LENS_SIZE,
+                  height: LENS_SIZE,
+                  left: lensPosition.x,
+                  top: lensPosition.y,
+                  boxShadow:
+                    "0 0 0 3px rgba(244, 63, 94, 0.2), 0 8px 32px rgba(0, 0, 0, 0.15)",
+                }}
+              />
+            )}
           </div>
 
           {/* Bottom Glow */}
           <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-linear-to-t from-rose-500/20 via-purple-500/10 to-transparent blur-xl pointer-events-none" />
         </div>
+
+        {/* Zoomed Image Preview (appears on right side like Daraz) */}
+        {isHovered && (
+          <div
+            className="absolute left-[calc(100%+16px)] top-0 w-[500px] h-[500px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-2xl overflow-hidden z-50 hidden lg:block"
+            style={{
+              backgroundImage: `url(${images[activeImage]})`,
+              backgroundSize: `${ZOOM_LEVEL * 100}%`,
+              backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            {/* Zoom level indicator */}
+            <div className="absolute bottom-3 right-3 px-3 py-1.5 bg-black/70 text-white text-xs font-medium rounded-full">
+              {ZOOM_LEVEL}x Zoom
+            </div>
+          </div>
+        )}
 
         {/* Image Thumbnails Grid */}
         <div className="grid grid-cols-4 gap-3 mt-6">

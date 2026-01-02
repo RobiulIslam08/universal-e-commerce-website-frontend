@@ -52,7 +52,7 @@ export default async function CategoryPage({ params }: Props) {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {products.map((product) => (
             <ProductCard
-              key={product.id}
+              key={product._id || product.id || product.slug}
               slug={product.slug}
               title={product.title}
               price={`$${product.price}`}

@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/components/common/Loading";
 import { makeStore } from "@/redux/store";
 import { useState } from "react"; // useRef বাদ দিয়ে useState নিন
 import { Provider } from "react-redux";
@@ -22,7 +23,7 @@ export default function StoreProvider({
     // এখন আর কোনো ref.current এরর আসবে না কারণ এটি এখন State
     <Provider store={storeData.store}>
       <PersistGate 
-        loading={<p>Loading...</p>} 
+        loading=<Loading/>
         persistor={storeData.persistor}
       >
         {children}

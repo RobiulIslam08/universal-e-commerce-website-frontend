@@ -66,7 +66,7 @@ export default function PremiumCheckoutPage() {
   // Get cart data from Redux
   // ⚠️ নিশ্চিত হোন এখানে item এর মধ্যে _id বা id ফিল্ড আছে
   const cartItems = useAppSelector((state) => state.cart.products);
-  
+
   const subtotal = useAppSelector((state) => {
     return state.cart.products.reduce((acc, product) => {
       const price = product.offerPrice || product.price;
@@ -97,7 +97,7 @@ export default function PremiumCheckoutPage() {
 
         if (!user || !user.userId) {
           toast.error("Please login to continue checkout");
-          router.push("/login");
+          router.push("/login?callbackUrl=/checkout");
           return;
         }
 
@@ -106,7 +106,7 @@ export default function PremiumCheckoutPage() {
       } catch (error) {
         console.error("❌ Error loading user:", error);
         toast.error("Authentication error. Please login again.");
-        router.push("/login");
+        router.push("/login?callbackUrl=/checkout");
       }
     };
 
@@ -168,7 +168,7 @@ export default function PremiumCheckoutPage() {
               },
               // 🔥 FIX: Product ID Mapping Here Too (for completeness)
               items: cartItems.map((item: any) => ({
-                productId: item._id || item.id || item.productId, 
+                productId: item._id || item.id || item.productId,
                 productName: item.name,
                 quantity: item.orderQuantity,
                 price: item.offerPrice || item.price,
@@ -218,14 +218,7 @@ export default function PremiumCheckoutPage() {
       id: 2,
       title: "Delivery",
       icon: MapPin,
-      fields: [
-        "firstName",
-        "lastName",
-        "address",
-        "city",
-        "state",
-        "zipCode",
-      ],
+      fields: ["firstName", "lastName", "address", "city", "state", "zipCode"],
     },
     {
       id: 3,
@@ -285,13 +278,13 @@ export default function PremiumCheckoutPage() {
     // Submit logic is handled by handlePaymentSuccess for cards
     // This is mainly for COD or manual submission
     if (paymentMethod !== "card") {
-        setProcessing(true);
-        // ... COD Logic ...
-        setTimeout(() => {
-            setProcessing(false);
-            toast.success("Order placed successfully! 🎉");
-            router.push("/order-confirmation");
-        }, 2000);
+      setProcessing(true);
+      // ... COD Logic ...
+      setTimeout(() => {
+        setProcessing(false);
+        toast.success("Order placed successfully! 🎉");
+        router.push("/order-confirmation");
+      }, 2000);
     }
   };
 
@@ -305,21 +298,22 @@ export default function PremiumCheckoutPage() {
 
     try {
       console.log("✅ Payment successful, confirming with backend...");
-      
+
       // ✅ ১. ফর্মের লেটেস্ট ডাটা নেওয়া
-      const formData = getValues(); 
+      const formData = getValues();
 
       // ✅ ২. ব্যাকএন্ডের Zod Schema অনুযায়ী ডাটা সাজানো
       const paymentPayload = {
         userId: currentUser.userId,
         userEmail: currentUser.email || formData.email,
-        userName: currentUser.name || `${formData.firstName} ${formData.lastName}`,
+        userName:
+          currentUser.name || `${formData.firstName} ${formData.lastName}`,
         paymentIntentId: paymentIntentId,
         amount: grandTotal,
         currency: "USD",
         status: "succeeded", // ✅ FIX: ব্যাকএন্ড Enum অনুযায়ী ছোট হাতের 'succeeded'
         paymentMethod: "Card",
-        
+
         // 🔥 FIX: Product ID Mapping
         // আপনার কার্ট অবজেক্টে প্রোডাক্টের আইডি সাধারণত _id বা id তে থাকে।
         // item.userId সচরাচর ভেন্ডর আইডি হয়, তাই এটি ব্যবহার করা ভুল হতে পারে।
@@ -341,7 +335,7 @@ export default function PremiumCheckoutPage() {
           zipCode: formData.zipCode,
           country: "US",
           // Zod Schema অনুযায়ী phone required
-          phone: formData.phone || formData.mobileNumber || "N/A", 
+          phone: formData.phone || formData.mobileNumber || "N/A",
         },
       };
 
@@ -364,11 +358,12 @@ export default function PremiumCheckoutPage() {
       } else {
         // Zod Validation Error বা অন্য এরর হ্যান্ডলিং
         console.error("❌ Payment verification failed:", result);
-        
+
         // Zod এরর ডিটেইলস দেখানোর চেষ্টা
-        const errorMsg = result.error?.issues?.[0]?.message || 
-                         result.error || 
-                         "Payment verification failed";
+        const errorMsg =
+          result.error?.issues?.[0]?.message ||
+          result.error ||
+          "Payment verification failed";
         toast.error(errorMsg);
       }
     } catch (error) {
@@ -401,8 +396,6 @@ export default function PremiumCheckoutPage() {
 
       <div className="container mx-auto px-4 py-8">
         <StepIndicator steps={steps} currentStep={currentStep} />
-
-     
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Forms */}

@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 
 import { signIn } from "next-auth/react";
 import { toast, Toaster } from "sonner"; // Toaster ইমপোর্ট করা হয়েছে
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loginUser } from "@/services/auth";
 
 export interface LoginFormValues {
@@ -25,6 +25,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const {
     register,
     handleSubmit,
@@ -42,7 +44,7 @@ export default function LoginPage() {
 
         // টোস্ট দেখার জন্য সামান্য সময় নিয়ে রিডাইরেক্ট করা ভালো
         setTimeout(() => {
-          router.push("/");
+          router.push(callbackUrl);
         }, 1000);
       } else {
         // যদি API থেকে success: false আসে
@@ -83,7 +85,7 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     try {
       await signIn("google", {
-        callbackUrl: "/", // সফল login এর পর কোথায় redirect করবে
+        callbackUrl: callbackUrl, // সফল login এর পর কোথায় redirect করবে
       });
     } catch (error) {
       console.error("Google login error:", error);
