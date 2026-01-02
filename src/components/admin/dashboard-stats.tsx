@@ -38,18 +38,18 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
       iconBg: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
       accent: "text-red-600 dark:text-red-400",
     },
-    {
-      title: "Inventory Value",
-      value: `$${(stats.totalValue / 1000).toFixed(1)}k`,
-      icon: "💰",
-      gradient: "from-primary/10 to-rose-500/10 dark:from-primary/20 dark:to-rose-900/20",
-      iconBg: "bg-primary/20 text-primary dark:bg-primary/30",
-      accent: "text-primary",
-    },
+    // {
+    //   title: "Inventory Value",
+    //   value: `$${(stats.totalValue / 1000).toFixed(1)}k`,
+    //   icon: "💰",
+    //   gradient: "from-primary/10 to-rose-500/10 dark:from-primary/20 dark:to-rose-900/20",
+    //   iconBg: "bg-primary/20 text-primary dark:bg-primary/30",
+    //   accent: "text-primary",
+    // },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {statItems.map((item, index) => (
         <Card
           key={index}
