@@ -49,7 +49,7 @@ const Navbar = memo(function Navbar({
       );
       setSearchQuery("");
     }
-   
+   console.log(' ')
   };
 
   // ✅ ২. handleSignOut ফাংশন আপডেট করুন
