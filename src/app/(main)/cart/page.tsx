@@ -108,7 +108,7 @@ export default function PremiumCartPage() {
   // Calculate totals
   const discount = appliedCoupon ? subtotal * COUPON_DISCOUNT_RATE : 0;
   const shipping = subtotal > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-  const tax = (subtotal - discount) * TAX_RATE;
+  const tax = TAX_RATE;
   const total = subtotal - discount + shipping + tax;
 
   // --- Actions ---
