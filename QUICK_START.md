@@ -27,7 +27,7 @@ export default function Header() {
 
 ```bash
 # .env.local
-NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5000/api/v1
 ```
 
 ### 3. Install Required Packages
@@ -278,7 +278,7 @@ searchTerm    - Search query
 
 ### Issue 1: Categories Not Loading
 
-**Solution:** Check if backend API is running and NEXT_PUBLIC_API_URL is set
+**Solution:** Check if backend API is running and NEXT_PUBLIC_BACKEND_URL is set
 
 ### Issue 2: Products Not Filtering
 
@@ -299,7 +299,7 @@ searchTerm    - Search query
 ## 🚀 Deployment Checklist
 
 - [ ] Backend API is deployed and accessible
-- [ ] Environment variable NEXT_PUBLIC_API_URL is set
+- [ ] Environment variable NEXT_PUBLIC_BACKEND_URL is set
 - [ ] Categories are created in database
 - [ ] Products are linked to categories
 - [ ] Test all category pages

@@ -110,7 +110,7 @@ Body:
 **সমাধান**:
 
 1. Check করুন backend server চালু আছে কিনা
-2. `.env.local` file check করুন: `NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1`
+2. `.env.local` file check করুন: `NEXT_PUBLIC_BACKEND_URL=http://localhost:5000/api/v1`
 3. Frontend server restart করুন: `npm run dev`
 
 ### Issue 3: Categories Load হচ্ছে কিন্তু Subcategories না
@@ -199,7 +199,7 @@ Frontend console এ এই commands run করে test করুন:
 
 ```javascript
 // Check API URL
-console.log(process.env.NEXT_PUBLIC_API_URL);
+console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
 
 // Manually test category fetch
 fetch("http://localhost:5000/api/v1/categories/root")

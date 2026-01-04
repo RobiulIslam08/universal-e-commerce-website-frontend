@@ -37,7 +37,7 @@ import { Plus, Edit, Trash2, Loader2, FolderTree } from "lucide-react";
 import { ICategoryWithCount } from "@/types/category";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api/v1";
 
 export default function CategoryManagement() {
   const [categories, setCategories] = useState<ICategoryWithCount[]>([]);

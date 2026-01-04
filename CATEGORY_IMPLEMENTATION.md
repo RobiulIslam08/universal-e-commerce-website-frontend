@@ -234,7 +234,7 @@ User visits /category/men
 ### Environment Variables
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5000/api/v1
 ```
 
 ### API Service Configuration
@@ -242,7 +242,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
 ```typescript
 // src/services/category/index.ts
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api/v1";
 
 // Cache settings
 next: {
