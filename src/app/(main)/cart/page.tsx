@@ -30,11 +30,8 @@ import { CART_CONSTANTS } from "@/constants/cart";
 
 const {
   CURRENCY,
-  FREE_SHIPPING_THRESHOLD,
   SHIPPING_COST,
   TAX_RATE,
-  COUPON_DISCOUNT_RATE,
-  VALID_COUPON,
   REMOVE_ANIMATION_DELAY,
   TOAST_DURATION,
 } = CART_CONSTANTS;
@@ -45,8 +42,6 @@ export default function PremiumCartPage() {
 
   const [removingItem, setRemovingItem] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
 
   // State for deselected Items (stores IDs of deselected items)
   const [deselectedItems, setDeselectedItems] = useState<string[]>([]);
@@ -106,8 +101,8 @@ export default function PremiumCartPage() {
   );
 
   // Calculate totals
-  const discount = appliedCoupon ? subtotal * COUPON_DISCOUNT_RATE : 0;
-  const shipping = subtotal > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const discount = 0; // No coupon discount
+  const shipping = SHIPPING_COST; // Always charge shipping
   const tax = TAX_RATE;
   const total = subtotal - discount + shipping + tax;
 
@@ -154,21 +149,6 @@ export default function PremiumCartPage() {
       } removed from cart`,
       duration: TOAST_DURATION.MEDIUM,
     });
-  };
-
-  const applyCoupon = () => {
-    if (couponCode.toUpperCase() === VALID_COUPON) {
-      setAppliedCoupon(VALID_COUPON);
-      toast.success("Coupon Applied!", {
-        description: "You saved 10% on your order",
-        duration: TOAST_DURATION.MEDIUM,
-      });
-    } else if (couponCode.trim() !== "") {
-      toast.error("Invalid Coupon", {
-        description: "Please check the coupon code and try again",
-        duration: TOAST_DURATION.MEDIUM,
-      });
-    }
   };
 
   const handleCheckout = () => {
@@ -283,14 +263,9 @@ export default function PremiumCartPage() {
                 <CartSummary
                   subtotal={subtotal}
                   savings={savings}
-                  discount={discount}
                   shipping={shipping}
                   tax={tax}
                   total={total}
-                  couponCode={couponCode}
-                  appliedCoupon={appliedCoupon}
-                  setCouponCode={setCouponCode}
-                  applyCoupon={applyCoupon}
                   handleCheckout={handleCheckout}
                   isCheckoutDisabled={selectedCartItems.length === 0}
                 />

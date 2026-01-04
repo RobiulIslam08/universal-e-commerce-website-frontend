@@ -1,10 +1,9 @@
 
-
 "use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Minus, Plus, ShoppingBag, Check, CreditCard } from "lucide-react"; // CreditCard icon added
+import { Minus, Plus, ShoppingBag, Check, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IProduct } from "@/types/product";
 import { useAppDispatch } from "@/redux/hooks";
@@ -18,14 +17,12 @@ export default function DetailsSection({ product }: { product: IProduct }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  // --- BUG FIX: Handle Buy Logic ---
   const handleBuy = () => {
-    // লজিক ফিক্স: লুপ চালিয়ে সিলেক্ট করা quantity অনুযায়ী কার্টে অ্যাড করা হচ্ছে
-    for (let i = 0; i < quantity; i++) {
-      dispatch(addProduct(product));
-    }
-    // এরপর চেকআউট পেজে রিডাইরেক্ট
-    router.push(`/checkout?buyNow=${product._id}`);
+    // ১. প্রোডাক্টটি একবার কার্টে অ্যাড করে রাখা (যাতে Checkout পেজ Redux এ খুঁজে পায়)
+    dispatch(addProduct(product));
+
+    // ২. URL এ productId এবং সিলেক্ট করা quantity পাঠানো
+    router.push(`/checkout?buyNow=${product._id}&quantity=${quantity}`);
   };
 
   const handleAddToCart = () => {
@@ -40,11 +37,11 @@ export default function DetailsSection({ product }: { product: IProduct }) {
 
   const isOutOfStock = !product.stockQuantity || product.stockQuantity <= 0;
 
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
   };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
@@ -62,18 +59,9 @@ export default function DetailsSection({ product }: { product: IProduct }) {
         <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
           {product.title}
         </h1>
-
         <div className="inline-flex items-center">
-          <span
-            className={`text-xs font-medium px-2.5 py-1 rounded-md border ${
-              !isOutOfStock
-                ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800"
-                : "bg-red-50 text-red-700 border-red-200"
-            }`}
-          >
-            {!isOutOfStock
-              ? `In Stock (${product.stockQuantity} available)`
-              : "Out of Stock"}
+          <span className={`text-xs font-medium px-2.5 py-1 rounded-md border ${!isOutOfStock ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800" : "bg-red-50 text-red-700 border-red-200"}`}>
+            {!isOutOfStock ? `In Stock (${product.stockQuantity} available)` : "Out of Stock"}
           </span>
         </div>
       </motion.div>
@@ -106,75 +94,38 @@ export default function DetailsSection({ product }: { product: IProduct }) {
         <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-foreground">Quantity</span>
             <div className="flex items-center border rounded-lg bg-background w-fit">
-            <Button
-                variant="ghost"
-                size="icon"
-                disabled={isOutOfStock || quantity <= 1}
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="h-9 w-9 hover:bg-transparent hover:text-rose-600"
-            >
+            <Button variant="ghost" size="icon" disabled={isOutOfStock || quantity <= 1} onClick={() => setQuantity((q) => Math.max(1, q - 1))} className="h-9 w-9 hover:bg-transparent hover:text-rose-600">
                 <Minus className="w-3.5 h-3.5" />
             </Button>
             <span className="w-8 text-center text-sm font-semibold tabular-nums">
                 {quantity}
             </span>
-            <Button
-                variant="ghost"
-                size="icon"
-                disabled={isOutOfStock || quantity >= product.stockQuantity}
-                onClick={() =>
-                setQuantity((q) => Math.min(product.stockQuantity || 10, q + 1))
-                }
-                className="h-9 w-9 hover:bg-transparent hover:text-rose-600"
-            >
+            <Button variant="ghost" size="icon" disabled={isOutOfStock || quantity >= product.stockQuantity} onClick={() => setQuantity((q) => Math.min(product.stockQuantity || 10, q + 1))} className="h-9 w-9 hover:bg-transparent hover:text-rose-600">
                 <Plus className="w-3.5 h-3.5" />
             </Button>
             </div>
         </div>
 
-        {/* Buttons Grid - Swapped Visibility */}
+        {/* Buttons Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
           
-          {/* Add to Cart - Now SECONDARY (Less Visible) */}
-          <Button
-            size="lg"
-            variant="outline"
-            className="order-2 sm:order-1 h-12 font-semibold text-base border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:hover:bg-rose-950 transition-colors"
-            onClick={handleAddToCart}
-            disabled={isOutOfStock}
-          >
+          {/* Add to Cart */}
+          <Button size="lg" variant="outline" className="order-2 sm:order-1 h-12 font-semibold text-base border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:hover:bg-rose-950 transition-colors" onClick={handleAddToCart} disabled={isOutOfStock}>
             <AnimatePresence mode="wait" initial={false}>
               {isAdding ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2"
-                >
+                <motion.div key="success" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-2">
                   <Check className="w-5 h-5" /> Added
                 </motion.div>
               ) : (
-                <motion.div
-                  key="idle"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2"
-                >
+                <motion.div key="idle" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-2">
                   <ShoppingBag className="w-5 h-5" /> Add to Cart
                 </motion.div>
               )}
             </AnimatePresence>
           </Button>
 
-          {/* Buy Now - Now PRIMARY (More Visible) */}
-          <Button
-            size="lg"
-            className="order-1 sm:order-2 h-12 font-bold text-base bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-200 dark:shadow-none transition-all duration-300"
-            onClick={handleBuy}
-            disabled={isOutOfStock}
-          >
+          {/* Buy Now */}
+          <Button size="lg" className="order-1 sm:order-2 h-12 font-bold text-base bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-200 dark:shadow-none transition-all duration-300" onClick={handleBuy} disabled={isOutOfStock}>
             <CreditCard className="w-5 h-5 mr-2" /> Buy Now
           </Button>
           
