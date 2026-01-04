@@ -34,13 +34,16 @@ export default async function ProductsPage({ searchParams }: Props) {
   // Build query string for backend
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("searchTerm", searchTerm);
+  
   if (category) queryParams.append("category", category);
   if (page) queryParams.append("page", page);
 
   // Fetch products from backend
   const res = await getAllProducts(queryParams.toString());
   const products: IProduct[] = res?.data || [];
+  console.log(products)
   const meta = res?.meta;
+ 
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -60,7 +63,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
             {searchTerm ? (
               <>
-                Search results for{" "}
+                Search results for {" "}
                 <span className="text-rose-500">&quot;{searchTerm}&quot;</span>
               </>
             ) : (

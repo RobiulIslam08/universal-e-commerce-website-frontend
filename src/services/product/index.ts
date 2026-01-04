@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { cookies } from "next/headers";
@@ -59,36 +60,75 @@ export const getAllProducts = async (query?: string) => {
       return { success: false, data: [] };
     }
 
-    const res = await fetch(
-      `${backendUrl}/products${query ? `?${query}` : ""}`,
-      {
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Parse query to check if it's a search request
+    const urlParams = new URLSearchParams(query || '');
+    const searchTerm = urlParams.get('searchTerm');
+    
+    console.log('🔍 getAllProducts called with:', { query, searchTerm });
+
+    let apiUrl;
+
+    if (searchTerm && searchTerm.trim()) {
+      // ✅ FIXED: Use products endpoint instead of search endpoint to avoid 400 error
+      console.log(`🎯 Using products endpoint for search: "${searchTerm.trim()}"`);
+      apiUrl = `${backendUrl}/products?searchTerm=${encodeURIComponent(searchTerm.trim())}`;
+    } else {
+      // Use regular products endpoint with filters
+      console.log('📦 Using products endpoint with filters');
+      apiUrl = `${backendUrl}/products${query ? `?${query}` : ""}`;
+    }
+
+    console.log('📡 API Request URL:', apiUrl);
+
+    const res = await fetch(apiUrl, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log(`📡 Response: ${res.status} ${res.statusText}`);
 
     if (!res.ok) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(
-          `Failed to fetch products: ${res.status} ${res.statusText}`
-        );
+      console.error(`❌ API request failed: ${res.status} ${res.statusText}`);
+      
+      // Log response details for debugging
+      try {
+        const errorText = await res.text();
+        console.error('❌ Error response body:', errorText.substring(0, 500));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {
+        console.error('❌ Could not read error response');
       }
+      
       return { success: false, data: [] };
     }
 
     const data = await res.json();
-    console.log(
-      "getAllProducts - Raw API response:",
-      JSON.stringify(data).substring(0, 500)
-    );
+    
+    if (searchTerm) {
+      console.log(`✅ Search completed for "${searchTerm}"`);
+      console.log(`📊 Results: ${data.data?.length || 0} products found`);
+      
+      if (data.data && data.data.length > 0) {
+        console.log('🎯 Search results:');
+        data.data.forEach((product: any, index: number) => {
+          console.log(`  ${index + 1}. "${product.title}" (${product.category}) - SKU: ${product.sku}`);
+        });
+      } else {
+        console.log('🔍 No products found for this search');
+      }
+    } else {
+      console.log('📦 Products retrieved:', data.data?.length || 0);
+    }
+    
     return data;
   } catch (error: unknown) {
+    console.error('💥 Error in getAllProducts:', error);
     if (error instanceof Error) {
-      return Error(error.message);
+      return { success: false, data: [], error: error.message };
     }
-    return Error("Something went wrong");
+    return { success: false, data: [], error: "Something went wrong" };
   }
 };
 

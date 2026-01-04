@@ -34,6 +34,7 @@ export default async function CategoryPage({ params }: Props) {
     <div className="container mx-auto px-4 py-8 min-h-screen">
       <div className="mb-8">
         <h1 className="text-3xl font-bold capitalize mb-2">{categoryName}</h1>
+        
         <p className="text-gray-500">
           Found {products.length} products in {categoryName}
         </p>
