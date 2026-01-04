@@ -41,7 +41,7 @@ export default function MyProduct() {
   console.log("First product id:", products[0]?.id);
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6">
+    <div className="">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
           Our Products

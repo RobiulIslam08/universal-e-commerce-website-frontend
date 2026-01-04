@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -22,9 +22,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "./image-upload";
-import { categories } from "@/constants/products";
 import { addProduct } from "@/services/product";
 import { toast } from "sonner";
+import { getRootCategories, getSubCategories } from "@/services/category";
+import { ICategoryWithCount } from "@/types/category";
+import { Loader2 } from "lucide-react";
 
 const productSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -60,12 +62,19 @@ export default function AddProductForm() {
   const [specKey, setSpecKey] = useState("");
   const [specValue, setSpecValue] = useState("");
 
+  // Category states
+  const [categories, setCategories] = useState<ICategoryWithCount[]>([]);
+  const [subCategories, setSubCategories] = useState<ICategoryWithCount[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingSubCategories, setLoadingSubCategories] = useState(false);
+
   const {
     control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -81,22 +90,65 @@ export default function AddProductForm() {
     },
   });
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const selectedCategorySlug = watch("category");
 
-  const subCategories = useMemo(() => {
-    const subs: { [key: string]: string[] } = {
-      electronics: ["Audio", "Wearables", "PC Accessories"],
-      fashion: ["Apparel", "Footwear", "Accessories"],
-      "home-kitchen": ["Kitchen", "Bedroom", "Living Room"],
-      beauty: ["Skincare", "Haircare", "Makeup"],
-      sports: ["Equipment", "Apparel", "Accessories"],
-      toys: ["Dolls", "Action Figures", "Educational"],
-      books: ["Fiction", "Non-Fiction", "Educational"],
-      gaming: ["Consoles", "Games", "Accessories"],
+  // Fetch root categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      try {
+        console.log("Fetching root categories...");
+        const data = await getRootCategories();
+        console.log("Root categories received:", data);
+        setCategories(data);
+
+        if (data.length === 0) {
+          toast.warning("No categories found. Please add categories first.");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error(
+          "Failed to load categories. Please check your backend connection."
+        );
+      } finally {
+        setLoadingCategories(false);
+      }
     };
-    return subs[selectedCategorySlug] || [];
-  }, [selectedCategorySlug]);
+
+    fetchCategories();
+  }, []);
+
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      if (!selectedCategorySlug) {
+        setSubCategories([]);
+        setValue("subCategory", "");
+        return;
+      }
+
+      setLoadingSubCategories(true);
+      try {
+        console.log(`Fetching subcategories for: ${selectedCategorySlug}`);
+        const data = await getSubCategories(selectedCategorySlug);
+        console.log("Subcategories received:", data);
+        setSubCategories(data);
+        setValue("subCategory", ""); // Reset subcategory when category changes
+
+        if (data.length === 0) {
+          toast.info(`No subcategories found for this category.`);
+        }
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+        toast.error("Failed to load subcategories");
+        setSubCategories([]);
+      } finally {
+        setLoadingSubCategories(false);
+      }
+    };
+
+    fetchSubCategories();
+  }, [selectedCategorySlug, setValue]);
 
   const handleAddSpec = () => {
     if (specKey && specValue) {
@@ -229,16 +281,36 @@ export default function AddProductForm() {
                   name="category"
                   control={control}
                   render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={loadingCategories}
+                    >
                       <SelectTrigger className="mt-1 bg-input border-border">
-                        <SelectValue placeholder="Select category" />
+                        <SelectValue
+                          placeholder={
+                            loadingCategories
+                              ? "Loading categories..."
+                              : "Select category"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.slug}>
-                            {cat.name}
-                          </SelectItem>
-                        ))}
+                        {loadingCategories ? (
+                          <div className="flex items-center justify-center py-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          </div>
+                        ) : categories.length === 0 ? (
+                          <div className="text-sm text-muted-foreground text-center py-2">
+                            No categories available
+                          </div>
+                        ) : (
+                          categories.map((cat) => (
+                            <SelectItem key={cat._id} value={cat.slug}>
+                              {cat.name} ({cat.productCount})
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   )}
@@ -261,17 +333,35 @@ export default function AddProductForm() {
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
-                      disabled={!selectedCategorySlug}
+                      disabled={!selectedCategorySlug || loadingSubCategories}
                     >
                       <SelectTrigger className="mt-1 bg-input border-border">
-                        <SelectValue placeholder="Select sub-category" />
+                        <SelectValue
+                          placeholder={
+                            !selectedCategorySlug
+                              ? "Select category first"
+                              : loadingSubCategories
+                              ? "Loading subcategories..."
+                              : "Select sub-category"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        {subCategories.map((sub) => (
-                          <SelectItem key={sub} value={sub}>
-                            {sub}
-                          </SelectItem>
-                        ))}
+                        {loadingSubCategories ? (
+                          <div className="flex items-center justify-center py-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          </div>
+                        ) : subCategories.length === 0 ? (
+                          <div className="text-sm text-muted-foreground text-center py-2">
+                            No subcategories available
+                          </div>
+                        ) : (
+                          subCategories.map((sub) => (
+                            <SelectItem key={sub._id} value={sub.slug}>
+                              {sub.name} ({sub.productCount})
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   )}

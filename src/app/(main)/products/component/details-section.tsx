@@ -1,16 +1,12 @@
+
+
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Star, Minus, Plus, ShoppingBag, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Minus, Plus, ShoppingBag, Check, CreditCard } from "lucide-react"; // CreditCard icon added
 import { Button } from "@/components/ui/button";
 import { IProduct } from "@/types/product";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useAppDispatch } from "@/redux/hooks";
 import { addProduct } from "@/redux/features/cartSlice";
 import { useRouter } from "next/navigation";
@@ -22,40 +18,36 @@ export default function DetailsSection({ product }: { product: IProduct }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
+  // --- BUG FIX: Handle Buy Logic ---
   const handleBuy = () => {
-    // Add to cart first, then navigate with buyNow param
-    dispatch(addProduct(product));
+    // লজিক ফিক্স: লুপ চালিয়ে সিলেক্ট করা quantity অনুযায়ী কার্টে অ্যাড করা হচ্ছে
+    for (let i = 0; i < quantity; i++) {
+      dispatch(addProduct(product));
+    }
+    // এরপর চেকআউট পেজে রিডাইরেক্ট
     router.push(`/checkout?buyNow=${product._id}`);
   };
 
   const handleAddToCart = () => {
     setIsAdding(true);
-
     // Add product to cart with quantity
     for (let i = 0; i < quantity; i++) {
       dispatch(addProduct(product));
     }
-
     toast.success(`${quantity} ${product.title} added to cart!`);
-
     setTimeout(() => setIsAdding(false), 2000);
   };
 
+  const isOutOfStock = !product.stockQuantity || product.stockQuantity <= 0;
+
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
   return (
@@ -63,148 +55,130 @@ export default function DetailsSection({ product }: { product: IProduct }) {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="flex flex-col h-full"
+      className="flex flex-col gap-6"
     >
-      {/* 1.Header & Rating */}
-      <motion.div variants={itemVariants} className="space-y-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-primary bg-primary/5 w-fit px-3 py-1 rounded-full">
-          <Sparkles className="w-4 h-4" />
-          <span>Premium Selection</span>
-        </div>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight leading-[1.1]">
+      {/* 1. Header & Stock Badge */}
+      <motion.div variants={itemVariants} className="space-y-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
           {product.title}
         </h1>
 
-        <div className="flex items-center gap-4 text-sm">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center bg-rose-100/50 dark:bg-rose-900/30 px-3 py-1 rounded-lg cursor-help">
-                  <div className="flex text-orange-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < Math.floor(product.rating || 0)
-                            ? "fill-current"
-                            : "opacity-40"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="ml-2 font-bold text-foreground">
-                    {product.rating}
-                  </span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent className="bg-rose-50 text-rose-900 border-rose-200">
-                {" "}
-                Based on 124 verified reviews{" "}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        <div className="inline-flex items-center">
           <span
-            className={`text-sm font-medium px-3 py-1 rounded-full ${
-              product.stockQuantity > 0
-                ? "text-green-600 bg-green-50 dark:bg-green-900/20"
-                : "text-red-500 bg-red-50"
+            className={`text-xs font-medium px-2.5 py-1 rounded-md border ${
+              !isOutOfStock
+                ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800"
+                : "bg-red-50 text-red-700 border-red-200"
             }`}
           >
-            {product.stockQuantity > 0
+            {!isOutOfStock
               ? `In Stock (${product.stockQuantity} available)`
               : "Out of Stock"}
           </span>
         </div>
       </motion.div>
 
-      {/* 2. Price & Short Desc */}
-      <motion.div variants={itemVariants} className="mt-8 space-y-6">
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-          {product.shortDescription}
-        </p>
-
-        <div className="flex items-baseline gap-3">
-          <span className="text-5xl font-black text-primary">
-            ${product.price}
+      {/* 2. Price Section */}
+      <motion.div variants={itemVariants} className="flex items-baseline gap-3">
+        <span className="text-3xl md:text-4xl font-bold text-rose-600">
+          ${product.price}
+        </span>
+        {product.strikePrice && (
+          <span className="text-lg text-muted-foreground line-through">
+            ${product.strikePrice}
           </span>
-          {product.strikePrice && (
-            <span className="text-2xl text-muted-foreground line-through decoration-rose-300 decoration-2">
-              ${product.strikePrice}
-            </span>
-          )}
-        </div>
+        )}
       </motion.div>
 
-      {/* 3. Smart Actions (Quantity & Add to Cart) */}
-      <motion.div
-        variants={itemVariants}
-        className="mt-12 flex flex-col sm:flex-row gap-5 max-w-xl"
-      >
-        {/* Quantity Design */}
-        <div className="flex items-center justify-between border border-rose-200 dark:border-rose-800 rounded-2xl bg-white/50 dark:bg-card/50 p-1 shadow-sm w-full sm:w-40">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="hover:bg-rose-100 text-rose-700 rounded-xl h-10 w-10"
-          >
-            <Minus className="w-4 h-4" />
-          </Button>
-          <span className="font-bold text-xl w-12 text-center">{quantity}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() =>
-              setQuantity((q) => Math.min(product.stockQuantity || 10, q + 1))
-            }
-            className="hover:bg-rose-100 text-rose-700 rounded-xl h-10 w-10"
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
+      {/* 3. Description */}
+      <motion.div variants={itemVariants}>
+        <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+          {product.shortDescription}
+        </p>
+      </motion.div>
+
+      <motion.hr variants={itemVariants} className="border-gray-100 dark:border-gray-800" />
+
+      {/* 4. Actions Area */}
+      <motion.div variants={itemVariants} className="flex flex-col gap-5">
+        
+        {/* Quantity Selector */}
+        <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-foreground">Quantity</span>
+            <div className="flex items-center border rounded-lg bg-background w-fit">
+            <Button
+                variant="ghost"
+                size="icon"
+                disabled={isOutOfStock || quantity <= 1}
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="h-9 w-9 hover:bg-transparent hover:text-rose-600"
+            >
+                <Minus className="w-3.5 h-3.5" />
+            </Button>
+            <span className="w-8 text-center text-sm font-semibold tabular-nums">
+                {quantity}
+            </span>
+            <Button
+                variant="ghost"
+                size="icon"
+                disabled={isOutOfStock || quantity >= product.stockQuantity}
+                onClick={() =>
+                setQuantity((q) => Math.min(product.stockQuantity || 10, q + 1))
+                }
+                className="h-9 w-9 hover:bg-transparent hover:text-rose-600"
+            >
+                <Plus className="w-3.5 h-3.5" />
+            </Button>
+            </div>
         </div>
 
-        {/* Add to Cart Button with Micro-interaction */}
-        <div className="flex-1 relative z-10">
+        {/* Buttons Grid - Swapped Visibility */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          
+          {/* Add to Cart - Now SECONDARY (Less Visible) */}
           <Button
             size="lg"
-            className={`w-full h-[54px] text-lg font-bold rounded-2xl shadow-[0_8px_30px_-10px_rgba(225,29,72,0.4)] transition-all duration-500 ${
-              isAdding
-                ? "bg-green-500 hover:bg-green-600 w-[54px] rounded-full ml-auto"
-                : "bg-primary hover:bg-primary/90 hover:scale-[1.02] hover:shadow-[0_15px_30px_-10px_rgba(225,29,72,0.5)]"
-            } overflow-hidden relative`}
+            variant="outline"
+            className="order-2 sm:order-1 h-12 font-semibold text-base border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:hover:bg-rose-950 transition-colors"
             onClick={handleAddToCart}
-            disabled={!product.stockQuantity || product.stockQuantity <= 0}
+            disabled={isOutOfStock}
           >
-            {/* Button Content Animation */}
-            <motion.div
-              initial={false}
-              animate={{ y: isAdding ? -50 : 0, opacity: isAdding ? 0 : 1 }}
-              className="flex items-center justify-center absolute inset-0"
-            >
-              <ShoppingBag className="w-5 h-5 mr-2" /> Add to Cart
-            </motion.div>
-
-            {/* Success State Animation */}
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: isAdding ? 0 : 50, opacity: isAdding ? 1 : 0 }}
-              className="flex items-center justify-center absolute inset-0 text-white"
-            >
-              <Sparkles className="w-6 h-6" />
-            </motion.div>
+            <AnimatePresence mode="wait" initial={false}>
+              {isAdding ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center gap-2"
+                >
+                  <Check className="w-5 h-5" /> Added
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="idle"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center gap-2"
+                >
+                  <ShoppingBag className="w-5 h-5" /> Add to Cart
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Button>
-        </div>
 
-        {/* Buy Button */}
-        <Button
-          size="lg"
-          variant="outline"
-          className="h-[54px] px-8 text-lg font-bold rounded-2xl border-2 border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white transition-all duration-300"
-          onClick={handleBuy}
-          disabled={!product.stockQuantity || product.stockQuantity <= 0}
-        >
-          Buy
-        </Button>
+          {/* Buy Now - Now PRIMARY (More Visible) */}
+          <Button
+            size="lg"
+            className="order-1 sm:order-2 h-12 font-bold text-base bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-200 dark:shadow-none transition-all duration-300"
+            onClick={handleBuy}
+            disabled={isOutOfStock}
+          >
+            <CreditCard className="w-5 h-5 mr-2" /> Buy Now
+          </Button>
+          
+        </div>
       </motion.div>
     </motion.div>
   );

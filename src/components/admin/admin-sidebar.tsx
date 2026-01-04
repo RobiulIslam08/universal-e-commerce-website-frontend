@@ -15,6 +15,7 @@ export default function AdminSidebar({ open, setOpen }: AdminSidebarProps) {
   const navItems = [
     { label: "Dashboard", href: "/admin", icon: "📊" },
     { label: "Products", href: "/admin/products", icon: "📦" },
+    { label: "Categories", href: "/admin/categories", icon: "📁" },
     { label: "Reviews", href: "/admin/reviews", icon: "📝" },
     { label: "Carousel", href: "/admin/carousel", icon: "🎠" },
     { label: "Payments", href: "/admin/payments", icon: "💳" },

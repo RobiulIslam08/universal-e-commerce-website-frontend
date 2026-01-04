@@ -68,7 +68,7 @@ export default function ProductCard({
       href={productId ? `/products/${productId}` : "#"}
       className="block h-full"
     >
-      <Card className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1  dark:border-gray-800  group h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden">
+      <Card className="hover:shadow-sm transition-all duration-300 hover:-translate-y-1  dark:border-gray-800  group h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden">
         <CardContent className="p-0 flex flex-col flex-1">
           {/* Image Section */}
           <div className="relative aspect-square  flex items-center justify-center text-5xl overflow-hidden">
@@ -76,7 +76,7 @@ export default function ProductCard({
 
             {/* Badge */}
             {badge && (
-              <Badge className="absolute top-3 left-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs px-2 py-1 shadow-lg z-10">
+              <Badge className="absolute top-3 left-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs px-2 py-0.5 shadow-lg z-10">
                 {badge}
               </Badge>
             )}
@@ -90,7 +90,7 @@ export default function ProductCard({
             </h3>
 
             {/* Price Section */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2">
               <p className="text-xl font-bold text-gray-900 dark:text-white">
                 {price}
               </p>

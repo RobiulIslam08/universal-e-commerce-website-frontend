@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "./image-upload";
-import { categories } from "@/constants/products";
 import { toast } from "sonner";
+import { getRootCategories, getSubCategories } from "@/services/category";
+import { ICategoryWithCount } from "@/types/category";
+import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -75,6 +77,12 @@ export default function EditProductModal({
   const [specKey, setSpecKey] = useState("");
   const [specValue, setSpecValue] = useState("");
 
+  // Category states
+  const [categories, setCategories] = useState<ICategoryWithCount[]>([]);
+  const [subCategories, setSubCategories] = useState<ICategoryWithCount[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingSubCategories, setLoadingSubCategories] = useState(false);
+
   const {
     control,
     register,
@@ -82,8 +90,6 @@ export default function EditProductModal({
     formState: { errors, isSubmitting },
     watch,
     reset,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setValue,
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -92,6 +98,24 @@ export default function EditProductModal({
       stockQuantity: 0,
     },
   });
+
+  // Fetch root categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      try {
+        const data = await getRootCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error("Failed to load categories");
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Initialize form with product data
   useEffect(() => {
@@ -121,24 +145,49 @@ export default function EditProductModal({
 
       // Handle specifications
       setSpecifications(product.specifications || []);
+
+      // Fetch subcategories for the product's category
+      if (product.category) {
+        const fetchSubCats = async () => {
+          setLoadingSubCategories(true);
+          try {
+            const data = await getSubCategories(product.category);
+            setSubCategories(data);
+          } catch (error) {
+            console.error("Error fetching subcategories:", error);
+          } finally {
+            setLoadingSubCategories(false);
+          }
+        };
+        fetchSubCats();
+      }
     }
   }, [product, open, reset]);
 
-
   const selectedCategorySlug = watch("category");
 
-  const subCategories = useMemo(() => {
-    const subs: { [key: string]: string[] } = {
-      electronics: ["Audio", "Wearables", "PC Accessories"],
-      fashion: ["Apparel", "Footwear", "Accessories"],
-      "home-kitchen": ["Kitchen", "Bedroom", "Living Room"],
-      beauty: ["Skincare", "Haircare", "Makeup"],
-      sports: ["Equipment", "Apparel", "Accessories"],
-      toys: ["Dolls", "Action Figures", "Educational"],
-      books: ["Fiction", "Non-Fiction", "Educational"],
-      gaming: ["Consoles", "Games", "Accessories"],
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      if (!selectedCategorySlug) {
+        setSubCategories([]);
+        return;
+      }
+
+      setLoadingSubCategories(true);
+      try {
+        const data = await getSubCategories(selectedCategorySlug);
+        setSubCategories(data);
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+        toast.error("Failed to load subcategories");
+        setSubCategories([]);
+      } finally {
+        setLoadingSubCategories(false);
+      }
     };
-    return subs[selectedCategorySlug] || [];
+
+    fetchSubCategories();
   }, [selectedCategorySlug]);
 
   const handleAddSpec = () => {
@@ -254,16 +303,34 @@ export default function EditProductModal({
                   name="category"
                   control={control}
                   render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={loadingCategories}
+                    >
                       <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select category" />
+                        <SelectValue
+                          placeholder={
+                            loadingCategories ? "Loading..." : "Select category"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.slug}>
-                            {cat.name}
-                          </SelectItem>
-                        ))}
+                        {loadingCategories ? (
+                          <div className="flex items-center justify-center py-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          </div>
+                        ) : categories.length === 0 ? (
+                          <div className="text-sm text-muted-foreground text-center py-2">
+                            No categories available
+                          </div>
+                        ) : (
+                          categories.map((cat) => (
+                            <SelectItem key={cat._id} value={cat.slug}>
+                              {cat.name} ({cat.productCount})
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   )}
@@ -284,17 +351,35 @@ export default function EditProductModal({
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
-                      disabled={!selectedCategorySlug}
+                      disabled={!selectedCategorySlug || loadingSubCategories}
                     >
                       <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select sub-category" />
+                        <SelectValue
+                          placeholder={
+                            !selectedCategorySlug
+                              ? "Select category first"
+                              : loadingSubCategories
+                              ? "Loading..."
+                              : "Select sub-category"
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        {subCategories.map((sub) => (
-                          <SelectItem key={sub} value={sub}>
-                            {sub}
-                          </SelectItem>
-                        ))}
+                        {loadingSubCategories ? (
+                          <div className="flex items-center justify-center py-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          </div>
+                        ) : subCategories.length === 0 ? (
+                          <div className="text-sm text-muted-foreground text-center py-2">
+                            No subcategories available
+                          </div>
+                        ) : (
+                          subCategories.map((sub) => (
+                            <SelectItem key={sub._id} value={sub.slug}>
+                              {sub.name} ({sub.productCount})
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   )}
