@@ -60,7 +60,7 @@ export default function DetailsSection({ product }: { product: IProduct }) {
           {product.title}
         </h1>
         <div className="inline-flex items-center">
-          <span className={`text-xs font-medium px-2.5 py-1 rounded-md border ${!isOutOfStock ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800" : "bg-red-50 text-red-700 border-red-200"}`}>
+          <span className={`text-xs font-medium px-2 py-1 rounded-md border ${!isOutOfStock ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800" : "bg-red-50 text-red-700 border-red-200"}`}>
             {!isOutOfStock ? `In Stock (${product.stockQuantity} available)` : "Out of Stock"}
           </span>
         </div>
