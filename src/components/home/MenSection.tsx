@@ -4,27 +4,27 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "@/components/common/ProductCard";
 import { getAllProducts } from "@/services/product";
 import { IProduct } from "@/types/product";
-import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import SectionTitle from "@/components/common/SectionTitle";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
-export default function MyProduct() {
+export default function MenSection() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await getAllProducts();
-        // Assuming the API returns { success: true, data: [...] } or just the array depending on backend
-        // Based on addProduct, it seems to return a result object.
-        // Let's assume standard response structure.
+        const res = await getAllProducts("category=Men");
         if (res?.data) {
-          setProducts(res.data);
+          // Show only first 12 products
+          setProducts(res.data.slice(0, 12));
         } else if (Array.isArray(res)) {
-          setProducts(res);
+          setProducts(res.slice(0, 12));
         }
       } catch (error) {
-        console.error("Failed to fetch products", error);
+        console.error("Failed to fetch men products", error);
       } finally {
         setLoading(false);
       }
@@ -34,22 +34,26 @@ export default function MyProduct() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-10">Loading products...</div>;
+    return (
+      <div className="py-12">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-purple-600 border-r-transparent"></div>
+          <p className="mt-2 text-gray-600">Loading men&apos;s collection...</p>
+        </div>
+      </div>
+    );
   }
-  console.log("Products from API:", products);
-  console.log("First product _id:", products[0]?._id);
-  console.log("First product id:", products[0]?.id);
+
+  if (products.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-          Our Products
-        </h2>
-        <Badge className="bg-rose-600 text-white text-sm px-4 py-2">
-          {products.length} Products
-        </Badge>
-      </div>
+    <section className="py-12 bg-linear-to-b from-white to-gray-50">
+      <SectionTitle
+        title="Men's Collection"
+        subtitle="Trending fashion for men"
+      />
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
         {products.map((product, index) => {
@@ -69,7 +73,7 @@ export default function MyProduct() {
                     src={imageUrl}
                     alt={product.title || "Product image"}
                     fill
-                    className="object-contain p-2"
+                    className="object-contain"
                     unoptimized={
                       imageUrl.startsWith("data:") ||
                       imageUrl.startsWith("blob:")
@@ -91,6 +95,16 @@ export default function MyProduct() {
           );
         })}
       </div>
-    </div>
+
+      <div className="mt-8 text-center">
+        <Link
+          href="/category/men"
+          className="inline-flex items-center gap-2 text-pink-600 hover:text-pink-700  font-semibold transition-colors group"
+        >
+          View All Men&apos;s Products
+          <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </div>
+    </section>
   );
 }

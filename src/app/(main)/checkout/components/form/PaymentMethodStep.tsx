@@ -131,7 +131,7 @@ export const PaymentMethodStep = ({
         </div>
       </RadioGroup>
 
-      {paymentMethod === "card" && (
+      {/* {paymentMethod === "card" && (
         <div className="space-y-4 animate-in slide-in-from-top-4 duration-300">
           <div className="p-4 bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border-2 border-blue-200 dark:border-blue-800">
             <div className="flex items-start gap-3 mb-3">
@@ -171,7 +171,7 @@ export const PaymentMethodStep = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {paymentMethod === "paypal" && (
         <div className="animate-in slide-in-from-top-4 duration-300">
@@ -201,7 +201,7 @@ export const PaymentMethodStep = ({
         </div>
       )}
 
-      <div className="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+      {/* <div className="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
         <ShieldCheck className="w-5 h-5 text-amber-600 shrink-0" />
         <div className="text-sm text-amber-700 dark:text-amber-300">
           <p className="font-semibold">100% Secure Payment</p>
@@ -209,7 +209,7 @@ export const PaymentMethodStep = ({
             Your data is encrypted with 256-bit SSL security
           </p>
         </div>
-      </div>
+      </div> */}
     </CardContent>
   </Card>
 );

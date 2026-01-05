@@ -4,7 +4,7 @@ import { IProduct } from "@/types/product";
 import Image from "next/image";
 import ProductCard from "@/components/common/ProductCard";
 import FilterSidebar from "@/components/category/FilterSidebar";
-import BestSellersSidebar from "@/components/category/BestSellersSidebar";
+// import BestSellersSidebar from "@/components/category/BestSellersSidebar";
 import Pagination from "@/components/category/Pagination";
 import { Package, AlertCircle } from "lucide-react";
 
@@ -117,18 +117,18 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   }
 
   // Fetch best seller products
-  const bestSellersResponse = await fetch(
-    `${API_URL}/products/best-sellers?limit=5`,
-    {
-      next: { revalidate: 300 }, // Cache for 5 minutes
-    }
-  );
+  // const bestSellersResponse = await fetch(
+  //   `${API_URL}/products/best-sellers?limit=5`,
+  //   {
+  //     next: { revalidate: 300 }, // Cache for 5 minutes
+  //   }
+  // );
 
-  let bestSellers: IProduct[] = [];
-  if (bestSellersResponse.ok) {
-    const data = await bestSellersResponse.json();
-    bestSellers = data.data || [];
-  }
+  // let bestSellers: IProduct[] = [];
+  // if (bestSellersResponse.ok) {
+  //   const data = await bestSellersResponse.json();
+  //   bestSellers = data.data || [];
+  // }
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">
@@ -136,7 +136,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         {/* Sidebar */}
         <aside className="lg:col-span-3">
           <FilterSidebar category={category} />
-          <BestSellersSidebar products={bestSellers} />
+          {/* <BestSellersSidebar products={bestSellers} /> */}
         </aside>
 
         {/* Main Content */}
@@ -203,6 +203,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                 {products.map((product) => (
                   <ProductCard
                     key={product._id || product.id || product.slug}
+                    product={product}
                     slug={product.slug}
                     title={product.title}
                     price={`$${product.price}`}

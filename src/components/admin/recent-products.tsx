@@ -85,13 +85,7 @@ export default function RecentProducts({ products }: RecentProductsProps) {
                   {product.stockQuantity > 0 ? "In Stock" : "Out of Stock"}
                 </Badge>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all duration-300 text-lg"
-                >
-                  👁️
-                </Button>
+               
               </div>
             </div>
           ))}

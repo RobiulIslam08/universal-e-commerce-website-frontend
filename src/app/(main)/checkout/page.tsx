@@ -80,7 +80,7 @@ export default function PremiumCheckoutPage() {
         // শুধু এই প্রোডাক্টটি নতুন কোয়ান্টিটি সহ রিটার্ন করা
         return [{
           ...product,
-          orderQuantity: parseInt(buyNowQuantity, 10) // URL এর কোয়ান্টিটি প্রাধান্য পাবে
+          orderQuantity: parseInt(buyNowQuantity,10) // URL এর কোয়ান্টিটি প্রাধান্য পাবে
         }];
       }
     }

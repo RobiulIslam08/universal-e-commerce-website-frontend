@@ -45,6 +45,22 @@ export default function ProductCard({
       toast.error("Product information is missing");
       return;
     }
+
+    // Check if product is out of stock
+    if (product.stockQuantity <= 0) {
+      toast.error("Sorry, this product is out of stock!");
+      return;
+    }
+
+    // Check if product has orderQuantity and if it exceeds stock
+    if (
+      product.orderQuantity &&
+      product.orderQuantity >= product.stockQuantity
+    ) {
+      toast.error(`Sorry, only ${product.stockQuantity} items left in stock!`);
+      return;
+    }
+
     dispatch(addProduct(product));
     toast.success(`${product.title} added to cart!`);
   };
@@ -57,10 +73,26 @@ export default function ProductCard({
       toast.error("Product information is missing");
       return;
     }
+
+    // Check if product is out of stock
+    if (product.stockQuantity <= 0) {
+      toast.error("Sorry, this product is out of stock!");
+      return;
+    }
+
+    // Check if product has orderQuantity and if it exceeds stock
+    if (
+      product.orderQuantity &&
+      product.orderQuantity >= product.stockQuantity
+    ) {
+      toast.error(`Sorry, only ${product.stockQuantity} items left in stock!`);
+      return;
+    }
+
     // Add to cart first (so it's available in checkout)
     dispatch(addProduct(product));
-    // Navigate with buyNow query param
-    router.push(`/checkout?buyNow=${product._id}`);
+    // Navigate with buyNow query param and quantity=1
+    router.push(`/checkout?buyNow=${product._id}&quantity=1`);
   };
 
   return (
@@ -107,8 +139,8 @@ export default function ProductCard({
                 className="flex-1 cursor-pointer hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all duration-300 font-medium text-xs"
                 onClick={handleAddToCart}
               >
-                <ShoppingCart  />
-              Cart
+                <ShoppingCart />
+                Cart
               </Button>
 
               <Button

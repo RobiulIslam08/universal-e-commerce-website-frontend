@@ -3,7 +3,7 @@ import ProductCard from "@/components/common/ProductCard";
 import { IProduct } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
-import BestSellersSidebar from "@/components/category/BestSellersSidebar";
+// import BestSellersSidebar from "@/components/category/BestSellersSidebar";
 import ProductFilterSidebar from "@/components/category/ProductFilterSidebar";
 import Pagination from "@/components/category/Pagination";
 import { Package, AlertCircle } from "lucide-react";
@@ -25,8 +25,7 @@ type Props = {
   }>;
 };
 
-const API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api/v1";
+// const API_URL =  process.env.NEXT_PUBLIC_BACKEND_URL 
 
 export async function generateMetadata({ searchParams }: Props) {
   const { searchTerm, category } = await searchParams;
@@ -89,18 +88,18 @@ export default async function ProductsPage({ searchParams }: Props) {
   };
 
   // Fetch best sellers
-  const bestSellersResponse = await fetch(
-    `${API_URL}/products/best-sellers?limit=5`,
-    {
-      next: { revalidate: 300 }, // Cache for 5 minutes
-    }
-  );
+  // const bestSellersResponse = await fetch(
+  //   `${API_URL}/products/best-sellers?limit=5`,
+  //   {
+  //     next: { revalidate: 300 }, // Cache for 5 minutes
+  //   }
+  // );
 
-  let bestSellers: IProduct[] = [];
-  if (bestSellersResponse.ok) {
-    const data = await bestSellersResponse.json();
-    bestSellers = data.data || [];
-  }
+  // let bestSellers: IProduct[] = [];
+  // if (bestSellersResponse.ok) {
+  //   const data = await bestSellersResponse.json();
+  //   bestSellers = data.data || [];
+  // }
 
   return (
     <main className="min-h-screen">
@@ -109,7 +108,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           {/* Sidebar */}
           <aside className="lg:col-span-3 space-y-6">
             <ProductFilterSidebar title="Search Filters" />
-            <BestSellersSidebar products={bestSellers} />
+            {/* <BestSellersSidebar products={bestSellers} /> */}
           </aside>
 
           {/* Main Content */}

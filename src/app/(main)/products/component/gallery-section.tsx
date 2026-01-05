@@ -82,7 +82,7 @@ export default function GallerySection({
       {/* Morphing Background Orbs */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-linear-to-br from-rose-500/30 via-purple-500/30 to-blue-500/30 rounded-full blur-3xl transition-transform duration-300"
+          className="absolute top-1/4 left-1/4 w-96 h-96  rounded-full blur-3xl transition-transform duration-300"
           style={{
             transform: `translate(${mousePosition.x * 30}px, ${
               mousePosition.y * 30
@@ -175,12 +175,12 @@ export default function GallerySection({
               onClick={() => setActiveImage(index)}
               className={`relative aspect-square rounded-2xl overflow-hidden transition-all duration-300 ${
                 activeImage === index
-                  ? "ring-4 ring-rose-500 shadow-2xl scale-105"
-                  : "ring-2 ring-slate-200 dark:ring-slate-800 hover:ring-rose-400 hover:scale-105 opacity-70 hover:opacity-100"
+                  ? "ring-2 ring-rose-500 shadow-sm scale-105"
+                  : "ring-1 ring-slate-200 dark:ring-slate-800 hover:ring-rose-400 hover:scale-105 opacity-70 hover:opacity-100"
               }`}
             >
               <div
-                className={`w-full h-full flex items-center justify-center bg-linear-to-br ${
+                className={`w-full h-full flex items-center justify-center  ${
                   activeImage === index
                     ? "from-rose-100 to-pink-100 dark:from-rose-950 dark:to-pink-950"
                     : "from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800"
@@ -199,7 +199,7 @@ export default function GallerySection({
 
               {activeImage === index && (
                 <div
-                  className="absolute top-2 right-2 w-3 h-3 bg-linear-to-br from-rose-500 to-pink-600 rounded-full shadow-lg"
+                  className="absolute top-2 right-2 w-3 h-3  rounded-full shadow-sm"
                   style={{ animation: "pulse 2s ease-in-out infinite" }}
                 />
               )}

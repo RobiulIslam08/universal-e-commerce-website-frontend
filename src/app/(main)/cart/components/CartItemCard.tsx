@@ -14,6 +14,7 @@ import { CartProduct } from "@/redux/features/cartSlice";
 
 // Constants
 import { CART_CONSTANTS } from "@/constants/cart";
+import { toast } from "sonner";
 
 const { CURRENCY } = CART_CONSTANTS;
 
@@ -44,6 +45,14 @@ export default function CartItemCard({
   // Get image URL - prioritize images array, then fall back to image field
   const imageUrl =
     item.images && item.images.length > 0 ? item.images[0] : item.image;
+    const handleIncrement = () => {
+    // এখানে স্টক চেক করা হচ্ছে
+    if (item.orderQuantity >= item.stockQuantity) {
+      toast.error(`Sorry, only ${item.stockQuantity} items left in stock!`);
+      return;
+    }
+    updateQuantity(item._id, "increment");
+  };
 
   return (
     <Card
@@ -156,7 +165,8 @@ export default function CartItemCard({
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => updateQuantity(item._id, "increment")}
+                   
+                    onClick={handleIncrement}
                   >
                     <Plus className="h-4 w-4" />
                   </Button>

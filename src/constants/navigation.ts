@@ -19,6 +19,10 @@ export interface CategoryItem {
 export const MAIN_NAVIGATION: NavigationItem[] = [
  
   {
+    label: "Home",
+    href: "/",
+  },
+  {
     label: "About",
     href: "/about",
   },

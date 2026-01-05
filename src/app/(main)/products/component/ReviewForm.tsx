@@ -182,7 +182,7 @@ export default function ReviewForm({
       </div>
 
       {/* Email (Optional) */}
-      <div className="mb-5">
+      {/* <div className="mb-5">
         <label className="block mb-2 font-medium text-slate-700 dark:text-slate-300">
           Email <span className="text-slate-400 text-sm">(Optional)</span>
         </label>
@@ -206,10 +206,10 @@ export default function ReviewForm({
             {errors.reviewerEmail.message}
           </span>
         )}
-      </div>
+      </div> */}
 
       {/* Review Title (Optional) */}
-      <div className="mb-5">
+      {/* <div className="mb-5">
         <label className="block mb-2 font-medium text-slate-700 dark:text-slate-300">
           Review Title{" "}
           <span className="text-slate-400 text-sm">(Optional)</span>
@@ -238,7 +238,7 @@ export default function ReviewForm({
             {errors.title.message}
           </span>
         )}
-      </div>
+      </div> */}
 
       {/* Comment */}
       <div className="mb-6">

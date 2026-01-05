@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import GallerySection from "../component/gallery-section";
 import DetailsSection from "../component/details-section";
 import SmartSpecs from "../component/smart-specs";
-import Link from "next/link";
+
 import { getSingleProduct } from "@/services/product";
 import ReviewSection from "../component/ReviewSection";
 import { getReviewsByProductId } from "@/services/review";
@@ -92,20 +92,7 @@ export default async function ProductPage({ params }: Props) {
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-rose-50 via-background to-background dark:from-rose-950/30 dark:via-background dark:to-background">
       <div className="container mx-auto px-4 py-12 max-w-7xl relative z-10">
-        {/* Breadcrumb */}
-        <nav className="mb-8 text-sm text-muted-foreground/80 animate-fade-in capitalize">
-          <Link href="/">
-            <span className="hover:text-rose-600 transition-colors cursor-pointer">
-              Home
-            </span>
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="hover:text-rose-600 transition-colors cursor-pointer">
-            {product?.category}
-          </span>
-          <span className="mx-2">/</span>
-          <span className="text-foreground font-medium">{product?.title}</span>
-        </nav>
+  
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-start">
           {/* Left: Visual Experience */}
