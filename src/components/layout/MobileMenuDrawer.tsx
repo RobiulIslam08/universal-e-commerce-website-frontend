@@ -9,7 +9,7 @@ import { X, User, LogOut, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { MAIN_NAVIGATION, HELP_LINKS } from "@/constants/navigation";
+import { MAIN_NAVIGATION } from "@/constants/navigation";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/services/auth";
@@ -185,7 +185,7 @@ export default function MobileMenuDrawer({
         </div>
 
         {/* Main Navigation Section */}
-        <div className="border-b border-gray-200">
+        <div className="">
           <div className="p-4">
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Shop
@@ -210,29 +210,7 @@ export default function MobileMenuDrawer({
           </div>
         </div>
 
-        {/* Help & Settings Section */}
-        <div className="p-4">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-            Help & Settings
-          </h2>
-          <ul className="space-y-1">
-            {HELP_LINKS.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  onClick={onClose}
-                  className="flex items-center justify-between py-3 px-4 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 rounded-lg group"
-                >
-                  <span className="text-sm font-medium">{item.label}</span>
-                  <ChevronRight
-                    className="w-4 h-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all"
-                    aria-hidden="true"
-                  />
-                </Link>
-              </li>
-            ))}
-
-            {user && (
+      {user && (
               <li className="mt-4 pt-4 border-t border-gray-200">
                 <button
                   onClick={handleSignOut}
@@ -243,8 +221,6 @@ export default function MobileMenuDrawer({
                 </button>
               </li>
             )}
-          </ul>
-        </div>
       </nav>
     </>
   );
