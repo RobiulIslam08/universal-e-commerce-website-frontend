@@ -14,7 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Search,  Filter, Minus } from "lucide-react";
+import { Search, Filter, Minus, ArrowRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 interface FilterSidebarProps {
@@ -81,7 +81,7 @@ export default function FilterSidebar({ category }: FilterSidebarProps) {
 
   // --- Updated Design Structure ---
   return (
-    <aside className="w-full h-fit bg-background lg:w-72 sticky top-20 self-start">
+    <aside className="w-full h-fit bg-white border p-4 lg:w-72 sticky top-20 self-start">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -115,8 +115,15 @@ export default function FilterSidebar({ category }: FilterSidebarProps) {
             placeholder="Search products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 h-10 bg-muted/30 border-transparent focus:bg-background focus:border-input transition-all"
+            className="pl-9 pr-10 h-10 bg-muted/30 border-transparent focus:bg-background focus:border-input transition-all"
           />
+          <button
+            type="submit"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-colors"
+            aria-label="Search"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </form>
       </div>
 
@@ -191,7 +198,9 @@ export default function FilterSidebar({ category }: FilterSidebarProps) {
           <AccordionContent className="pt-4 px-1">
             <Slider
               value={priceRange}
-              onValueChange={(value) => setPriceRange(value as [number, number])}
+              onValueChange={(value) =>
+                setPriceRange(value as [number, number])
+              }
               max={10000}
               step={100}
               className="mb-6"
@@ -247,10 +256,10 @@ export default function FilterSidebar({ category }: FilterSidebarProps) {
               className="space-y-2 mt-2"
             >
               {[
-                { id: "createdAt", label: "Newest Arrivals" },
+                // { id: "createdAt", label: "Newest Arrivals" },
                 { id: "price-asc", label: "Price: Low to High" },
                 { id: "price-desc", label: "Price: High to Low" },
-                { id: "rating", label: "Top Rated" },
+                // { id: "rating", label: "Top Rated" },
               ].map((option) => (
                 <div key={option.id} className="flex items-center space-x-2">
                   <RadioGroupItem value={option.id} id={option.id} />

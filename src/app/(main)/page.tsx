@@ -1,6 +1,5 @@
 // Home page - Display all products from all categories
 
-import DynamicHeroCarousel from "@/components/home/DynamicHeroCarousel";
 
 import ElectronicsSection from "@/components/home/ElectronicsSection";
 import MenSection from "@/components/home/MenSection";
@@ -8,12 +7,20 @@ import WomenSection from "@/components/home/WomenSection";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import Testimonials from "@/components/home/Testimonials";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
+import { HeroBanner } from "@/components/home/HeroBanner";
 
 export default async function Home() {
   return (
     <div className="w-full min-h-screen">
       {/* Hero Section */}
-      <DynamicHeroCarousel />
+      {/* <DynamicHeroCarousel /> */}
+
+      <HeroBanner title="Raining Offers For Hot Summer!" subtitle="25% Off On All Products" image="https://websitedemos.net/brandstore-02/wp-content/uploads/sites/150/2019/12/home-new-bg-free-img.jpg"
+      primaryButtonText="SHOP NOW"
+  primaryButtonLink="/products"
+  secondaryButtonText="FIND MORE"
+  secondaryButtonLink="/"
+      />
 
          {/* Featured  Products */}
       <div className="w-full bg-linear-to-b from-gray-50 to-white">

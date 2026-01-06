@@ -19,7 +19,7 @@ export default function NavigationMenu() {
     <nav
       className={`hidden lg:block shadow-sm transition-all duration-300 ${
         isHomePage
-          ? "bg-rose-800/50 backdrop-blur-lg border-b border-white/20"
+          ? "bg-slate-500/50  border-b border-white/20"
           : "bg-white border-b border-gray-200"
       }`}
     >

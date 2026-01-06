@@ -69,6 +69,7 @@ export default function WomenSection() {
               key={product.id || product._id || index}
               _id={product._id}
               product={product}
+              category={product.category}
               image={
                 imageUrl ? (
                   <Image

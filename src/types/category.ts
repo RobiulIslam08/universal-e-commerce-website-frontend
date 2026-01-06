@@ -26,6 +26,7 @@ export interface ICategoryTree {
   level: number;
   productCount: number;
   children?: ICategoryTree[];
+  subCategories?: ICategoryTree[];
 }
 
 export interface ICategoryStats {

@@ -54,7 +54,7 @@ const Navbar = memo(function Navbar({ user }: { user: UserData | null }) {
         <div
           className={`relative z-50  transition-all duration-300 ${
             isHomePage
-              ? "bg-rose-900/60 backdrop-blur-sm border-b border-white/20 text-white"
+              ? "bg-slate-500/60  border-b border-white/20 text-white"
               : "bg-white text-gray-900 border-b border-gray-200 "
           }`}
         >

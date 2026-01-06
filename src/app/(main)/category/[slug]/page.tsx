@@ -61,7 +61,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   // Always filter by category slug
   if (filters.subCategory) {
     // If subcategory is selected, fetch products from that subcategory
-    queryParams.set("category", filters.subCategory);
+    queryParams.set("subCategory", filters.subCategory);
   } else {
     // Otherwise, fetch all products from this category
     queryParams.set("category", slug);
