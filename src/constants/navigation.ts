@@ -30,10 +30,7 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     label: "Contact Us",
     href: "/contact",
   },
-    {
-    label: "Payment History",
-    href: "/payment/history",
-  },
+   
 ];
 
 // Mobile Quick Categories with Icons

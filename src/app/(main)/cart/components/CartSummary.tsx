@@ -75,7 +75,7 @@ export default function CartSummary({
   isCheckoutDisabled,
 }: CartSummaryProps) {
   return (
-    <Card className="shadow-2xl border-rose-200 dark:border-rose-800">
+    <Card className="shadow-2xl border-rose-200 dark:border-rose-800 pt-4">
       <CardHeader>
         <CardTitle className="flex items-center gap-3">
           <CreditCard className="w-6 h-6 text-rose-600" />

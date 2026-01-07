@@ -74,7 +74,7 @@ export default function ElectronicsSection() {
                     src={imageUrl}
                     alt={product.title || "Product image"}
                     fill
-                    className="object-contain p-2"
+                    className="object-contain "
                     unoptimized={
                       imageUrl.startsWith("data:") ||
                       imageUrl.startsWith("blob:")

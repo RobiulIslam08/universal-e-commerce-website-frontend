@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Mail, Phone, BadgeCheck } from "lucide-react"
+import { Mail, Phone } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { FormField } from "./FormField"
 
@@ -10,7 +10,7 @@ interface ContactInfoStepProps {
 }
 
 export const ContactInfoStep = ({ register, errors, watch }: ContactInfoStepProps) => (
-  <Card className="border-rose-100 dark:border-rose-900 shadow-xl">
+  <Card className="border-rose-100 dark:border-rose-900 shadow-xl pt-4">
     <CardHeader className="bg-linear-to-br from-rose-50 to-white dark:from-slate-800 dark:to-slate-900">
       <CardTitle className="flex items-center gap-3 text-slate-900 dark:text-white">
         <div className="w-10 h-10 rounded-full bg-rose-600 flex items-center justify-center text-white font-bold shadow-lg">
@@ -58,13 +58,8 @@ export const ContactInfoStep = ({ register, errors, watch }: ContactInfoStepProp
         />
       </div>
 
-      <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
-        <BadgeCheck className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-        <div className="text-sm text-blue-700 dark:text-blue-300">
-          <p className="font-semibold">Stay Updated</p>
-          <p className="text-xs">Get real-time order tracking and delivery notifications</p>
-        </div>
-      </div>
+   
+
     </CardContent>
   </Card>
 )

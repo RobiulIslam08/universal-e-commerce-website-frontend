@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { User, Home, Building2, MapPin, Truck } from "lucide-react"
+import { User, Home, Building2, MapPin } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { FormField } from "./FormField"
 
@@ -10,7 +10,7 @@ interface DeliveryAddressStepProps {
 }
 
 export const DeliveryAddressStep = ({ register, errors, watch }: DeliveryAddressStepProps) => (
-  <Card className="border-rose-100 dark:border-rose-900 shadow-xl">
+  <Card className="border-rose-100 dark:border-rose-900 shadow-xl pt-4">
     <CardHeader className="bg-linear-to-br from-rose-50 to-white dark:from-slate-800 dark:to-slate-900">
       <CardTitle className="flex items-center gap-3 text-slate-900 dark:text-white">
         <div className="w-10 h-10 rounded-full bg-rose-600 flex items-center justify-center text-white font-bold shadow-lg">
@@ -93,13 +93,6 @@ export const DeliveryAddressStep = ({ register, errors, watch }: DeliveryAddress
         />
       </div>
 
-      <div className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
-        <Truck className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
-        <div className="text-sm text-green-700 dark:text-green-300">
-          <p className="font-semibold">Fast Delivery Available</p>
-          <p className="text-xs">Estimated delivery: 3-5 business days</p>
-        </div>
-      </div>
     </CardContent>
   </Card>
 )

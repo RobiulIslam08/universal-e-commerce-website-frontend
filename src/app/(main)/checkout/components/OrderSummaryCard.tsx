@@ -41,7 +41,7 @@ export const OrderSummaryCard = ({
   }, [products]);
 
   return (
-    <Card className="border-rose-200 dark:border-rose-800 shadow-2xl sticky top-24">
+    <Card className="border-rose-200 dark:border-rose-800 shadow-2xl sticky top-24 pt-4">
       <CardHeader className="bg-linear-to-br from-rose-50 to-white dark:from-slate-800 dark:to-slate-900">
         <CardTitle className="text-slate-900 dark:text-white">
           {isBuyNowMode ? "Buy Now Summary" : "Order Summary"}

@@ -54,7 +54,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
         <Card
           key={index}
           className={cn(
-            "group border-0 overflow-hidden shadow-lg shadow-rose-500/10 dark:shadow-rose-500/5 transition-all duration-300 hover:shadow-xl hover:border-primary/30 hover:shadow-primary/10 hover:-translate-y-1",
+            "group border-0 overflow-hidden shadow-lg  pt-2 shadow-rose-500/10 dark:shadow-rose-500/5 transition-all duration-300 hover:shadow-xl hover:border-primary/30 hover:shadow-primary/10 hover:-translate-y-1",
             `bg-linear-to-br ${item.gradient}`,
           )}
         >

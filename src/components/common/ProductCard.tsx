@@ -223,11 +223,11 @@ export default function ProductCard({
       href={productId ? `/products/${productId}` : "#"}
       className="group block h-full"
     >
-      <div className="flex flex-col h-full space-y-3">
+      <div className="flex flex-col h-full space-y-3 border p-2">
         {/* Image Section */}
-        <div className="relative overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800 aspect-4/5 sm:aspect-square">
+        <div className="relative overflow-hidden rounded-sm  dark:bg-gray-800 aspect-4/5 sm:aspect-square">
           {/* Main Image */}
-          <div className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 flex items-center justify-center text-5xl">
+          <div className="h-full w-full object-cover transition-transform duration-500   group-hover:scale-105 flex items-center justify-center text-5xl">
             {image}
           </div>
 

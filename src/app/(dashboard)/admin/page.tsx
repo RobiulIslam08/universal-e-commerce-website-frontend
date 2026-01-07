@@ -6,8 +6,9 @@ import { getAllProducts } from "@/services/product";
 import { IProduct } from "@/types/product";
 
 export default async function AdminDashboard() {
-  const res = await getAllProducts();
+  const res = await getAllProducts("limit=10000");
   const products: IProduct[] = Array.isArray(res) ? res : res?.data || [];
+  console.log(products)
 
   const stats = {
     totalProducts: products.length,
