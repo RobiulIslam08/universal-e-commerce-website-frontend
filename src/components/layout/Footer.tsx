@@ -213,7 +213,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-background border-t border-border">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-5 md:pt-7 lg:pt-12 pb-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 justify-items-center gap-8 sm:grid-cols-2 md:grid-cols-3">
           {/* Footer Sections */}
           {footerSections.map((section) => (
@@ -238,7 +238,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Border */}
-        <div className="mt-8 border-t border-border pt-8">
+        <div className="mt-4 pt-2 border-t border-border">
           <p className="text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} Your Company. All rights reserved.
           </p>

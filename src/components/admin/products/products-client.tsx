@@ -123,7 +123,7 @@ export default function ProductsClient({
   // Refresh Products
   const handleProductsChange = async () => {
     try {
-      const res = await getAllProducts("limit=10000");
+      const res = await getAllProducts("limit=1000");
       const updatedProducts = Array.isArray(res) ? res : res?.data || [];
       setProducts(updatedProducts);
     } catch (error) {

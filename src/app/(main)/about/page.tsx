@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import WhyChooseUs from "@/components/home/WhyChooseUs";
 
 const TeamMember = ({
   name,
@@ -114,15 +115,17 @@ export default function AboutPage() {
             <div>
               <h2 className="text-4xl font-bold mb-6">Our Story</h2>
               <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
-                We started with a simple vision: to create products that make a
-                difference. With a team of passionate developers, designers, and
-                strategists, we&apos;ve grown from a small startup to a thriving
-                company.
+                Our Universel journey began with a simple goal— to create an
+                easy, safe, and reliable online shopping experience for our
+                customers. With a team skilled in technology, design, and
+                innovation, we are constantly moving forward with new ideas and
+                a commitment to quality.
               </p>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                Every day, we work towards innovation and excellence, committed
-                to delivering the best solutions to our clients and customers
-                worldwide.
+                We believe that customer satisfaction is our greatest
+                achievement. That’s why we put the utmost care into every order,
+                every product, and every service. With your trust and support,
+                we aim to go even further.
               </p>
               <Link href="/contact">
                 <Button className="gap-2">
@@ -133,7 +136,7 @@ export default function AboutPage() {
             </div>
             <div className="relative h-96 rounded-xl overflow-hidden shadow-xl">
               <Image
-                src="/collaborative-teamwork.png"
+                src="/team-image.jpg"
                 alt="Our Team"
                 fill
                 className="object-cover"
@@ -189,6 +192,7 @@ export default function AboutPage() {
             ))}
           </div>
         </section>
+        <WhyChooseUs/>
       </main>
     </div>
   );
