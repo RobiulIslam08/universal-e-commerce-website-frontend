@@ -19,7 +19,7 @@ export default async function Home() {
       primaryButtonText="SHOP NOW"
   primaryButtonLink="/products"
   secondaryButtonText="FIND MORE"
-  secondaryButtonLink="/"
+  secondaryButtonLink="/products"
       />
 
          {/* Featured  Products */}

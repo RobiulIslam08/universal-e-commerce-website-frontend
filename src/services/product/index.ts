@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use server";
 
 import { cookies } from "next/headers";
@@ -50,88 +50,117 @@ export const addProduct = async (productData: FormData) => {
   }
 };
 
-export const getAllProducts = async (query?: string) => {
+// export const getAllProducts = async (query?: string) => {
+//   try {
+//     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+//     if (!backendUrl) {
+//       console.error(
+//         "❌ NEXT_PUBLIC_BACKEND_URL is not set in environment variables!"
+//       );
+//       return { success: false, data: [] };
+//     }
+
+//     // Parse query to check if it's a search request
+//     const urlParams = new URLSearchParams(query || '');
+//     const searchTerm = urlParams.get('searchTerm');
+    
+//     console.log('🔍 getAllProducts called with:', { query, searchTerm });
+
+//     let apiUrl;
+
+//     if (searchTerm && searchTerm.trim()) {
+//       // ✅ FIXED: Use products endpoint instead of search endpoint to avoid 400 error
+//       console.log(`🎯 Using products endpoint for search: "${searchTerm.trim()}"`);
+//       apiUrl = `${backendUrl}/products?searchTerm=${encodeURIComponent(searchTerm.trim())}`;
+//     } else {
+//       // Use regular products endpoint with filters
+//       console.log('📦 Using products endpoint with filters');
+//       apiUrl = `${backendUrl}/products${query ? `?${query}` : ""}`;
+//     }
+
+//     console.log('📡 API Request URL:', apiUrl);
+
+//     const res = await fetch(apiUrl, {
+//       cache: "no-store",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     console.log(`📡 Response: ${res.status} ${res.statusText}`);
+
+//     if (!res.ok) {
+//       console.error(`❌ API request failed: ${res.status} ${res.statusText}`);
+      
+//       // Log response details for debugging
+//       try {
+//         const errorText = await res.text();
+//         console.error('❌ Error response body:', errorText.substring(0, 500));
+//       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//       } catch (e) {
+//         console.error('❌ Could not read error response');
+//       }
+      
+//       return { success: false, data: [] };
+//     }
+
+//     const data = await res.json();
+    
+//     if (searchTerm) {
+//       console.log(`✅ Search completed for "${searchTerm}"`);
+//       console.log(`📊 Results: ${data.data?.length || 0} products found`);
+      
+//       if (data.data && data.data.length > 0) {
+//         console.log('🎯 Search results:');
+//         data.data.forEach((product: any, index: number) => {
+//           console.log(`  ${index + 1}. "${product.title}" (${product.category}) - SKU: ${product.sku}`);
+//         });
+//       } else {
+//         console.log('🔍 No products found for this search');
+//       }
+//     } else {
+//       console.log('📦 Products retrieved:', data.data?.length || 0);
+//     }
+    
+//     return data;
+//   } catch (error: unknown) {
+//     console.error('💥 Error in getAllProducts:', error);
+//     if (error instanceof Error) {
+//       return { success: false, data: [], error: error.message };
+//     }
+//     return { success: false, data: [], error: "Something went wrong" };
+//   }
+// };
+
+
+export const getAllProducts = async (params: Record<string, string | number> = {}) => {
   try {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    if (!backendUrl) {
-      console.error(
-        "❌ NEXT_PUBLIC_BACKEND_URL is not set in environment variables!"
-      );
-      return { success: false, data: [] };
-    }
+    const query = new URLSearchParams();
 
-    // Parse query to check if it's a search request
-    const urlParams = new URLSearchParams(query || '');
-    const searchTerm = urlParams.get('searchTerm');
+    // প্যারামিটারগুলো লুপ করে শুধুমাত্র ভ্যালিডগুলো যোগ করা
+  Object.entries(params).forEach(([key, value]) => {
+      // 'all' স্ট্রিংটি ব্যাকএন্ডে পাঠানো যাবে না, এটি ফিল্টার নষ্ট করে
+      if (value !== undefined && value !== null && value !== "" && value !== "all") {
+        query.append(key, String(value));
+      }
+    });
+
+    const apiUrl = `${backendUrl}/products?${query.toString()}`;
     
-    console.log('🔍 getAllProducts called with:', { query, searchTerm });
-
-    let apiUrl;
-
-    if (searchTerm && searchTerm.trim()) {
-      // ✅ FIXED: Use products endpoint instead of search endpoint to avoid 400 error
-      console.log(`🎯 Using products endpoint for search: "${searchTerm.trim()}"`);
-      apiUrl = `${backendUrl}/products?searchTerm=${encodeURIComponent(searchTerm.trim())}`;
-    } else {
-      // Use regular products endpoint with filters
-      console.log('📦 Using products endpoint with filters');
-      apiUrl = `${backendUrl}/products${query ? `?${query}` : ""}`;
-    }
-
-    console.log('📡 API Request URL:', apiUrl);
 
     const res = await fetch(apiUrl, {
       cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
 
-    console.log(`📡 Response: ${res.status} ${res.statusText}`);
-
-    if (!res.ok) {
-      console.error(`❌ API request failed: ${res.status} ${res.statusText}`);
-      
-      // Log response details for debugging
-      try {
-        const errorText = await res.text();
-        console.error('❌ Error response body:', errorText.substring(0, 500));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (e) {
-        console.error('❌ Could not read error response');
-      }
-      
-      return { success: false, data: [] };
-    }
-
     const data = await res.json();
-    
-    if (searchTerm) {
-      console.log(`✅ Search completed for "${searchTerm}"`);
-      console.log(`📊 Results: ${data.data?.length || 0} products found`);
-      
-      if (data.data && data.data.length > 0) {
-        console.log('🎯 Search results:');
-        data.data.forEach((product: any, index: number) => {
-          console.log(`  ${index + 1}. "${product.title}" (${product.category}) - SKU: ${product.sku}`);
-        });
-      } else {
-        console.log('🔍 No products found for this search');
-      }
-    } else {
-      console.log('📦 Products retrieved:', data.data?.length || 0);
-    }
-    
     return data;
-  } catch (error: unknown) {
-    console.error('💥 Error in getAllProducts:', error);
-    if (error instanceof Error) {
-      return { success: false, data: [], error: error.message };
-    }
-    return { success: false, data: [], error: "Something went wrong" };
+  } catch (error) {
+    console.error('Error in getAllProducts:', error);
+    return { success: false, data: [], meta: { page: 1, total: 0, totalPage: 1 } };
   }
 };
-
 export const getSingleProduct = async (productId: string) => {
   try {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -150,7 +179,7 @@ export const getSingleProduct = async (productId: string) => {
       },
     });
 
-    console.log("Response status:", res.status);
+  
 
     if (!res.ok) {
       console.error(`Failed to fetch product: ${res.status} ${res.statusText}`);
@@ -158,7 +187,7 @@ export const getSingleProduct = async (productId: string) => {
     }
 
     const data = await res.json();
-    console.log("Product data received:", data);
+    
     return data;
   } catch (error: unknown) {
     console.error("Error in getSingleProduct:", error);
@@ -182,7 +211,7 @@ export const updateProduct = async (
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    console.log("🔄 Updating product:", productId);
+   
 
     const response = await fetch(`${backendUrl}/products/${productId}`, {
       method: "PATCH",
@@ -231,7 +260,7 @@ export const deleteProduct = async (productId: string) => {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    console.log("🗑️ Deleting product:", productId);
+    
 
     const response = await fetch(`${backendUrl}/products/${productId}`, {
       method: "DELETE",

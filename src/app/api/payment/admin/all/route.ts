@@ -34,11 +34,7 @@ export async function GET(request: NextRequest) {
       ...(status && { status }),
     });
 
-    console.log(
-      "🔍 Fetching payments from:",
-      `${backendUrl}/payment/admin/all?${queryParams.toString()}`
-    );
-
+  
     // Fetch all payments from backend
     const response = await fetch(
       `${backendUrl}/payment/admin/all?${queryParams.toString()}`,
@@ -63,7 +59,7 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    console.log("✅ Payments fetched successfully");
+   
 
     return NextResponse.json(data);
   } catch (error) {

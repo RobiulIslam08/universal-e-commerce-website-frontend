@@ -25,10 +25,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log(
-      "🔍 Fetching stats from:",
-      `${backendUrl}/payment/admin/stats`
-    );
+    
 
     // Fetch payment statistics from backend
     const response = await fetch(`${backendUrl}/payment/admin/stats`, {
@@ -53,7 +50,7 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    console.log("✅ Stats fetched successfully");
+   
 
     return NextResponse.json(data);
   } catch (error) {

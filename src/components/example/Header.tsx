@@ -41,7 +41,7 @@ const Navbar = memo(function Navbar({
 }: {
   session: UserProps | null;
 }) {
-  console.log(session);
+
   const cartProducts = useAppSelector(orderedProductsSelector);
   const cartCount = cartProducts.reduce((total, product) => total + product.orderQuantity, 0);
   

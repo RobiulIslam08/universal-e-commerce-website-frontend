@@ -8,9 +8,7 @@ export async function GET(req: Request) {
     const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
 
-    console.log("=== Next.js API Route Called ===");
-    console.log("📥 userId:", userId);
-    console.log("📄 page:", page, "limit:", limit);
+
 
     if (!userId) {
       console.log("❌ No userId provided");
@@ -24,7 +22,7 @@ export async function GET(req: Request) {
       process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api/v1";
     const backendUrl = `${baseUrl}/payment/user/${userId}?page=${page}&limit=${limit}`;
 
-    console.log("🔗 Backend URL:", backendUrl);
+    
 
     const response = await fetch(backendUrl, {
       method: "GET",
@@ -34,11 +32,7 @@ export async function GET(req: Request) {
       cache: "no-store",
     });
 
-    console.log("📊 Backend status:", response.status);
-    console.log(
-      "📋 Response headers:",
-      Object.fromEntries(response.headers.entries())
-    );
+    
 
     // Check if backend is reachable
     if (!response.ok) {
@@ -57,7 +51,7 @@ export async function GET(req: Request) {
 
     // Check content type
     const contentType = response.headers.get("content-type");
-    console.log("📝 Content-Type:", contentType);
+   
 
     if (!contentType || !contentType.includes("application/json")) {
       const text = await response.text();
@@ -74,8 +68,7 @@ export async function GET(req: Request) {
     }
 
     const result = await response.json();
-    console.log("📦 Full Backend Response:");
-    console.log(JSON.stringify(result, null, 2));
+  
 
     // Check if response has success property
     if (!result.success) {
@@ -95,14 +88,13 @@ export async function GET(req: Request) {
     let paymentsData = [];
     let totalPages = 1;
 
-    console.log("🔍 Checking result.data:", !!result.data);
-    console.log("🔍 Checking result.data.data:", !!result.data?.data);
+    
 
     if (result.data && result.data.data) {
       // Structure: { success: true, data: { data: [...], meta: {...} } }
       paymentsData = result.data.data;
       totalPages = result.data.meta?.totalPage || 1;
-      console.log("✅ Found structure: data.data");
+  
     } else if (result.data && Array.isArray(result.data)) {
       // Structure: { success: true, data: [...] }
       paymentsData = result.data;

@@ -62,17 +62,14 @@ const fetchPaymentHistory = async () => {
       return;
     }
     
-    console.log("=== Frontend Fetch Started ===");
-    console.log("🔍 userId:", userId);
-    console.log("📄 currentPage:", currentPage);
+
     
     const url = `/api/payment/history?userId=${userId}&page=${currentPage}&limit=10`;
-    console.log("🔗 Fetching from:", url);
+ 
     
     const response = await fetch(url, { cache: "no-store" });
     
-    console.log("📊 Response status:", response.status);
-    console.log("📋 Response headers:", Object.fromEntries(response.headers.entries()));
+  
 
     const contentType = response.headers.get("content-type");
     if (!contentType?.includes("application/json")) {
@@ -83,12 +80,11 @@ const fetchPaymentHistory = async () => {
     }
 
     const data = await response.json();
-    console.log("📦 Full response received:");
-    console.log(JSON.stringify(data, null, 2));
+   
 
     if (data.success) {
       if (data.payments && Array.isArray(data.payments)) {
-        console.log("✅ Found payments array, length:", data.payments.length);
+        
         setPayments(data.payments);
         setTotalPages(data.totalPages || 1);
       } else {

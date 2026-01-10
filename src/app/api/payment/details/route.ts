@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     // const backendUrl = `http://localhost:5000/api/v1/payment/intent/${paymentIntentId}`;
     const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
     const backendUrl = `${baseUrl}/payment/intent/${paymentIntentId}`;
-    console.log("🔍 Fetching payment details from:", backendUrl);
+   
 
     const response = await fetch(backendUrl, {
       method: "GET",

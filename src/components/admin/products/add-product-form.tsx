@@ -97,9 +97,8 @@ export default function AddProductForm() {
     const fetchCategories = async () => {
       setLoadingCategories(true);
       try {
-        console.log("Fetching root categories...");
+      
         const data = await getRootCategories();
-        console.log("Root categories received:", data);
         setCategories(data);
 
         if (data.length === 0) {

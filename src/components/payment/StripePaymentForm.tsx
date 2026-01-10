@@ -60,7 +60,7 @@ export function StripePaymentForm({
         onError(error.message || "Payment failed");
         toast.error(error.message || "Payment failed");
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
-        console.log("Payment succeeded:", paymentIntent);
+    
         onSuccess(paymentIntent.id);
         toast.success("Payment successful!");
       }

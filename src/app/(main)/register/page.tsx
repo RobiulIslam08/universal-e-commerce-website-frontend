@@ -46,7 +46,7 @@ export default function RegisterPage() {
   const password = watch("password");
 
   const onSubmit = async (data: RegisterFormValues) => {
-    console.log(data);
+   
     setIsLoading(true);
     try {
       const res = await registerUser(data);

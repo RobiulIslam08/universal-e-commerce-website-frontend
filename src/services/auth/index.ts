@@ -29,7 +29,7 @@ export const registerUser = async (userData: RegisterFormValues) => {
 
     const result = await res.json();
     const storeCookies = await cookies();
-    console.log(result);
+ 
     if (result.success) {
       storeCookies.set("accessToken", result.data.accessToken);
     }

@@ -17,7 +17,7 @@ export default async function MainLayout({
   const user = await getCurrentUser();
 
   // কনসোলে চেক করুন ডাটা আসছে কিনা (টার্মিনালে দেখাবে)
-  console.log("Layout User Data:", user);
+ 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navbar সেশন পাস করছেন */}

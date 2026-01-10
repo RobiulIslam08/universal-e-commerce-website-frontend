@@ -64,7 +64,7 @@ export const getRootCategories = async (): Promise<ICategoryWithCount[]> => {
     }
 
     const response: CategoryResponse<ICategoryWithCount[]> = await res.json();
-    console.log("Root categories fetched:", response.data);
+    ;
     return response.data;
   } catch (error) {
     console.error("Error fetching root categories:", error);
@@ -110,7 +110,7 @@ export const getSubCategories = async (
     }
 
     const response: CategoryResponse<ICategoryWithCount[]> = await res.json();
-    console.log(`Subcategories for ${slug}:`, response.data);
+    
     return response.data;
   } catch (error) {
     console.error("Error fetching subcategories:", error);

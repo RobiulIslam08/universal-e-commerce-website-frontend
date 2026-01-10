@@ -63,7 +63,6 @@
 //   )
 // }
 
-
 "use client";
 
 import { Input } from "@/components/ui/input";
@@ -74,7 +73,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ICategoryTree } from "@/types/category"; 
+import { ICategoryTree } from "@/types/category";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -102,7 +101,6 @@ export default function ProductsFilters({
   setStockFilter,
   categories,
 }: ProductsFiltersProps) {
-
   // ১. বর্তমান ক্যাটাগরি খুঁজে বের করা
   const currentCategory = categories.find((c) => c.slug === selectedCategory);
 
@@ -125,13 +123,7 @@ export default function ProductsFilters({
       </div>
 
       {/* Category Select */}
-      <Select 
-        value={selectedCategory} 
-        onValueChange={(val) => {
-            setSelectedCategory(val);
-            setSelectedSubCategory("all");
-        }}
-      >
+      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
         <SelectTrigger className="bg-input border-border">
           <SelectValue placeholder="Category" />
         </SelectTrigger>
@@ -146,11 +138,13 @@ export default function ProductsFilters({
       </Select>
 
       {/* SubCategory Select - FIXED */}
-      <Select 
-        value={selectedSubCategory} 
+      <Select
+        value={selectedSubCategory}
         onValueChange={setSelectedSubCategory}
         // 👇 এখানে children চেক করা হচ্ছে
-        disabled={selectedCategory === "all" || !currentCategory?.children?.length}
+        disabled={
+          selectedCategory === "all" || !currentCategory?.children?.length
+        }
       >
         <SelectTrigger className="bg-input border-border">
           <SelectValue placeholder="Subcategory" />
@@ -177,11 +171,7 @@ export default function ProductsFilters({
         </SelectContent>
       </Select>
 
-      <Button 
-        variant="outline" 
-        onClick={handleClearFilters}
-        className="gap-2"
-      >
+      <Button variant="outline" onClick={handleClearFilters} className="gap-2">
         <X className="w-4 h-4" /> Clear
       </Button>
     </Card>

@@ -46,8 +46,7 @@ export default function AdminPaymentsPage() {
         cache: "no-store",
       });
       const statsJson = await statsResponse.json();
-      console.log(statsJson);
-      console.log("hello");
+  
       if (statsJson.success && statsJson.data) {
         setStats(statsJson.data);
       }
@@ -61,7 +60,6 @@ export default function AdminPaymentsPage() {
       );
       const paymentsJson = await paymentsResponse.json(); // নামটা paymentsJson দিলাম বোঝার সুবিধার্থে
 
-      console.log("Payments Response:", paymentsJson); // ডিবাগিংয়ের জন্য চেক করুন
 
       if (
         paymentsJson.success &&
