@@ -77,8 +77,14 @@ export default async function ProductsPage({ searchParams }: Props) {
   queryParams.set("page", filters.page || "1");
   queryParams.set("limit", filters.limit || "12");
 
+  // Convert URLSearchParams to object
+  const query: Record<string, string | number> = {};
+  queryParams.forEach((value, key) => {
+    query[key] = value;
+  });
+
   // Fetch products from backend
-  const res = await getAllProducts(queryParams.toString());
+  const res = await getAllProducts(query);
   const products: IProduct[] = res?.data || [];
   const meta = res?.meta || {
     page: 1,
