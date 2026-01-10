@@ -16,7 +16,7 @@ export default function ElectronicsSection() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await getAllProducts("category=Electronics");
+        const res = await getAllProducts({ category: "Electronics" });
         if (res?.data) {
           // Show only first 12 products
           setProducts(res.data.slice(0, 12));

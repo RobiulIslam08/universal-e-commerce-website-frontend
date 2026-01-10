@@ -16,7 +16,7 @@ export default function MenSection() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await getAllProducts("category=Men");
+        const res = await getAllProducts({ category: "Men" });
         if (res?.data) {
           // Show only first 12 products
           setProducts(res.data.slice(0, 12));
