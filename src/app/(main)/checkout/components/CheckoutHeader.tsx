@@ -21,9 +21,7 @@ export const CheckoutHeader = ({ onBack }: CheckoutHeaderProps) => (
 		 </Link>
         </button>
 
-        <h1 className="text-2xl font-bold bg-linear-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-          Secure Checkout
-        </h1>
+        
 
         <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-950/30 rounded-full border border-green-200 dark:border-green-800">
           <Lock className="w-4 h-4 text-green-600" />
