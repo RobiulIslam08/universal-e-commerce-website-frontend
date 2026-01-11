@@ -2,10 +2,9 @@ import { notFound } from "next/navigation";
 // import { getProductByslug } from "@/lib/data";
 import GallerySection from "../component/gallery-section";
 import DetailsSection from "../component/details-section";
-import SmartSpecs from "../component/smart-specs";
+import ProductContent from "../component/ProductContent";
 
 import { getSingleProduct } from "@/services/product";
-import ReviewSection from "../component/ReviewSection";
 import { getReviewsByProductId } from "@/services/review";
 
 // Type for params
@@ -91,28 +90,21 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-rose-50 via-background to-background dark:from-rose-950/30 dark:via-background dark:to-background">
-      <div className="container mx-auto px-4 py-12 max-w-7xl relative z-10">
-  
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-start">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-10 max-w-7xl relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 xl:gap-16 items-start">
           {/* Left: Visual Experience */}
           <GallerySection images={productImages} badge={product.badge} />
 
           {/* Right: Smart Details & Actions */}
-          <div className="space-y-10">
-            <DetailsSection product={productData} />
-
-            {/* Smart Accordion for Specs/Shipping */}
-            <div className="pt-6 border-t border-rose-100 dark:border-rose-900/50">
-              <SmartSpecs product={productData} />
-            </div>
-          </div>
+          <DetailsSection product={productData} />
         </div>
 
-        {/* Reviews Section - Full Width Below Product Details */}
-        <div className="mt-16 pt-12 border-t border-rose-100 dark:border-rose-900/50">
-          <ReviewSection productId={_id} initialReviewsData={reviewsData} />
-        </div>
+        {/* Product Details Tabs & Reviews Section */}
+        <ProductContent
+          product={productData}
+          productId={_id}
+          initialReviewsData={reviewsData}
+        />
       </div>
     </main>
   );

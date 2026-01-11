@@ -72,16 +72,16 @@ export default function DetailsSection({ product }: { product: IProduct }) {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="flex flex-col gap-6"
+      className="flex flex-col gap-4 sm:gap-5 lg:gap-6"
     >
       {/* 1. Header & Stock Badge */}
-      <motion.div variants={itemVariants} className="space-y-3">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
+      <motion.div variants={itemVariants} className="space-y-2 sm:space-y-3">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground leading-tight">
           {product.title}
         </h1>
         <div className="inline-flex items-center">
           <span
-            className={`text-xs font-medium px-2.5 py-1 rounded-md border ${
+            className={`text-[10px] sm:text-xs font-medium px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md border ${
               !isOutOfStock
                 ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800"
                 : "bg-red-50 text-red-700 border-red-200"
@@ -93,12 +93,15 @@ export default function DetailsSection({ product }: { product: IProduct }) {
       </motion.div>
 
       {/* 2. Price Section */}
-      <motion.div variants={itemVariants} className="flex items-baseline gap-3">
-        <span className="text-3xl md:text-4xl font-bold text-rose-600">
+      <motion.div
+        variants={itemVariants}
+        className="flex items-baseline gap-2 sm:gap-3"
+      >
+        <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-rose-600">
           ${product.price}
         </span>
         {product.strikePrice && (
-          <span className="text-lg text-muted-foreground line-through">
+          <span className="text-base sm:text-lg text-muted-foreground line-through">
             ${product.strikePrice}
           </span>
         )}
@@ -106,7 +109,7 @@ export default function DetailsSection({ product }: { product: IProduct }) {
 
       {/* 3. Description */}
       <motion.div variants={itemVariants}>
-        <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+        <p className="text-muted-foreground text-xs sm:text-sm lg:text-base leading-relaxed">
           {product.shortDescription}
         </p>
       </motion.div>
@@ -117,21 +120,26 @@ export default function DetailsSection({ product }: { product: IProduct }) {
       />
 
       {/* 4. Actions Area */}
-      <motion.div variants={itemVariants} className="flex flex-col gap-5">
+      <motion.div
+        variants={itemVariants}
+        className="flex flex-col gap-4 sm:gap-5"
+      >
         {/* Quantity Selector */}
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-foreground">Quantity</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="text-xs sm:text-sm font-medium text-foreground">
+            Quantity
+          </span>
           <div className="flex items-center border rounded-lg bg-background w-fit">
             <Button
               variant="ghost"
               size="icon"
               disabled={isOutOfStock || quantity <= 1}
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="h-9 w-9 hover:bg-transparent hover:text-rose-600"
+              className="h-8 w-8 sm:h-9 sm:w-9 hover:bg-transparent hover:text-rose-600"
             >
-              <Minus className="w-3.5 h-3.5" />
+              <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             </Button>
-            <span className="w-8 text-center text-sm font-semibold tabular-nums">
+            <span className="w-7 sm:w-8 text-center text-xs sm:text-sm font-semibold tabular-nums">
               {quantity}
             </span>
             <Button
@@ -141,20 +149,20 @@ export default function DetailsSection({ product }: { product: IProduct }) {
               onClick={() =>
                 setQuantity((q) => Math.min(product.stockQuantity || 10, q + 1))
               }
-              className="h-9 w-9 hover:bg-transparent hover:text-rose-600"
+              className="h-8 w-8 sm:h-9 sm:w-9 hover:bg-transparent hover:text-rose-600"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             </Button>
           </div>
         </div>
 
         {/* Buttons Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2">
           {/* Add to Cart */}
           <Button
             size="lg"
             variant="outline"
-            className="order-2 sm:order-1 h-12 font-semibold text-base border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:hover:bg-rose-950 transition-colors"
+            className="order-2 sm:order-1 h-10 sm:h-11 lg:h-12 font-semibold text-xs sm:text-sm lg:text-base border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:hover:bg-rose-950 transition-colors"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
           >
@@ -165,9 +173,9 @@ export default function DetailsSection({ product }: { product: IProduct }) {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-1 sm:gap-2"
                 >
-                  <Check className="w-5 h-5" /> Added
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5" /> Added
                 </motion.div>
               ) : (
                 <motion.div
@@ -175,9 +183,9 @@ export default function DetailsSection({ product }: { product: IProduct }) {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-1 sm:gap-2"
                 >
-                  <ShoppingBag className="w-5 h-5" /> Add to Cart
+                  <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" /> Add to Cart
                 </motion.div>
               )}
             </AnimatePresence>
@@ -186,11 +194,12 @@ export default function DetailsSection({ product }: { product: IProduct }) {
           {/* Buy Now */}
           <Button
             size="lg"
-            className="order-1 sm:order-2 h-12 font-bold text-base bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-200 dark:shadow-none transition-all duration-300"
+            className="order-1 sm:order-2 h-10 sm:h-11 lg:h-12 font-bold text-xs sm:text-sm lg:text-base bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-200 dark:shadow-none transition-all duration-300"
             onClick={handleBuy}
             disabled={isOutOfStock}
           >
-            <CreditCard className="w-5 h-5 mr-2" /> Buy Now
+            <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" /> Buy
+            Now
           </Button>
         </div>
       </motion.div>

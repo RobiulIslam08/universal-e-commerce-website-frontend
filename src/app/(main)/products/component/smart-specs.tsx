@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { IProduct } from "@/types/product";
-import { FileText, ListFilter, Truck } from "lucide-react";
+import { FileText, ListFilter } from "lucide-react";
 
 export default function SmartSpecs({ product }: { product: IProduct }) {
   return (
@@ -69,7 +69,7 @@ export default function SmartSpecs({ product }: { product: IProduct }) {
       </AccordionItem>
 
       {/* Shipping & Warranty */}
-      <AccordionItem
+      {/* <AccordionItem
         value="shipping"
         className="border rounded-lg overflow-hidden"
       >
@@ -115,7 +115,7 @@ export default function SmartSpecs({ product }: { product: IProduct }) {
             </tbody>
           </table>
         </AccordionContent>
-      </AccordionItem>
+      </AccordionItem> */}
     </Accordion>
   );
 }

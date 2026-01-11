@@ -267,12 +267,37 @@ export default function PremiumCheckoutPage() {
       });
       
       const result = await response.json();
+      
       if (result.success) {
         toast.success("Payment successful!");
         router.push(`/payment/success?payment_intent=${paymentIntentId}`);
       } else {
         toast.error("Payment verification failed");
       }
+
+
+
+
+      if (result.success) {
+      // ২. পেমেন্ট সফল হলে ইমেইল পাঠানো (নতুন অংশ)
+      await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "payment_success", // API যেন চিনতে পারে এটা পেমেন্ট ইমেইল
+          name: currentUser.name || formData.firstName,
+          email: currentUser.email || formData.email,
+          amount: grandTotal,
+          items: paymentPayload.items,
+          paymentIntentId: paymentIntentId
+        }),
+      });
+
+      toast.success("Payment successful & Confirmation email sent!");
+      router.push(`/payment/success?payment_intent=${paymentIntentId}`);
+    } else {
+      toast.error("Payment verification failed");
+    }
     } catch (error) {
       console.error(error);
     }

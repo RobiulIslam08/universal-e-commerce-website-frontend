@@ -25,18 +25,41 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
-      toast.success("Message sent successfully!");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-      setIsSubmitting(false);
-    }, 1500);
-  };
+    try {
+      // আমাদের তৈরি করা API Route (/api/send) এ ডাটা পাঠানো হচ্ছে
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          type: "contact_form", // এটি দিয়ে API চিনবে যে এটা কন্টাক্ট ফর্ম
+        }),
+      });
 
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("আপনার মেসেজটি সফলভাবে পাঠানো হয়েছে!");
+        // ফর্ম ক্লিয়ার করা
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        console.error("Email Error:", result.error);
+        toast.error("মেসেজ পাঠাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+      }
+    } catch (error) {
+      console.error("Submit Error:", error);
+      toast.error("সার্ভারে সমস্যা হয়েছে। অনুগ্রহ করে পরে চেষ্টা করুন।");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
   const contactInfo = [
     {
       icon: Mail,
