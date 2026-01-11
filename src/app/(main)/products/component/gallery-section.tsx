@@ -198,17 +198,21 @@ export default function GallerySection({
 
         {/* Mobile Zoom Modal */}
         {isMobileZoomOpen && (
-          <div className="fixed inset-0 z-100 bg-black/95 lg:hidden flex flex-col">
-            {/* Close button */}
-            <div className="flex justify-between items-center p-4 bg-black/50">
-              <span className="text-white text-sm">
-                Touch & drag to explore
-              </span>
+          <div className="fixed inset-0 z-9999 bg-black/95 lg:hidden flex flex-col">
+            {/* Close button - Fixed at top with higher visibility */}
+            <div className="flex justify-between items-center p-4 pt-6 bg-linear-to-b from-black/80 to-black/50 shadow-lg">
+              <div className="flex flex-col gap-1">
+                <span className="text-white text-base font-medium">
+                  Touch & drag to explore
+                </span>
+                <span className="text-white/70 text-xs">Pinch to zoom</span>
+              </div>
               <button
                 onClick={closeMobileZoom}
-                className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors"
+                className="p-3 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-all shadow-lg border border-white/30"
+                aria-label="Close zoom"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
 
