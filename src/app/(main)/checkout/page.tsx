@@ -59,7 +59,7 @@ export default function PremiumCheckoutPage() {
   const [clientSecret, setClientSecret] = useState<string>("");
   const [paymentIntentId, setPaymentIntentId] = useState<string>("");
   const [currentUser, setCurrentUser] = useState<DecodedUser | null>(null);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -75,13 +75,15 @@ export default function PremiumCheckoutPage() {
     if (buyNowProductId && buyNowQuantity) {
       // Buy Now মোড: নির্দিষ্ট প্রোডাক্ট খুঁজে বের করা
       const product = allCartItems.find((item) => item._id === buyNowProductId);
-      
+
       if (product) {
         // শুধু এই প্রোডাক্টটি নতুন কোয়ান্টিটি সহ রিটার্ন করা
-        return [{
-          ...product,
-          orderQuantity: parseInt(buyNowQuantity,10) // URL এর কোয়ান্টিটি প্রাধান্য পাবে
-        }];
+        return [
+          {
+            ...product,
+            orderQuantity: parseInt(buyNowQuantity, 10), // URL এর কোয়ান্টিটি প্রাধান্য পাবে
+          },
+        ];
       }
     }
     // নরমাল মোড: পুরো কার্ট রিটার্ন করা
@@ -141,7 +143,14 @@ export default function PremiumCheckoutPage() {
   // Create Payment Intent
   useEffect(() => {
     const createPaymentIntent = async () => {
-      if (!currentUser || currentStep !== 3 || paymentMethod !== "card" || clientSecret || processing) return;
+      if (
+        !currentUser ||
+        currentStep !== 3 ||
+        paymentMethod !== "card" ||
+        clientSecret ||
+        processing
+      )
+        return;
 
       const formData = watch();
       if (!formData.email || !formData.firstName || !formData.address) return;
@@ -172,7 +181,10 @@ export default function PremiumCheckoutPage() {
               price: item.offerPrice || item.price,
               image: item.image || "",
             })),
-            subtotal, shipping, tax, total: grandTotal,
+            subtotal,
+            shipping,
+            tax,
+            total: grandTotal,
           }),
         });
 
@@ -190,12 +202,25 @@ export default function PremiumCheckoutPage() {
       }
     };
     createPaymentIntent();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep, paymentMethod, clientSecret, processing, currentUser, grandTotal, checkoutItems]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    currentStep,
+    paymentMethod,
+    clientSecret,
+    processing,
+    currentUser,
+    grandTotal,
+    checkoutItems,
+  ]);
 
   const steps: Step[] = [
     { id: 1, title: "Contact", icon: User, fields: ["email", "phone"] },
-    { id: 2, title: "Delivery", icon: MapPin, fields: ["firstName", "lastName", "address", "city", "state", "zipCode"] },
+    {
+      id: 2,
+      title: "Delivery",
+      icon: MapPin,
+      fields: ["firstName", "lastName", "address", "city", "state", "zipCode"],
+    },
     { id: 3, title: "Payment", icon: CreditCard, fields: [] },
   ];
 
@@ -215,7 +240,6 @@ export default function PremiumCheckoutPage() {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-
   const onSubmit = async (data: CheckoutFormData) => {
     if (paymentMethod !== "card") {
       setProcessing(true);
@@ -234,7 +258,8 @@ export default function PremiumCheckoutPage() {
       const paymentPayload = {
         userId: currentUser.userId,
         userEmail: currentUser.email || formData.email,
-        userName: currentUser.name || `${formData.firstName} ${formData.lastName}`,
+        userName:
+          currentUser.name || `${formData.firstName} ${formData.lastName}`,
         paymentIntentId,
         amount: grandTotal,
         currency: "USD",
@@ -265,9 +290,9 @@ export default function PremiumCheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(paymentPayload),
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         toast.success("Payment successful!");
         router.push(`/payment/success?payment_intent=${paymentIntentId}`);
@@ -275,29 +300,26 @@ export default function PremiumCheckoutPage() {
         toast.error("Payment verification failed");
       }
 
-
-
-
       if (result.success) {
-      // ২. পেমেন্ট সফল হলে ইমেইল পাঠানো (নতুন অংশ)
-      await fetch("/api/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "payment_success", // API যেন চিনতে পারে এটা পেমেন্ট ইমেইল
-          name: currentUser.name || formData.firstName,
-          email: currentUser.email || formData.email,
-          amount: grandTotal,
-          items: paymentPayload.items,
-          paymentIntentId: paymentIntentId
-        }),
-      });
+        // ২. পেমেন্ট সফল হলে ইমেইল পাঠানো (নতুন অংশ)
+        await fetch("/api/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "payment_success", // API যেন চিনতে পারে এটা পেমেন্ট ইমেইল
+            name: currentUser.name || formData.firstName,
+            email: currentUser.email || formData.email,
+            amount: grandTotal,
+            items: paymentPayload.items,
+            paymentIntentId: paymentIntentId,
+          }),
+        });
 
-      toast.success("Payment successful & Confirmation email sent!");
-      router.push(`/payment/success?payment_intent=${paymentIntentId}`);
-    } else {
-      toast.error("Payment verification failed");
-    }
+        toast.success("Payment successful & Confirmation email sent!");
+        router.push(`/payment/success?payment_intent=${paymentIntentId}`);
+      } else {
+        toast.error("Payment verification failed");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -313,39 +335,91 @@ export default function PremiumCheckoutPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <CheckoutHeader onBack={() => router.back()} />
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full mx-auto px-4 py-8 max-w-7xl">
         <StepIndicator steps={steps} currentStep={currentStep} />
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8 w-full">
           {/* Forms Section */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 min-w-0">
             <form onSubmit={handleSubmit(onSubmit)}>
-               {currentStep === 1 && <ContactInfoStep register={register} errors={errors} watch={watch} />}
-               {currentStep === 2 && <DeliveryAddressStep register={register} errors={errors} watch={watch} />}
-               {currentStep === 3 && paymentMethod !== "card" && <PaymentMethodStep register={register} errors={errors} watch={watch} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />}
-               
-               <div className="flex justify-between pt-6">
-                 <Button type="button" variant="outline" onClick={handlePreviousStep} disabled={currentStep === 1}>Previous</Button>
-                 {currentStep === 3 ? (
-                   <Button type="submit" disabled={processing} className="bg-rose-600 text-white">{processing ? "Processing..." : "Place Order"}</Button>
-                 ) : (
-                   <Button type="button" onClick={handleNextStep} className="bg-rose-600 text-white">Next</Button>
-                 )}
-               </div>
+              {currentStep === 1 && (
+                <ContactInfoStep
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                />
+              )}
+              {currentStep === 2 && (
+                <DeliveryAddressStep
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                />
+              )}
+              {currentStep === 3 && paymentMethod !== "card" && (
+                <PaymentMethodStep
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                  paymentMethod={paymentMethod}
+                  setPaymentMethod={setPaymentMethod}
+                />
+              )}
+
+              <div className="flex justify-between pt-6 ">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePreviousStep}
+                  disabled={currentStep === 1}
+                >
+                  Previous
+                </Button>
+                {currentStep === 3 ? (
+                  <Button
+                    type="submit"
+                    disabled={processing}
+                    className="bg-rose-600 text-white"
+                  >
+                    {processing ? "Processing..." : "Place Order"}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleNextStep}
+                    className="bg-rose-600 text-white"
+                  >
+                    Next
+                  </Button>
+                )}
+              </div>
             </form>
 
             {currentStep === 3 && paymentMethod === "card" && (
               <>
-                <PaymentMethodStep register={register} errors={errors} watch={watch} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
+                <PaymentMethodStep
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                  paymentMethod={paymentMethod}
+                  setPaymentMethod={setPaymentMethod}
+                />
                 <div className="bg-white p-6 rounded-lg shadow mt-6">
-                  {clientSecret && <StripePaymentWrapper clientSecret={clientSecret} onSuccess={handlePaymentSuccess} onError={handlePaymentError} amount={grandTotal} />}
+                  {clientSecret && (
+                    <StripePaymentWrapper
+                      clientSecret={clientSecret}
+                      onSuccess={handlePaymentSuccess}
+                      onError={handlePaymentError}
+                      amount={grandTotal}
+                    />
+                  )}
                 </div>
               </>
             )}
           </div>
 
           {/* Right Column: Order Summary */}
-          <div>
-            <OrderSummaryCard 
+          <div className="min-w-0">
+            <OrderSummaryCard
               products={checkoutItems} // ✅ ফিল্টার করা আইটেম পাঠানো হচ্ছে
               subtotal={subtotal}
               shipping={shipping}

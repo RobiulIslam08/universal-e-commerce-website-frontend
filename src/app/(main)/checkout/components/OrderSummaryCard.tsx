@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 "use client";
 
 import Image from "next/image";
@@ -13,7 +12,7 @@ const { CURRENCY } = CART_CONSTANTS;
 
 // Props ইন্টারফেস
 interface OrderSummaryProps {
-  products: any[]; 
+  products: any[];
   subtotal: number;
   shipping: number;
   tax: number;
@@ -29,7 +28,6 @@ export const OrderSummaryCard = ({
   total = 0,
   isBuyNowMode = false,
 }: OrderSummaryProps) => {
-  
   // সেভিংস ক্যালকুলেশন
   const totalSavings = useMemo(() => {
     return products.reduce((acc, item) => {
@@ -41,13 +39,14 @@ export const OrderSummaryCard = ({
   }, [products]);
 
   return (
-    <Card className="border-rose-200 dark:border-rose-800 shadow-2xl sticky top-24 pt-4">
-      <CardHeader className="bg-linear-to-br from-rose-50 to-white dark:from-slate-800 dark:to-slate-900">
-        <CardTitle className="text-slate-900 dark:text-white">
+    <Card className="border-rose-200 dark:border-rose-800 shadow-sm sticky top-24 pt-4 w-full min-w-0">
+      <CardHeader className="">
+        <CardTitle className="text-slate-900 dark:text-white wrap-break-word">
           {isBuyNowMode ? "Buy Now Summary" : "Order Summary"}
         </CardTitle>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          {products.length} {products.length === 1 ? "item" : "items"} in your order
+          {products.length} {products.length === 1 ? "item" : "items"} in your
+          order
         </p>
       </CardHeader>
       <CardContent className="pt-6 space-y-4">
@@ -57,7 +56,7 @@ export const OrderSummaryCard = ({
             const currentPrice = item.offerPrice || item.price;
             const originalPrice = item.strikePrice || item.price;
             const discount = originalPrice - currentPrice;
-            
+
             const imageUrl =
               item.images && item.images.length > 0
                 ? item.images[0]
@@ -79,7 +78,9 @@ export const OrderSummaryCard = ({
                         sizes="48px"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xl">📦</div>
+                      <div className="w-full h-full flex items-center justify-center text-xl">
+                        📦
+                      </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -87,7 +88,10 @@ export const OrderSummaryCard = ({
                       {item.title}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      Qty: <span className="font-medium text-slate-900 dark:text-slate-200">{item.orderQuantity}</span>
+                      Qty:{" "}
+                      <span className="font-medium text-slate-900 dark:text-slate-200">
+                        {item.orderQuantity}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -115,7 +119,8 @@ export const OrderSummaryCard = ({
           <div className="flex justify-between text-slate-600 dark:text-slate-400">
             <span>Subtotal</span>
             <span className="font-medium text-slate-900 dark:text-slate-200">
-              {CURRENCY}{subtotal.toLocaleString()}
+              {CURRENCY}
+              {subtotal.toLocaleString()}
             </span>
           </div>
 
@@ -125,13 +130,22 @@ export const OrderSummaryCard = ({
                 <Tag className="w-3.5 h-3.5" />
                 Total Savings
               </span>
-              <span>-{CURRENCY}{totalSavings.toLocaleString()}</span>
+              <span>
+                -{CURRENCY}
+                {totalSavings.toLocaleString()}
+              </span>
             </div>
           )}
 
           <div className="flex justify-between text-slate-600 dark:text-slate-400">
             <span>Shipping</span>
-            <span className={shipping === 0 ? "text-green-600 dark:text-green-400 font-semibold" : "font-medium text-slate-900 dark:text-slate-200"}>
+            <span
+              className={
+                shipping === 0
+                  ? "text-green-600 dark:text-green-400 font-semibold"
+                  : "font-medium text-slate-900 dark:text-slate-200"
+              }
+            >
               {shipping === 0 ? "FREE" : `${CURRENCY}${shipping}`}
             </span>
           </div>
@@ -139,7 +153,8 @@ export const OrderSummaryCard = ({
           <div className="flex justify-between text-slate-600 dark:text-slate-400">
             <span>Tax (VAT)</span>
             <span className="font-medium text-slate-900 dark:text-slate-200">
-              {CURRENCY}{tax}
+              {CURRENCY}
+              {tax}
             </span>
           </div>
         </div>
@@ -147,9 +162,12 @@ export const OrderSummaryCard = ({
         <div className="h-px bg-slate-200 dark:bg-slate-700" />
 
         <div className="flex justify-between items-center pt-2">
-          <span className="text-lg font-bold text-slate-900 dark:text-white">Total</span>
+          <span className="text-lg font-bold text-slate-900 dark:text-white">
+            Total
+          </span>
           <span className="text-2xl font-bold bg-linear-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-            {CURRENCY}{total.toLocaleString()}
+            {CURRENCY}
+            {total.toLocaleString()}
           </span>
         </div>
 

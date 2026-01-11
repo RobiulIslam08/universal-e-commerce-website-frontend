@@ -64,7 +64,7 @@ const features = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-12 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-12 bg-linear-to-b from-white to-gray-50">
       <SectionTitle
         title="Why Choose Us"
         subtitle="Your satisfaction is our top priority"

@@ -30,7 +30,7 @@ export const PaymentMethodStep = ({
   paymentMethod,
   setPaymentMethod,
 }: PaymentMethodStepProps) => (
-  <Card className="border-rose-100 dark:border-rose-900 shadow-xl pt-4">
+  <Card className="border-rose-100 dark:border-rose-900  pt-4">
     <CardHeader className="">
       <CardTitle className="flex items-center gap-3 text-slate-900 dark:text-white">
         <div className="w-10 h-10 rounded-full bg-rose-600 flex items-center justify-center text-white font-bold shadow-lg">
