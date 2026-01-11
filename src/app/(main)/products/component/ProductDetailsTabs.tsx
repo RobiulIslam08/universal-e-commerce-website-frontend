@@ -18,7 +18,7 @@ export default function ProductDetailsTabs({
 }: ProductDetailsTabsProps) {
   return (
     <Tabs defaultValue="overview" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 h-auto">
+      <TabsList className="grid w-full md:w-[60%] lg:w-[50%] grid-cols-3 h-auto">
         <TabsTrigger
           value="overview"
           className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4"
@@ -58,7 +58,7 @@ export default function ProductDetailsTabs({
         <div className="border rounded-lg p-4 sm:p-6 bg-card">
           <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
             <ListFilter className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
-            Aditional Information
+           Specifications
           </h3>
           <div className="overflow-x-auto -mx-4 sm:mx-0">
             <table className="w-full text-sm min-w-full">
@@ -68,7 +68,7 @@ export default function ProductDetailsTabs({
                     <td className="py-2.5 pl-4 sm:pl-0 pr-4 text-muted-foreground text-xs sm:text-sm">
                       {spec.key}
                     </td>
-                    <td className="py-2.5 pr-4 sm:pr-0 font-medium text-right text-xs sm:text-sm">
+                    <td className="py-2 pr-4 sm:pr-0 font-medium text-left text-xs sm:text-sm">
                       {spec.value}
                     </td>
                   </tr>
@@ -77,7 +77,7 @@ export default function ProductDetailsTabs({
                   <td className="py-2.5 pl-4 sm:pl-0 pr-4 text-muted-foreground text-xs sm:text-sm">
                     SKU
                   </td>
-                  <td className="py-2.5 pr-4 sm:pr-0 font-medium text-right font-mono text-xs sm:text-sm">
+                  <td className="py-2.5 pr-4 sm:pr-0 font-medium text-left font-mono text-xs sm:text-sm">
                     {product.sku}
                   </td>
                 </tr>
