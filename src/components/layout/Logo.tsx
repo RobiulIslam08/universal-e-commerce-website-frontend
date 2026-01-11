@@ -45,11 +45,15 @@ export default function Logo({ size = "md", showText = true }: LogoProps) {
       {showText && (
         <Link
           href="/"
-          className={`${text} font-bold tracking-tight hover:opacity-90 transition ${
-            isHomePage ? "text-white" : "text-gray-900"
+          className={`${text} font-black italic tracking-tighter uppercase leading-none hover:opacity-80 transition-all duration-300 ${
+            isHomePage ? "text-white" : "text-slate-900"
           }`}
+          style={{
+            fontFamily: 'system-ui, -apple-system, sans-serif'
+          }}
         >
           Universel
+          <span className="text-rose-500 not-italic">.</span>
         </Link>
       )}
     </div>

@@ -49,7 +49,7 @@ export default function MenSection() {
   }
 
   return (
-    <section className="py-12 bg-linear-to-b from-white to-gray-50">
+    <section className=" bg-linear-to-b from-white to-gray-50">
       <SectionTitle
         title="Men's Collection"
         subtitle="Trending fashion for men"

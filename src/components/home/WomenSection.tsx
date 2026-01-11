@@ -51,7 +51,7 @@ export default function WomenSection() {
   }
 
   return (
-    <section className="py-12">
+    <section className="">
       <SectionTitle
         title="Women's Collection"
         subtitle="Latest fashion trends for women"

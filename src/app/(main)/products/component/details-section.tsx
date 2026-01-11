@@ -76,18 +76,28 @@ export default function DetailsSection({ product }: { product: IProduct }) {
     >
       {/* 1. Header & Stock Badge */}
       <motion.div variants={itemVariants} className="space-y-2 sm:space-y-3">
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground leading-tight">
+        <h1
+          className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground leading-[1.1] antialiased"
+          style={{
+            fontFamily:
+              'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+          }}
+        >
           {product.title}
         </h1>
         <div className="inline-flex items-center">
           <span
-            className={`text-[10px] sm:text-xs font-medium px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md border ${
+            className={`text-xs sm:text-sm font-bold uppercase tracking-widest px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border-2 antialiased ${
               !isOutOfStock
-                ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800"
-                : "bg-red-50 text-red-700 border-red-200"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-900/20 dark:border-emerald-700"
+                : "bg-red-50 text-red-700 border-red-300"
             }`}
+            style={{
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              letterSpacing: "0.1em",
+            }}
           >
-            Availability: {!isOutOfStock ? "In Stock" : "Out of Stock"}
+            {!isOutOfStock ? "✓ In Stock" : "✗ Out of Stock"}
           </span>
         </div>
       </motion.div>
@@ -97,11 +107,20 @@ export default function DetailsSection({ product }: { product: IProduct }) {
         variants={itemVariants}
         className="flex items-baseline gap-2 sm:gap-3"
       >
-        <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-rose-600">
+        <span
+          className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-rose-600 antialiased tabular-nums"
+          style={{
+            fontFamily: "system-ui, -apple-system, sans-serif",
+            fontFeatureSettings: '"tnum"',
+          }}
+        >
           ${product.price}
         </span>
         {product.strikePrice && (
-          <span className="text-base sm:text-lg text-muted-foreground line-through">
+          <span
+            className="text-lg sm:text-xl font-semibold text-muted-foreground line-through opacity-60 tabular-nums"
+            style={{ fontFeatureSettings: '"tnum"' }}
+          >
             ${product.strikePrice}
           </span>
         )}
@@ -109,7 +128,13 @@ export default function DetailsSection({ product }: { product: IProduct }) {
 
       {/* 3. Description */}
       <motion.div variants={itemVariants}>
-        <p className="text-muted-foreground text-xs sm:text-sm lg:text-base leading-relaxed">
+        <p
+          className="text-slate-600 dark:text-slate-400 text-sm sm:text-base lg:text-lg leading-relaxed font-medium antialiased"
+          style={{
+            fontFamily: "system-ui, -apple-system, sans-serif",
+            lineHeight: "1.75",
+          }}
+        >
           {product.shortDescription}
         </p>
       </motion.div>
@@ -126,7 +151,13 @@ export default function DetailsSection({ product }: { product: IProduct }) {
       >
         {/* Quantity Selector */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-xs sm:text-sm font-medium text-foreground">
+          <span
+            className="text-sm sm:text-base font-bold uppercase tracking-wide text-foreground antialiased"
+            style={{
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              letterSpacing: "0.08em",
+            }}
+          >
             Quantity
           </span>
           <div className="flex items-center border rounded-lg bg-background w-fit">
@@ -162,7 +193,11 @@ export default function DetailsSection({ product }: { product: IProduct }) {
           <Button
             size="lg"
             variant="outline"
-            className="order-2 sm:order-1 h-10 sm:h-11 lg:h-12 font-semibold text-xs sm:text-sm lg:text-base border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:hover:bg-rose-950 transition-colors"
+            className="order-2 sm:order-1 h-10 sm:h-11 lg:h-12 font-semibold text-xs sm:text-sm lg:text-base border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:hover:bg-rose-950 transition-colors antialiased"
+            style={{
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              letterSpacing: "0.02em",
+            }}
             onClick={handleAddToCart}
             disabled={isOutOfStock}
           >
@@ -194,7 +229,11 @@ export default function DetailsSection({ product }: { product: IProduct }) {
           {/* Buy Now */}
           <Button
             size="lg"
-            className="order-1 sm:order-2 h-10 sm:h-11 lg:h-12 font-bold text-xs sm:text-sm lg:text-base bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-200 dark:shadow-none transition-all duration-300"
+            className="order-1 sm:order-2 h-10 sm:h-11 lg:h-12 font-bold text-xs sm:text-sm lg:text-base bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-200 dark:shadow-none transition-all duration-300 antialiased"
+            style={{
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              letterSpacing: "0.03em",
+            }}
             onClick={handleBuy}
             disabled={isOutOfStock}
           >

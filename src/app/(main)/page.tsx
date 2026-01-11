@@ -1,6 +1,5 @@
 // Home page - Display all products from all categories
 
-
 import ElectronicsSection from "@/components/home/ElectronicsSection";
 import MenSection from "@/components/home/MenSection";
 import WomenSection from "@/components/home/WomenSection";
@@ -15,46 +14,47 @@ export default async function Home() {
       {/* Hero Section */}
       {/* <DynamicHeroCarousel /> */}
 
-      <HeroBanner title="Raining Offers For Hot Summer!" subtitle="25% Off On All Products" image="https://websitedemos.net/brandstore-02/wp-content/uploads/sites/150/2019/12/home-new-bg-free-img.jpg"
-      primaryButtonText="SHOP NOW"
-  primaryButtonLink="/products"
-  secondaryButtonText="FIND MORE"
-  secondaryButtonLink="/products"
+      <HeroBanner
+        title="Raining Offers For Hot Summer!"
+        subtitle="25% Off On All Products"
+        image="https://websitedemos.net/brandstore-02/wp-content/uploads/sites/150/2019/12/home-new-bg-free-img.jpg"
+        primaryButtonText="SHOP NOW"
+        primaryButtonLink="/products"
+        secondaryButtonText="FIND MORE"
+        secondaryButtonLink="/products"
       />
 
-         {/* Featured  Products */}
+      {/* Featured  Products */}
       <div className="w-full bg-linear-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-12">
           <FeaturedProducts />
         </div>
       </div>
 
       {/* Electronics Section */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-12">
         <ElectronicsSection />
       </div>
 
       {/* Men's Collection */}
       <div className="w-full">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-12">
           <MenSection />
         </div>
       </div>
 
       {/* Women's Collection */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-12">
         <WomenSection />
       </div>
 
-   
-
       {/* Why Choose Us */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-12">
         <WhyChooseUs />
       </div>
 
       {/* Customer Testimonials */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-12">
         <Testimonials />
       </div>
 

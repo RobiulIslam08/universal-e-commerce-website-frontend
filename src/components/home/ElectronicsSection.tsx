@@ -49,7 +49,7 @@ export default function ElectronicsSection() {
   }
 
   return (
-    <section className="py-12">
+    <section className="">
       <SectionTitle
         title="Electronics"
         subtitle="Latest gadgets and tech products"
